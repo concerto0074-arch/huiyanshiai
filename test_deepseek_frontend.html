@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek报告润色测试</title>
+    <!-- 引入Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #28a745;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .report-container {
+            margin-top: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .report-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .report-section {
+            margin-bottom: 30px;
+        }
+        .report-section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .report-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #555;
+        }
+        .disclaimer {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8d7da;
+            border-radius: 5px;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 123, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #007bff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-center">
+                <h2><i class="fa fa-stethoscope"></i> DeepSeek报告润色测试</h2>
+                <p class="mb-0">使用DeepSeek API润色乳腺肿瘤风险评估报告</p>
+            </div>
+            <div class="card-body">
+                <form id="predictionForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="csvFile"><i class="fa fa-file-excel-o"></i> 选择CSV文件</label>
+                        <input type="file" class="form-control-file" id="csvFile" name="file" accept=".csv" required>
+                        <small class="form-text text-muted">请上传包含乳腺肿瘤特征的CSV文件</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                        <i class="fa fa-paper-plane"></i> 提交预测并润色报告
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <span>正在处理中，请稍候...</span>
+        </div>
+
+        <div id="reportContainer" class="report-container" style="display: none;">
+            <h3 class="report-title text-center">乳腺肿瘤风险评估报告</h3>
+            
+            <div class="report-section">
+                <h4 class="report-section-title"><i class="fa fa-line-chart"></i> 预测结果</h4>
+                <div id="summary" class="report-content"></div>
+            </div>
+
+            <div class="report-section">
+                <h4 class="report-section-title"><i class="fa fa-exclamation-triangle"></i> 原始报告</h4>
+                <div id="originalReport" class="report-content"></div>
+            </div>
+
+            <div class="report-section">
+                <h4 class="report-section-title"><i class="fa fa-star"></i> DeepSeek润色后的报告</h4>
+                <div id="polishedReport" class="report-content"></div>
+            </div>
+
+            <div class="disclaimer">
+                <p><strong>免责声明：</strong>本测试使用DeepSeek API进行报告润色，结果仅供参考，不能替代专业医生的临床诊断。最终诊疗决策请以执业医师意见为准。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入jQuery和Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#predictionForm').submit(function(e) {
+                e.preventDefault();
+                
+                // 显示加载状态
+                $('.loading').show();
+                $('#reportContainer').hide();
+                
+                // 准备表单数据
+                var formData = new FormData(this);
+                
+                // 发送AJAX请求
+                $.ajax({
+                    url: 'http://localhost:5001/predict_with_deepseek',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        // 隐藏加载状态
+                        $('.loading').hide();
+                        
+                        if (response.results && response.results.length > 0) {
+                            var result = response.results[0];
+                            var report = result.report;
+                            
+                            // 显示报告
+                            $('#reportContainer').show();
+                            $('#summary').html(`<p>患癌概率：<strong>${result.probability.toFixed(2)}%</strong></p><p>风险等级：<strong>${result.risk_level}</strong></p>`);
+                            $('#originalReport').html(report.full_report.replace(/\n/g, '<br>'));
+                            $('#polishedReport').html(report.polished_full_report.replace(/\n/g, '<br>'));
+                        } else {
+                            alert('未获取到报告结果');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // 隐藏加载状态
+                        $('.loading').hide();
+                        
+                        console.error('请求失败:', error);
+                        alert('请求失败，请检查API是否正常运行。错误信息：' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

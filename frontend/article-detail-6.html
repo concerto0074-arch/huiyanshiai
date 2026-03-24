@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>癌症患者的心理调节：如何保持积极心态 - 慧眼识癌</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Helvetica Neue', 'Microsoft YaHei', Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        
+        
+        /* 主内容区样式 */
+        .main-content {
+            padding: 40px 0;
+            min-height: calc(100vh - 200px);
+        }
+        
+        /* 文章详情页面样式 */
+        .article-detail {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+        
+        /* 返回按钮样式 */
+        .back-btn {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .back-btn:hover {
+            background-color: #c0392b;
+            color: #fff;
+            transform: translateX(-3px);
+        }
+        
+        /* 文章标题 */
+        #article-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        /* 文章元数据 */
+        .article-meta {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* 文章内容 */
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .article-content h2 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .article-content h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #34495e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .article-content p {
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+        
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 引用样式 */
+        .article-content blockquote {
+            border-left: 4px solid #e74c3c;
+            padding: 20px 30px;
+            margin: 25px 0;
+            background-color: #f8f9fa;
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+            color: #555;
+        }
+        
+        /* 列表样式 */
+        .article-content ul, .article-content ol {
+            margin-bottom: 25px;
+            padding-left: 30px;
+        }
+        
+        .article-content li {
+            margin-bottom: 10px;
+        }
+        
+        /* 相关文章样式 */
+        .related-articles {
+            margin-top: 50px;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin: 50px auto 0;
+            max-width: 1200px;
+        }
+        
+        .related-articles h3 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        /* 相关文章卡片样式 */
+        .related-article-card {
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .related-article-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-3px);
+        }
+        
+        .related-article-card .card-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .related-article-card .card-text {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        /* 相关文章缩略图 */
+        .article-thumbnail {
+            height: 150px;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+        
+        .article-thumbnail img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .related-article-card:hover .article-thumbnail img {
+            transform: scale(1.05);
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 60px 0;
+            margin-top: 60px;
+        }
+        
+        footer h4 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        footer p, footer a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            font-size: 1.5rem;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .article-detail {
+                padding: 25px;
+            }
+            
+            #article-title {
+                font-size: 1.8rem;
+            }
+            
+            .article-content {
+                font-size: 1.05rem;
+                line-height: 1.8;
+            }
+            
+            .article-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .article-content h3 {
+                font-size: 1.3rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .related-articles h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* 页脚样式 */
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        .footer-links a {
+            color: #fff;
+            margin-right: 20px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* 返回按钮样式 */
+        .back-btn {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            background-color: #c0392b;
+            color: #fff;
+        }
+    
+        
+        
+        /* 导航栏样式 */
+        .navbar {
+            background-color: white !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+            padding: 0.5rem 1rem !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+        }
+        .navbar .container {
+            max-width: 1200px !important;
+            padding: 0 15px !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        .navbar-brand {
+            display: flex !important;
+            align-items: center !important;
+            color: #007BFF !important;
+            text-decoration: none !important;
+            margin-right: 30px !important;
+            padding: 0 !important;
+        }
+        .navbar-brand .logo-icon {
+            font-size: 24px !important;
+            margin-right: 10px !important;
+            color: #007BFF !important;
+        }
+        .brand-text {
+            display: flex !important;
+            flex-direction: column !important;
+            line-height: 1.2 !important;
+        }
+        .brand-main {
+            font-weight: bold !important;
+            font-size: 18px !important;
+            color: #007BFF !important;
+        }
+        .brand-sub {
+            font-size: 12px !important;
+            color: #6c757d !important;
+        }
+        .navbar-nav {
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            list-style: none !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+        }
+        .nav-item {
+            margin: 0 !important;
+        }
+        .nav-link {
+            color: #495057 !important;
+            font-weight: 500 !important;
+            padding: 8px 16px !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            text-decoration: none !important;
+        }
+        .nav-link:hover {
+            color: #007BFF !important;
+        }
+        .nav-link.active {
+            background-color: #007BFF !important;
+            color: white !important;
+            border-radius: 4px !important;
+        }
+        .navbar-right {
+            display: flex !important;
+            align-items: center !important;
+            gap: 15px !important;
+        }
+        .notification-icon {
+            font-size: 20px !important;
+            color: #495057 !important;
+            position: relative !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+        }
+        .notification-badge {
+            position: absolute !important;
+            top: -5px !important;
+            right: -5px !important;
+            background-color: #dc3545 !important;
+            color: white !important;
+            border-radius: 50% !important;
+            width: 18px !important;
+            height: 18px !important;
+            font-size: 11px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .login-btn {
+            background-color: #007BFF !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 20px !important;
+            border-radius: 20px !important;
+            font-weight: 500 !important;
+            font-size: 14px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.2) !important;
+        }
+        .login-btn:hover {
+            background-color: #0056b3 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 15px rgba(0,123,255,0.3) !important;
+        }
+
+        /* 页脚样式 */
+        footer {
+            background-color: #0056b3 !important;
+            color: #ffffff !important;
+            padding: 40px 0 !important;
+            margin-top: 60px !important;
+        }
+        footer h4, footer h5 {
+            color: #ffffff !important;
+            font-weight: bold !important;
+            margin-bottom: 20px !important;
+        }
+        footer p, footer li {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-size: 14px !important;
+        }
+        footer a {
+            color: #ffffff !important;
+            text-decoration: none !important;
+            transition: all 0.3s ease !important;
+        }
+        footer a:hover {
+            color: #cce7ff !important;
+            text-decoration: underline !important;
+        }
+        .footer-links, .list-unstyled {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+            padding: 0 !important;
+            list-style: none !important;
+        }
+        .social-links, .social-icons {
+            display: flex !important;
+            gap: 15px !important;
+            margin-top: 15px !important;
+        }
+        .social-links a, .social-icons a {
+            font-size: 20px !important;
+            color: #ffffff !important;
+        }
+        footer hr {
+            border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+            margin: 30px 0 !important;
+        }
+
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <div class="brand-text">
+                    <div class="brand-main">慧眼识癌</div>
+                    <div class="brand-sub">您身边的癌症预防专家</div>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首页</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="knowledge.html">知识科普</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">产品服务</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cases.html">客户案例</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="experts.html">专家在线</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="group.html">团体方案</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="algorithms.html">核心算法</a>
+                    </li>
+                </ul>
+                <div class="navbar-right">
+                    <a href="#" class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </a>
+                    <button id="navbarLoginBtn" class="login-btn" onclick="showLoginModal()">登录/注册</button>
+                    <button id="navbarUserCenterBtn" class="login-btn" onclick="window.location.href='user_center.html'" style="background-color: #2196F3; display: none;">用户中心</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div class="container">
+            <!-- 返回按钮 -->
+            <a href="knowledge.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回知识列表</a>
+
+            <!-- 文章详情 -->
+            <div class="article-detail">
+                <h1 id="article-title">癌症患者的心理调节：如何保持积极心态</h1>
+                <div class="article-meta">
+                    <span><i class="fas fa-tag"></i> <span id="article-category">心理支持</span></span>
+                    <span><i class="far fa-calendar"></i> <span id="article-date">2024-01-02</span></span>
+                    <span><i class="far fa-eye"></i> <span id="article-views">890</span></span>
+                </div>
+
+                <div class="article-content">
+                    <p>癌症诊断对患者的心理影响是巨大的，可能会引发恐惧、焦虑、抑郁等负面情绪。保持积极的心态对癌症治疗和康复至关重要。本文将介绍癌症患者心理调节的方法和技巧，帮助患者更好地应对疾病。</p>
+
+                    <h3>癌症患者常见的心理反应</h3>
+                    <p>癌症诊断后，患者可能会经历以下心理反应：</p>
+                    <ul>
+                        <li>否认：不愿接受癌症诊断，怀疑检查结果的准确性</li>
+                        <li>恐惧：害怕癌症进展、治疗副作用、死亡等</li>
+                        <li>焦虑：担心治疗效果、家庭负担、未来生活等</li>
+                        <li>抑郁：情绪低落、兴趣丧失、睡眠障碍等</li>
+                        <li>愤怒：对命运不公的愤怒，对家人和医生的抱怨</li>
+                        <li>孤独：感到被孤立，难以与他人沟通</li>
+                    </ul>
+
+                    <h3>心理调节的重要性</h3>
+                    <p>保持积极的心态对癌症治疗和康复有以下益处：</p>
+                    <ul>
+                        <li>提高治疗依从性：积极的心态有助于患者更好地配合治疗</li>
+                        <li>减轻治疗副作用：心理压力可能加重治疗副作用，积极的心态有助于减轻副作用</li>
+                        <li>增强免疫系统功能：长期的心理压力会抑制免疫系统功能，积极的心态有助于提高免疫力</li>
+                        <li>提高生活质量：积极的心态有助于患者更好地应对疾病，提高生活质量</li>
+                        <li>延长生存期：多项研究表明，积极的心态与更长的生存期相关</li>
+                    </ul>
+
+                    <h3>心理调节的方法和技巧</h3>
+                    <p>以下是一些帮助癌症患者保持积极心态的方法和技巧：</p>
+
+                    <h4>1. 接受现实，积极面对</h4>
+                    <p>接受癌症诊断是心理调节的第一步。虽然接受现实可能很困难，但只有接受现实，才能更好地应对疾病。患者可以尝试：</p>
+                    <ul>
+                        <li>与医生和家人充分沟通，了解疾病的情况</li>
+                        <li>允许自己表达情绪，不要压抑内心的感受</li>
+                        <li>设定现实的目标，逐步实现</li>
+                    </ul>
+
+                    <h4>2. 建立支持系统</h4>
+                    <p>家人、朋友和专业人士的支持对癌症患者的心理调节至关重要。患者可以：</p>
+                    <ul>
+                        <li>与家人和朋友保持沟通，分享自己的感受</li>
+                        <li>参加癌症患者支持小组，与其他患者分享经验</li>
+                        <li>寻求专业心理咨询师的帮助</li>
+                        <li>利用社会资源，如癌症康复组织等</li>
+                    </ul>
+
+                    <h4>3. 学习放松技巧</h4>
+                    <p>放松技巧可以帮助患者减轻压力，缓解焦虑和抑郁情绪。以下是一些常用的放松技巧：</p>
+                    <ul>
+                        <li>深呼吸：慢慢吸气，然后慢慢呼气，重复几次</li>
+                        <li>冥想：专注于呼吸或某个物体，排除杂念</li>
+                        <li>渐进性肌肉放松：从头部开始，逐步放松身体的每个部位</li>
+                        <li>瑜伽：结合呼吸和身体姿势，达到放松的目的</li>
+                        <li>听音乐：选择舒缓的音乐，放松身心</li>
+                    </ul>
+
+                    <h4>4. 保持积极的生活方式</h4>
+                    <p>积极的生活方式有助于患者保持积极的心态。患者可以：</p>
+                    <ul>
+                        <li>保持规律的作息时间</li>
+                        <li>进行适当的运动，如散步、瑜伽等</li>
+                        <li>保持健康的饮食</li>
+                        <li>培养兴趣爱好，丰富生活</li>
+                        <li>参与社交活动，保持与他人的联系</li>
+                    </ul>
+
+                    <h4>5. 重新审视生活，寻找意义</h4>
+                    <p>癌症诊断可能会让患者重新审视生活，寻找生命的意义。患者可以：</p>
+                    <ul>
+                        <li>思考自己的价值观和人生目标</li>
+                        <li>关注当下，珍惜每一天</li>
+                        <li>参与志愿者活动，帮助他人</li>
+                        <li>记录自己的感受和经历，写下日记</li>
+                    </ul>
+
+                    <h4>6. 寻求专业帮助</h4>
+                    <p>如果患者的心理问题严重影响了日常生活，应及时寻求专业帮助。专业心理咨询师可以帮助患者：</p>
+                    <ul>
+                        <li>识别和处理负面情绪</li>
+                        <li>学习应对技巧</li>
+                        <li>改善人际关系</li>
+                        <li>提高生活质量</li>
+                    </ul>
+
+                    <h3>家人和朋友的支持</h3>
+                    <p>家人和朋友的支持对癌症患者的心理调节至关重要。以下是一些支持患者的方法：</p>
+                    <ul>
+                        <li>倾听患者的感受，不要轻易给出建议</li>
+                        <li>尊重患者的选择和决定</li>
+                        <li>提供实际的帮助，如照顾家庭、陪伴就医等</li>
+                        <li>鼓励患者参与社交活动和兴趣爱好</li>
+                        <li>帮助患者获取信息和资源</li>
+                    </ul>
+
+                    <p>保持积极的心态对癌症治疗和康复至关重要。请记住，心理调节是一个过程，需要时间和耐心。患者可以尝试多种方法，找到适合自己的心理调节方式。同时，家人和朋友的支持也是不可或缺的。如果心理问题严重，应及时寻求专业帮助。</p>
+                </div>
+            </div>
+
+            <!-- 相关文章样式 -->
+            <div class="related-articles">
+                <h3>相关文章推荐</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card related-article-card">
+                            <div class="article-thumbnail">
+                                <img src="https://via.placeholder.com/400x200/4CAF50/FFFFFF?text=康复护理" alt="康复护理" class="img-fluid">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">癌症患者的康复护理：日常生活指南</h5>
+                                <p class="card-text">了解癌症患者日常生活中的护理要点。</p>
+                                <a href="article-detail-12.html" class="btn btn-link text-danger">阅读更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card related-article-card">
+                            <div class="article-thumbnail">
+                                <img src="https://via.placeholder.com/400x200/2196F3/FFFFFF?text=运动预防" alt="运动预防" class="img-fluid">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">运动与癌症预防：科学证据与建议</h5>
+                                <p class="card-text">科学证据表明运动可以降低多种癌症的风险。</p>
+                                <a href="article-detail-4.html" class="btn btn-link text-danger">阅读更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card related-article-card">
+                            <div class="article-thumbnail">
+                                <img src="https://via.placeholder.com/400x200/F44336/FFFFFF?text=化疗副作用" alt="化疗副作用" class="img-fluid">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">化疗期间的副作用管理：实用指南</h5>
+                                <p class="card-text">了解化疗常见的副作用及其管理方法。</p>
+                                <a href="article-detail-5.html" class="btn btn-link text-danger">阅读更多</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
+                    <p>慧眼识癌是一个致力于为癌症患者和家属提供支持、信息和资源的平台。</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">快速链接</h5>
+                    <ul class="list-unstyled">
+                        <a href="index.html">首页</a>
+                        <a href="knowledge.html">知识科普</a>
+                        <a href="support.html">互助支持</a>
+                        <a href="expert.html">专家咨询</a>
+                        <a href="about.html">关于我们</a>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">联系我们</h5>
+                    <p>邮箱：contact@huiyanshiai.com</p>
+                    <p>电话：400-123-4567</p>
+                    <div class="social-links">
+                        <a href="#" class="mr-2"><i class="fab fa-weixin"></i></a>
+                        <a href="#" class="mr-2"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p>&copy; 2025 慧眼识癌. 保留所有权利.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？立即注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                        </div>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？立即登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户信息模态框 -->
+    <div id="userInfoModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">用户信息</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 用户信息将通过JavaScript动态填充 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">修改信息</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 导航栏滚动效果
+        $(window).scroll(function() {
+            if ($(window).scrollTop() > 50) {
+                $('.navbar').addClass('scrolled');
+            } else {
+                $('.navbar').removeClass('scrolled');
+            }
+        });
+        
+        // 导航链接点击事件
+        $('.nav-link').click(function() {
+            // 关闭移动端菜单
+            if ($('.navbar-toggler').attr('aria-expanded') === 'true') {
+                $('.navbar-toggler').click();
+            }
+        });
+        
+        // 登录/注册相关函数
+        function showLoginModal() {
+            $('#loginModal').modal('show');
+            $('#registerModal').modal('hide');
+        }
+
+        function showRegisterModal() {
+            $('#registerModal').modal('show');
+            $('#loginModal').modal('hide');
+        }
+
+        function showUserInfoModal() {
+            $('#userInfoModal').modal('show');
+        }
+        
+        // 登录功能
+        function login() {
+            // 检查当前激活的选项卡
+            const activeTab = document.querySelector('#loginTabs .nav-link.active');
+            
+            if (activeTab.id === 'user-login-tab') {
+                // 用户登录
+                const username = document.getElementById('userLoginUsername').value;
+                const password = document.getElementById('userLoginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                
+                errorDiv.textContent = '';
+                
+                // 使用localStorage模拟登录
+                if (username && password) {
+                    // 存储登录状态到localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('email', username + '@example.com');
+                    
+                    $('#loginModal').modal('hide');
+                    checkLoginStatus();
+                    alert('登录成功！');
+                } else {
+                    errorDiv.textContent = '请输入用户名和密码';
+                }
+            } else if (activeTab.id === 'admin-login-tab') {
+                // 管理员登录 - 直接在前端验证
+                const username = document.getElementById('adminLoginUsername').value;
+                const password = document.getElementById('adminLoginPassword').value;
+                const errorDiv = document.getElementById('adminLoginError');
+                
+                errorDiv.textContent = '';
+                
+                if (username && password) {
+                    // 简单的管理员账号验证（实际项目中应连接后端API）
+                    // 根据初始化脚本，管理员用户名是admin，密码是admin123
+                    if (username === 'admin' && password === 'admin123') {
+                        // 登录成功，设置本地存储
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        
+                        $('#loginModal').modal('hide');
+                        alert('管理员登录成功！');
+                        
+                        // 跳转到管理员后台页面
+                        setTimeout(() => {
+                            window.location.href = 'admin_dashboard.html';
+                        }, 1000);
+                    } else {
+                        errorDiv.textContent = '管理员账号或密码错误';
+                    }
+                } else {
+                    errorDiv.textContent = '请输入管理员用户名和密码';
+                }
+            }
+        }
+
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            
+            errorDiv.textContent = '';
+            
+            // 验证输入完整性
+            if (!username || !email || !password) {
+                errorDiv.textContent = '请填写完整的注册信息';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+            
+            // 使用localStorage模拟注册
+            // 存储用户信息（实际项目中应使用安全的存储方式）
+            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
+            
+            // 关闭注册模态框，提示用户注册成功并跳转到登录界面
+            $('#registerModal').modal('hide');
+            alert('注册成功！请登录。');
+            showLoginModal();
+        }
+        
+        // 检查登录状态（使用localStorage模拟）
+        function checkLoginStatus() {
+            // 从localStorage获取登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const username = localStorage.getItem('username') || '用户';
+            const email = localStorage.getItem('email') || '';
+            
+            if (isLoggedIn) {
+                // 已登录，显示导航栏用户中心按钮，隐藏登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'block';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'none';
+                }
+            } else {
+                // 未登录，隐藏导航栏用户中心按钮，显示登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'block';
+                }
+            }
+        }
+        
+        // 修改密码
+        function updatePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmNewPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (!newPassword) {
+                alert('请输入新密码');
+                return;
+            }
+            
+            // 这里应该调用API修改密码
+            alert('密码修改功能待实现');
+        }
+        
+        // 退出登录
+        function logout() {
+            // 清除localStorage中的登录状态
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('email');
+            
+            // 更新按钮状态
+            checkLoginStatus();
+            
+            // 关闭模态框
+            $('#userInfoModal').modal('hide');
+            
+            alert('已退出登录');
+        }
+        
+        // 页面加载完成后执行
+        $(document).ready(function() {
+            checkLoginStatus();
+        });
+    </script>
+</body>
+</html>

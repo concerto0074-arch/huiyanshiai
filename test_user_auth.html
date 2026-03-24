@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户认证测试</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">用户认证功能测试</h1>
+        
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        用户注册
+                    </div>
+                    <div class="card-body">
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label for="registerUsername">用户名</label>
+                                <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerEmail">邮箱</label>
+                                <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerPassword">密码</label>
+                                <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">确认密码</label>
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                            </div>
+                            <div id="registerError" class="text-danger mb-3"></div>
+                            <button type="submit" class="btn btn-primary">注册</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        用户登录
+                    </div>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="loginUsername">用户名</label>
+                                <input type="text" class="form-control" id="loginUsername" placeholder="请输入用户名" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">密码</label>
+                                <input type="password" class="form-control" id="loginPassword" placeholder="请输入密码" required>
+                            </div>
+                            <div id="loginError" class="text-danger mb-3"></div>
+                            <button type="submit" class="btn btn-primary">登录</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        用户信息和报告
+                    </div>
+                    <div class="card-body">
+                        <button id="currentUserBtn" class="btn btn-primary mb-3">获取当前用户信息</button>
+                        <button id="reportsBtn" class="btn btn-primary mb-3">获取我的报告</button>
+                        <button id="logoutBtn" class="btn btn-danger mb-3">退出登录</button>
+                        
+                        <div id="userInfo" class="mt-3"></div>
+                        <div id="reportsList" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 注册功能
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            
+            errorDiv.textContent = '';
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+            
+            fetch('http://127.0.0.1:5000/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                    email: email
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('注册成功！请登录。');
+                    document.getElementById('registerForm').reset();
+                }
+            })
+            .catch(error => {
+                errorDiv.textContent = error.message;
+            });
+        });
+        
+        // 登录功能
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            errorDiv.textContent = '';
+            
+            fetch('http://127.0.0.1:5000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('登录成功！');
+                    document.getElementById('loginForm').reset();
+                }
+            })
+            .catch(error => {
+                errorDiv.textContent = error.message;
+            });
+        });
+        
+        // 获取当前用户信息
+        document.getElementById('currentUserBtn').addEventListener('click', function() {
+            fetch('http://127.0.0.1:5000/api/current_user', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('userInfo').innerHTML = `
+                        <h5>当前用户信息：</h5>
+                        <p>用户名：${data.user.username}</p>
+                        <p>邮箱：${data.user.email}</p>
+                    `;
+                }
+            })
+            .catch(error => {
+                document.getElementById('userInfo').innerHTML = `<p class="text-danger">错误：${error.message}</p>`;
+            });
+        });
+        
+        // 获取我的报告
+        document.getElementById('reportsBtn').addEventListener('click', function() {
+            fetch('http://127.0.0.1:5000/api/patients', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    if (data.patients.length === 0) {
+                        document.getElementById('reportsList').innerHTML = '<p class="text-info">暂无报告记录</p>';
+                    } else {
+                        let reportsHtml = '<h5>我的报告：</h5><div class="list-group">';
+                        data.patients.forEach(patient => {
+                            reportsHtml += `
+                                <div class="list-group-item">
+                                    <h6>患者报告 #${patient.id}</h6>
+                                    <p>诊断结果: ${patient.diagnosis === 'M' ? '恶性' : '良性'}</p>
+                                    <p>风险等级: ${patient.risk_level}</p>
+                                    <p>概率: ${(patient.probability * 100).toFixed(2)}%</p>
+                                    <p>生成时间: ${patient.created_at}</p>
+                                </div>
+                            `;
+                        });
+                        reportsHtml += '</div>';
+                        document.getElementById('reportsList').innerHTML = reportsHtml;
+                    }
+                }
+            })
+            .catch(error => {
+                document.getElementById('reportsList').innerHTML = `<p class="text-danger">错误：${error.message}</p>`;
+            });
+        });
+        
+        // 退出登录
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            fetch('http://127.0.0.1:5000/api/logout', {
+                method: 'POST',
+                credentials: 'include'
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('退出登录失败');
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('退出登录成功！');
+                    document.getElementById('userInfo').innerHTML = '';
+                    document.getElementById('reportsList').innerHTML = '';
+                }
+            })
+            .catch(error => {
+                alert('退出登录失败: ' + error.message);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>核心算法库 - 慧眼识癌</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #5dade2 0%, #3498db 100%);
+            background-attachment: fixed;
+            background-size: cover;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 0.25rem 1rem;
+        }
+        
+        /* 导航栏基础样式 */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            color: #007BFF !important;
+        }
+        
+        .navbar-brand .logo-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .brand-main {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .brand-sub {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .nav-item {
+            margin: 0 15px;
+        }
+        
+        .nav-link {
+            color: #495057 !important;
+            font-weight: 500;
+            padding: 8px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #007BFF !important;
+        }
+        
+        .nav-link.active {
+            background-color: #007BFF;
+            color: white !important;
+            border-radius: 4px;
+            padding: 8px 16px;
+        }
+        
+        /* 确保导航栏背景色透明 */
+        .navbar .container {
+            max-width: 1200px;
+            padding: 0 1rem;
+            margin: 0 auto;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-icon {
+            font-size: 20px;
+            color: #495057;
+            margin-right: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .login-btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* 容器样式 */
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            padding: 3rem 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* 装饰线条 */
+        .decorative-line {
+            height: 4px;
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+            border-radius: 2px;
+            margin: 2rem 0;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        /* 算法卡片 */
+        .algorithm-card {
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .algorithm-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 算法卡片头部 */
+        .algorithm-card .card-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 1.5rem;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        
+        /* 算法比较表格 */
+        .algorithm-comparison {
+            overflow-x: auto;
+        }
+        
+        .algorithm-comparison table {
+            min-width: 1000px;
+            border-collapse: collapse;
+        }
+        
+        .algorithm-comparison thead {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: black;
+        }
+        
+        .algorithm-comparison th {
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+        
+        .algorithm-comparison td {
+            padding: 12px;
+            vertical-align: middle;
+        }
+        
+        /* 算法头部内容 */
+        .algorithm-header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        /* 算法图标 */
+        .algorithm-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+        
+        /* 癌症类型标签 */
+        .cancer-type-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        /* 算法特性列表 */
+        .algorithm-features {
+            list-style-type: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+        
+        .algorithm-features li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .algorithm-features li::before {
+            content: "✓";
+            color: #28a745;
+            position: absolute;
+            left: 0;
+        }
+        
+        /* 算法信息 */
+        .algorithm-info {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .info-item {
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+            width: 80px;
+        }
+        
+        /* 算法性能指标 */
+        .algorithm-metrics {
+            display: flex;
+            justify-content: space-around;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #e9ecef;
+            border-radius: 8px;
+        }
+        
+        .metric {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .metric-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        
+        /* 进度条容器 */
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-item {
+            margin-bottom: 1rem;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        /* 算法详细说明 */
+        .algorithm-details {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #f0f4f8;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .algorithm-details h5 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        
+        /* 算法参数表格 */
+        .algorithm-params {
+            margin: 1.5rem 0;
+        }
+        
+        .algorithm-params table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .algorithm-params th,
+        .algorithm-params td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .algorithm-params th {
+            background-color: #e9ecef;
+            font-weight: 600;
+        }
+        
+        /* 算法适用场景 */
+        .algorithm-scenarios {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #e8f5e8;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .algorithm-scenarios h5 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        
+        /* 算法注意事项 */
+        .algorithm-notes {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #fff3cd;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .algorithm-notes h5 {
+            margin-top: 0;
+            color: #856404;
+        }
+        
+        /* 算法局限性 */
+        .algorithm-limitations {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: #f8d7da;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .algorithm-limitations h5 {
+            margin-top: 0;
+            color: #721c24;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            /* 中等屏幕样式 */
+            .algorithm-metrics {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .metric {
+                flex: 1 1 45%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            /* 小屏幕样式 */
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            
+            /* 算法卡片响应式 */
+            .algorithm-card {
+                margin-bottom: 1.5rem;
+            }
+            
+            .algorithm-header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .algorithm-icon {
+                font-size: 1.5rem;
+            }
+            
+            /* 算法指标响应式 */
+            .algorithm-metrics {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .metric {
+                flex: 1 1 100%;
+            }
+            
+            /* 表格响应式 */
+            .algorithm-comparison {
+                overflow-x: auto;
+                font-size: 14px;
+            }
+            
+            .algorithm-comparison table {
+                min-width: 800px;
+            }
+            
+            /* 图表响应式 */
+            .row > div.col-md-6 {
+                margin-bottom: 1.5rem;
+            }
+            
+            /* 进度条响应式 */
+            .progress-container {
+                font-size: 14px;
+            }
+            
+            /* 算法参数表格响应式 */
+            .algorithm-params table {
+                font-size: 14px;
+            }
+            
+            /* 算法使用指南响应式 */
+            .card-body .row > div.col-md-6 {
+                margin-bottom: 1.5rem;
+            }
+            
+            /* 导航栏响应式 */
+            .nav-link {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            /* 超小屏幕样式 */
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            h3 {
+                font-size: 1.3rem;
+            }
+            
+            h4 {
+                font-size: 1.2rem;
+            }
+            
+            h5 {
+                font-size: 1.1rem;
+            }
+            
+            /* 按钮响应式 */
+            .btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            /* 算法卡片头部 */
+            .algorithm-card .card-header {
+                padding: 1rem;
+            }
+            
+            /* 算法卡片内容 */
+            .algorithm-card .card-body {
+                padding: 1rem;
+            }
+            
+            /* 算法特性列表 */
+            .algorithm-features li {
+                padding-left: 1.2rem;
+                font-size: 14px;
+            }
+            
+            /* 算法信息 */
+            .algorithm-info {
+                padding: 0.8rem;
+                font-size: 14px;
+            }
+            
+            /* 进度条响应式 */
+            .progress-item {
+                margin-bottom: 0.8rem;
+            }
+            
+            /* 算法详细说明 */
+            .algorithm-details,
+            .algorithm-scenarios,
+            .algorithm-notes,
+            .algorithm-limitations {
+                padding: 0.8rem;
+                font-size: 14px;
+            }
+        }
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <div class="brand-text">
+                    <span class="brand-main">慧眼识癌</span>
+                    <span class="brand-sub">癌症风险综合预测平台</span>
+                </div>
+            </a>
+            
+            <!-- 响应式菜单按钮 -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- 导航菜单 -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首页 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">产品服务</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cases.html">客户案例</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="experts.html">专家团队</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="knowledge.html">知识科普</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="group.html">团体方案</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="algorithms.html">核心算法</a>
+                    </li>
+                </ul>
+                
+                <!-- 右侧登录按钮，在移动设备上显示在菜单内 -->
+                <div class="navbar-right mt-3 mt-lg-0">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <button id="navbarLoginBtn" class="login-btn" onclick="showLoginModal()" style="background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-left: 10px;">登录/注册</button>
+                    <button id="navbarUserCenterBtn" class="login-btn" onclick="window.location.href='user_center.html'" style="background-color: #2196F3; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-left: 10px; display: none;">用户中心</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        <div class="page-title">
+            <h1>核心算法库</h1>
+            <p>按癌症类型组织的AI算法设计，涵盖肺癌、结直肠癌、乳腺癌、肝癌等多种癌症类型的算法</p>
+        </div>
+        
+        <!-- 装饰线条 -->
+        <div class="decorative-line"></div>
+        
+        <!-- 算法比较模块 -->
+        <div class="card mb-4">
+            <div class="card-header bg-gradient-primary text-dark">
+                <h3 class="mb-0">算法比较</h3>
+                <p class="mb-0" style="font-size: 14px; opacity: 0.9;">比较不同算法的性能指标、优势劣势和适用场景</p>
+            </div>
+            <div class="card-body">
+                
+                <!-- 算法比较表格 -->
+                <div class="algorithm-comparison mb-4">
+                    <div class="table-responsive shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;">
+                        <table class="table table-hover mb-0" style="background: white; min-width: 1000px;">
+                            <thead style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white;">
+                                <tr>
+                                    <th class="text-center" style="border: none; padding: 18px; width: 100px;">领域</th>
+                                    <th class="text-center" style="border: none; padding: 18px; width: 140px;">算法模型</th>
+                                    <th style="border: none; padding: 18px;">逻辑深度</th>
+                                    <th style="border: none; padding: 18px;">核心优势</th>
+                                    <th style="border: none; padding: 18px;">性能局限</th>
+                                    <th class="text-center" style="border: none; padding: 18px; width: 100px;">准确率</th>
+                                    <th class="text-center" style="border: none; padding: 18px; width: 100px;">AUC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="4" class="text-center" style="background: #f0f7ff; vertical-align: middle; border-right: 1px solid #e2e8f0; font-weight: 700; color: #1e40af;">
+                                        <i class="fas fa-dna d-block mb-1" style="font-size: 1.2rem;"></i>
+                                        基因组学
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle; font-weight: 600; border-top: none;">随机森林</td>
+                                    <td style="color: #4b5563; font-size: 0.9rem; border-top: none; padding: 15px;">通过集成多棵并行决策树，利用随机子空间特征选取来缓解模型过拟合。</td>
+                                    <td style="border-top: none; padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">高维鲁棒性、抗过拟合</span></td>
+                                    <td style="border-top: none; padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">内存消耗高度依赖树量</span></td>
+                                    <td class="text-center" style="vertical-align: middle; border-top: none;"><strong style="color: #059669; font-size: 1.1rem;">92%</strong></td>
+                                    <td class="text-center" style="vertical-align: middle; border-top: none;"><span style="color: #2563eb; font-weight: 600;">0.96</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;">支持向量机</td>
+                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">构建最优分隔超平面，结合核技巧将低维不可分数据映射至高维线性可分。</td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">泛化性极佳、核心稳定</span></td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">大规模数据预测速度减慢</span></td>
+                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">90%</strong></td>
+                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.95</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;">逻辑回归</td>
+                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">经典的回归概率分类，通过梯度下降优化损失函数。</td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">极致解释性、计算极快</span></td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">线性边界限制复杂识别</span></td>
+                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">81.5%</strong></td>
+                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.88</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;">K-近邻</td>
+                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">基于闵可夫斯基距离的实例分析，捕捉局部数据拓扑特征。</td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">算法直观且动态适应</span></td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">易受异常离群点干扰</span></td>
+                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">85%</strong></td>
+                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.90</span></td>
+                                </tr>
+                                <tr style="border-top: 2px solid #f3f4f6;">
+                                    <td rowspan="3" class="text-center" style="background: #fffafa; vertical-align: middle; border-right: 1px solid #e2e8f0; font-weight: 700; color: #b91c1c;">
+                                        <i class="fas fa-microscope d-block mb-1" style="font-size: 1.2rem;"></i>
+                                        医学影像
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;">集成特征森林</td>
+                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">融合形态学与纹理特征的级联分析。</td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">肿瘤形态识别极其精准</span></td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">对DICOM数据质量敏感</span></td>
+                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">93%</strong></td>
+                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.97</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;">核-支持向量</td>
+                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">多项式核函数映射辅助小样本医学影像切片分析。</td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">适应极小规模科研数据集</span></td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">类别不平衡下容易波动</span></td>
+                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">91%</strong></td>
+                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.96</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;">医学判别决策树</td>
+                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">通过GINI系数优化出的关键影像判断特征树。</td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">临床逻辑透明可追踪</span></td>
+                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">单一树深度较高时会不稳定</span></td>
+                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">88%</strong></td>
+                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.92</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+
+        
+        <!-- 算法卡片区域 -->
+        <div class="row">
+            <!-- 随机森林算法 -->
+            <div class="col-md-6">
+                <div class="card algorithm-card">
+                    <div class="card-header">
+                        <div class="algorithm-header-content">
+                            <i class="fas fa-tree algorithm-icon"></i>
+                            <div>
+                                <h3 class="card-title">随机森林算法</h3>
+                                <p class="mb-0" style="font-size: 14px; opacity: 0.9;">分类算法</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <span class="cancer-type-badge">乳腺癌</span>
+                            <span class="cancer-type-badge">肺癌</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- 算法详细说明 -->
+                        <div class="algorithm-details">
+                            <h5>算法原理</h5>
+                            <p>随机森林是一种集成学习算法，通过构建多个决策树并将它们的结果进行组合来提高预测准确性。它的核心思想是"三个臭皮匠，顶个诸葛亮"，通过集成多个弱分类器（决策树）来构建一个强分类器。</p>
+                            <p>随机森林的工作原理包括两个关键步骤：</p>
+                            <ul>
+                                <li><strong>随机抽样（Bootstrap）：</strong>从原始数据集中有放回地随机抽取样本，构建多个训练数据集。</li>
+                                <li><strong>随机特征选择：</strong>在每个决策树的每个节点，从所有特征中随机选择一部分特征，然后从中选择最佳分割特征。</li>
+                            </ul>
+                            <p>最终的预测结果通过投票（分类问题）或平均（回归问题）的方式由所有决策树共同决定。</p>
+                        </div>
+                        
+                        <!-- 算法特性 -->
+                        <ul class="algorithm-features">
+                            <li>准确率高、抗过拟合</li>
+                            <li>能处理高维数据</li>
+                            <li>可评估特征重要性</li>
+                            <li>适合大规模数据集</li>
+                            <li>对缺失值不敏感</li>
+                            <li>能处理类别不平衡数据</li>
+                        </ul>
+                        
+                        <!-- 算法信息 -->
+                        <div class="algorithm-info">
+                            <div class="info-item">
+                                <span class="info-label">算法类型:</span>
+                                <span class="info-value">分类算法</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">适用数据:</span>
+                                <span class="info-value">结构化数据</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法参数 -->
+                        <div class="algorithm-params">
+                            <h5>关键参数</h5>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>参数名称</th>
+                                        <th>默认值</th>
+                                        <th>说明</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>n_estimators</td>
+                                        <td>100</td>
+                                        <td>决策树的数量，增加树的数量可以提高模型性能，但会增加计算成本。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>max_depth</td>
+                                        <td>None</td>
+                                        <td>决策树的最大深度，控制树的复杂度，防止过拟合。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>min_samples_split</td>
+                                        <td>2</td>
+                                        <td>节点分裂所需的最小样本数。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>min_samples_leaf</td>
+                                        <td>1</td>
+                                        <td>叶子节点所需的最小样本数。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>max_features</td>
+                                        <td>auto</td>
+                                        <td>每个节点分裂时考虑的最大特征数。</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 算法适用场景 -->
+                        <div class="algorithm-scenarios">
+                            <h5>适用场景</h5>
+                            <ul>
+                                <li><strong>结构化数据分类：</strong>如医学诊断、金融风险评估等。</li>
+                                <li><strong>特征重要性分析：</strong>帮助理解哪些特征对预测结果影响最大。</li>
+                                <li><strong>大规模数据集：</strong>由于其并行化特性，适合处理大规模数据。</li>
+                                <li><strong>类别不平衡数据：</strong>对不平衡数据有较好的处理能力。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 算法性能指标 -->
+                        <div class="algorithm-metrics">
+                            <div class="metric">
+                                <div class="metric-value">92%</div>
+                                <div class="metric-label">准确率</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">91%</div>
+                                <div class="metric-label">召回率</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">93%</div>
+                                <div class="metric-label">精确率</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法性能进度条 -->
+                        <div class="progress-container">
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>准确率</span>
+                                    <span>92%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>召回率</span>
+                                    <span>91%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 91%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>精确率</span>
+                                    <span>93%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 93%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>AUC值</span>
+                                    <span>0.96</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 96%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法注意事项 -->
+                        <div class="algorithm-notes">
+                            <h5>注意事项</h5>
+                            <ul>
+                                <li>随机森林对噪声和异常值有较好的鲁棒性，但过多的噪声仍会影响性能。</li>
+                                <li>对于高维稀疏数据，随机森林的性能可能不如其他算法（如SVM）。</li>
+                                <li>增加决策树数量会提高模型复杂度和计算时间，但收益会逐渐递减。</li>
+                                <li>在训练过程中，随机森林会消耗较多的内存和计算资源。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 算法局限性 -->
+                        <div class="algorithm-limitations">
+                            <h5>局限性</h5>
+                            <ul>
+                                <li>模型的可解释性不如单个决策树，难以理解具体的决策过程。</li>
+                                <li>对于时间序列数据，随机森林的性能可能不如专门的时间序列模型。</li>
+                                <li>在某些情况下，随机森林可能会过拟合非常复杂的数据集。</li>
+                                <li>训练过程比单个决策树慢，特别是当决策树数量较多时。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 技术文档链接 -->
+                        <div class="mt-3">
+                            <a href="#" class="text-blue-600 hover:text-blue-800 font-weight-bold">
+                                <i class="fas fa-book"></i> 查看技术文档
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button class="btn btn-primary btn-block" onclick="useModel('random-forest')">使用模型</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SVM算法 -->
+            <div class="col-md-6">
+                <div class="card algorithm-card">
+                    <div class="card-header">
+                        <div class="algorithm-header-content">
+                            <i class="fas fa-project-diagram algorithm-icon"></i>
+                            <div>
+                                <h3 class="card-title">支持向量机(SVM)算法</h3>
+                                <p class="mb-0" style="font-size: 14px; opacity: 0.9;">分类算法</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <span class="cancer-type-badge">乳腺癌</span>
+                            <span class="cancer-type-badge">肺癌</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- 算法详细说明 -->
+                        <div class="algorithm-details">
+                            <h5>算法原理</h5>
+                            <p>支持向量机（SVM）是一种强大的分类算法，其核心思想是在高维空间中寻找一个最优超平面，将不同类别的样本分隔开，并且使两类样本到超平面的距离最大化。这个距离被称为间隔（Margin），SVM的目标就是找到具有最大间隔的超平面。</p>
+                            <p>SVM的工作原理包括以下关键概念：</p>
+                            <ul>
+                                <li><strong>超平面：</strong>在N维空间中，超平面是N-1维的子空间，用于分隔不同类别的样本。</li>
+                                <li><strong>支持向量：</strong>距离超平面最近的样本点，它们决定了超平面的位置和方向。</li>
+                                <li><strong>核函数：</strong>用于将低维非线性数据映射到高维线性可分空间，常见的核函数包括线性核、多项式核、高斯核（RBF）等。</li>
+                            </ul>
+                            <p>对于非线性问题，SVM通过核函数将数据映射到高维空间，然后在高维空间中寻找线性超平面进行分类。</p>
+                        </div>
+                        
+                        <!-- 算法特性 -->
+                        <ul class="algorithm-features">
+                            <li>适合处理高维数据</li>
+                            <li>对小样本数据效果好</li>
+                            <li>理论基础坚实</li>
+                            <li>泛化能力强</li>
+                            <li>可以通过核函数处理非线性问题</li>
+                            <li>对异常值不敏感</li>
+                        </ul>
+                        
+                        <!-- 算法信息 -->
+                        <div class="algorithm-info">
+                            <div class="info-item">
+                                <span class="info-label">算法类型:</span>
+                                <span class="info-value">分类算法</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">适用数据:</span>
+                                <span class="info-value">结构化数据</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法参数 -->
+                        <div class="algorithm-params">
+                            <h5>关键参数</h5>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>参数名称</th>
+                                        <th>默认值</th>
+                                        <th>说明</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>C</td>
+                                        <td>1.0</td>
+                                        <td>正则化参数，控制模型的复杂度和对误分类的惩罚程度。C值越大，模型越容易过拟合。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>kernel</td>
+                                        <td>rbf</td>
+                                        <td>核函数类型，可选值包括linear（线性核）、poly（多项式核）、rbf（高斯核）等。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>gamma</td>
+                                        <td>scale</td>
+                                        <td>核函数系数，仅用于rbf、poly和sigmoid核。gamma值越大，模型越容易过拟合。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>degree</td>
+                                        <td>3</td>
+                                        <td>多项式核的次数，仅用于poly核。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>coef0</td>
+                                        <td>0.0</td>
+                                        <td>核函数中的独立项，仅用于poly和sigmoid核。</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 算法适用场景 -->
+                        <div class="algorithm-scenarios">
+                            <h5>适用场景</h5>
+                            <ul>
+                                <li><strong>高维数据分类：</strong>如文本分类、图像识别等。</li>
+                                <li><strong>小样本学习：</strong>当训练数据量较小时，SVM通常能取得较好的效果。</li>
+                                <li><strong>非线性分类问题：</strong>通过核函数可以处理复杂的非线性分类问题。</li>
+                                <li><strong>异常检测：</strong>可以用于异常值检测和离群点识别。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 算法性能指标 -->
+                        <div class="algorithm-metrics">
+                            <div class="metric">
+                                <div class="metric-value">90%</div>
+                                <div class="metric-label">准确率</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">89%</div>
+                                <div class="metric-label">召回率</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">91%</div>
+                                <div class="metric-label">精确率</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法性能进度条 -->
+                        <div class="progress-container">
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>准确率</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>召回率</span>
+                                    <span>89%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 89%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>精确率</span>
+                                    <span>91%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 91%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>AUC值</span>
+                                    <span>0.95</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 95%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法注意事项 -->
+                        <div class="algorithm-notes">
+                            <h5>注意事项</h5>
+                            <ul>
+                                <li>数据预处理对SVM的性能影响很大，需要对数据进行归一化处理。</li>
+                                <li>参数选择（尤其是C和gamma）对模型性能影响显著，建议使用网格搜索进行调优。</li>
+                                <li>对于大规模数据集，SVM的训练时间可能较长，建议使用支持向量较少的核函数。</li>
+                                <li>对于类别不平衡数据，需要调整类别权重或使用其他处理方法。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 算法局限性 -->
+                        <div class="algorithm-limitations">
+                            <h5>局限性</h5>
+                            <ul>
+                                <li>训练时间随着样本数量的增加而急剧增加，不适合处理超大规模数据集。</li>
+                                <li>模型的可解释性较差，难以理解具体的决策过程。</li>
+                                <li>参数调优复杂，需要较多的领域知识和经验。</li>
+                                <li>对于噪声较大的数据，SVM的性能可能不如其他算法（如随机森林）。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 技术文档链接 -->
+                        <div class="mt-3">
+                            <a href="#" class="text-blue-600 hover:text-blue-800 font-weight-bold">
+                                <i class="fas fa-book"></i> 查看技术文档
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button class="btn btn-primary btn-block" onclick="useModel('svm')">使用模型</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 决策树算法 -->
+            <div class="col-md-6">
+                <div class="card algorithm-card">
+                    <div class="card-header">
+                        <div class="algorithm-header-content">
+                            <i class="fas fa-sitemap algorithm-icon"></i>
+                            <div>
+                                <h3 class="card-title">决策树算法</h3>
+                                <p class="mb-0" style="font-size: 14px; opacity: 0.9;">分类算法</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <span class="cancer-type-badge">乳腺癌</span>
+                            <span class="cancer-type-badge">肺癌</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- 算法详细说明 -->
+                        <div class="algorithm-details">
+                            <h5>算法原理</h5>
+                            <p>决策树是一种基于树形结构的分类算法，它通过递归地分割特征空间来构建预测模型。决策树的基本思想是将数据集逐步划分为更小的子集，同时在每个节点上选择最优的特征进行分割，直到所有子集都属于同一类别或达到预设的停止条件。</p>
+                            <p>决策树的构建过程包括以下关键步骤：</p>
+                            <ul>
+                                <li><strong>选择最优特征：</strong>根据信息增益、信息增益比或基尼指数等指标，选择能够最大程度提高节点纯度的特征。</li>
+                                <li><strong>分割数据集：</strong>根据选定的特征，将数据集分割为多个子集。</li>
+                                <li><strong>递归构建子树：</strong>对每个子集重复上述过程，直到满足停止条件。</li>
+                                <li><strong>剪枝：</strong>通过剪枝操作减少树的复杂度，防止过拟合。</li>
+                            </ul>
+                            <p>决策树的预测过程非常简单，从根节点开始，根据输入样本的特征值，按照树的分支规则向下遍历，直到到达叶节点，叶节点的类别即为预测结果。</p>
+                        </div>
+                        
+                        <!-- 算法特性 -->
+                        <ul class="algorithm-features">
+                            <li>可解释性强</li>
+                            <li>训练速度快</li>
+                            <li>能处理多种类型特征</li>
+                            <li>无需特征归一化</li>
+                            <li>直观易懂，易于可视化</li>
+                            <li>能够处理非线性关系</li>
+                        </ul>
+                        
+                        <!-- 算法信息 -->
+                        <div class="algorithm-info">
+                            <div class="info-item">
+                                <span class="info-label">算法类型:</span>
+                                <span class="info-value">分类算法</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">适用数据:</span>
+                                <span class="info-value">结构化数据</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法参数 -->
+                        <div class="algorithm-params">
+                            <h5>关键参数</h5>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>参数名称</th>
+                                        <th>默认值</th>
+                                        <th>说明</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>criterion</td>
+                                        <td>gini</td>
+                                        <td>特征选择标准，可选值包括gini（基尼指数）和entropy（信息增益）。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>max_depth</td>
+                                        <td>None</td>
+                                        <td>树的最大深度，控制树的复杂度，防止过拟合。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>min_samples_split</td>
+                                        <td>2</td>
+                                        <td>节点分裂所需的最小样本数。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>min_samples_leaf</td>
+                                        <td>1</td>
+                                        <td>叶子节点所需的最小样本数。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>max_features</td>
+                                        <td>None</td>
+                                        <td>每个节点分裂时考虑的最大特征数。</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 算法适用场景 -->
+                        <div class="algorithm-scenarios">
+                            <h5>适用场景</h5>
+                            <ul>
+                                <li><strong>可解释性要求高的场景：</strong>如医疗诊断、金融风险评估等，需要清晰的决策过程。</li>
+                                <li><strong>快速原型开发：</strong>训练速度快，适合快速构建模型和迭代。</li>
+                                <li><strong>特征重要性分析：</strong>可以直观地了解哪些特征对预测结果影响最大。</li>
+                                <li><strong>小规模数据集：</strong>在数据量较小时，决策树仍能取得较好的效果。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 算法性能指标 -->
+                        <div class="algorithm-metrics">
+                            <div class="metric">
+                                <div class="metric-value">88%</div>
+                                <div class="metric-label">准确率</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">87%</div>
+                                <div class="metric-label">召回率</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">89%</div>
+                                <div class="metric-label">精确率</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法性能进度条 -->
+                        <div class="progress-container">
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>准确率</span>
+                                    <span>88%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>召回率</span>
+                                    <span>87%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 87%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>精确率</span>
+                                    <span>89%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 89%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>AUC值</span>
+                                    <span>0.92</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 92%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法注意事项 -->
+                        <div class="algorithm-notes">
+                            <h5>注意事项</h5>
+                            <ul>
+                                <li>决策树容易过拟合，尤其是在处理复杂数据集时，需要适当调整树的深度和剪枝参数。</li>
+                                <li>对噪声和异常值比较敏感，建议在训练前进行数据清洗。</li>
+                                <li>特征的微小变化可能导致树结构的巨大变化，影响模型的稳定性。</li>
+                                <li>对于类别不平衡数据，可能会偏向于多数类，需要调整类别权重或使用其他处理方法。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 算法局限性 -->
+                        <div class="algorithm-limitations">
+                            <h5>局限性</h5>
+                            <ul>
+                                <li>容易过拟合，泛化能力相对较弱，尤其是在处理高维数据时。</li>
+                                <li>训练结果不稳定，不同的训练集可能生成不同的树结构。</li>
+                                <li>对连续特征的处理相对复杂，可能需要离散化处理。</li>
+                                <li>在处理具有复杂非线性关系的数据时，性能可能不如其他算法（如SVM、神经网络）。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 技术文档链接 -->
+                        <div class="mt-3">
+                            <a href="#" class="text-blue-600 hover:text-blue-800 font-weight-bold">
+                                <i class="fas fa-book"></i> 查看技术文档
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button class="btn btn-primary btn-block" onclick="useModel('decision-tree')">使用模型</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- KNN算法 -->
+            <div class="col-md-6">
+                <div class="card algorithm-card">
+                    <div class="card-header">
+                        <div class="algorithm-header-content">
+                            <i class="fas fa-users algorithm-icon"></i>
+                            <div>
+                                <h3 class="card-title">K近邻(KNN)算法</h3>
+                                <p class="mb-0" style="font-size: 14px; opacity: 0.9;">分类算法</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <span class="cancer-type-badge">乳腺癌</span>
+                            <span class="cancer-type-badge">肺癌</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- 算法详细说明 -->
+                        <div class="algorithm-details">
+                            <h5>算法原理</h5>
+                            <p>K最近邻（KNN）是一种基于实例的分类算法，其核心思想是"近朱者赤，近墨者黑"。KNN算法的基本原理是：对于一个新的样本，根据它最近的K个训练样本的类别来预测其类别。</p>
+                            <p>KNN算法的工作过程包括以下关键步骤：</p>
+                            <ul>
+                                <li><strong>计算距离：</strong>计算新样本与所有训练样本之间的距离（通常使用欧氏距离、曼哈顿距离或闵可夫斯基距离）。</li>
+                                <li><strong>选择最近邻：</strong>根据计算得到的距离，选择与新样本最近的K个训练样本。</li>
+                                <li><strong>投票决策：</strong>根据K个最近邻样本的类别，通过多数投票的方式确定新样本的类别。</li>
+                            </ul>
+                            <p>KNN算法是一种惰性学习算法，它不需要训练过程，而是在预测时直接使用训练数据进行计算。</p>
+                        </div>
+                        
+                        <!-- 算法特性 -->
+                        <ul class="algorithm-features">
+                            <li>简单易懂</li>
+                            <li>能处理非线性数据</li>
+                            <li>适合增量学习</li>
+                            <li>无需训练过程</li>
+                            <li>对异常值不敏感</li>
+                            <li>能处理多分类问题</li>
+                        </ul>
+                        
+                        <!-- 算法信息 -->
+                        <div class="algorithm-info">
+                            <div class="info-item">
+                                <span class="info-label">算法类型:</span>
+                                <span class="info-value">分类算法</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">适用数据:</span>
+                                <span class="info-value">结构化数据</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法参数 -->
+                        <div class="algorithm-params">
+                            <h5>关键参数</h5>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>参数名称</th>
+                                        <th>默认值</th>
+                                        <th>说明</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>n_neighbors</td>
+                                        <td>5</td>
+                                        <td>邻居的数量K，K值越小，模型越容易过拟合；K值越大，模型越稳定，但可能导致类别边界模糊。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>weights</td>
+                                        <td>uniform</td>
+                                        <td>投票权重，可选值包括uniform（均匀权重）和distance（距离权重，距离越近权重越大）。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>algorithm</td>
+                                        <td>auto</td>
+                                        <td>计算最近邻的算法，可选值包括auto、ball_tree、kd_tree和brute。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>leaf_size</td>
+                                        <td>30</td>
+                                        <td>BallTree或KDTree算法的叶子节点大小，影响树的构建和查询速度。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>p</td>
+                                        <td>2</td>
+                                        <td>距离度量的参数，p=1表示曼哈顿距离，p=2表示欧氏距离。</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- 算法适用场景 -->
+                        <div class="algorithm-scenarios">
+                            <h5>适用场景</h5>
+                            <ul>
+                                <li><strong>小规模数据集：</strong>在数据量较小时，KNN能取得较好的效果。</li>
+                                <li><strong>增量学习场景：</strong>新样本可以直接添加到训练集中，无需重新训练模型。</li>
+                                <li><strong>多分类问题：</strong>能自然地处理多分类问题，无需特殊处理。</li>
+                                <li><strong>非线性分类问题：</strong>能处理复杂的非线性分类边界。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 算法性能指标 -->
+                        <div class="algorithm-metrics">
+                            <div class="metric">
+                                <div class="metric-value">85%</div>
+                                <div class="metric-label">准确率</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">84%</div>
+                                <div class="metric-label">召回率</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">86%</div>
+                                <div class="metric-label">精确率</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法性能进度条 -->
+                        <div class="progress-container">
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>准确率</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>召回率</span>
+                                    <span>84%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 84%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>精确率</span>
+                                    <span>86%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 86%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header">
+                                    <span>AUC值</span>
+                                    <span>0.90</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 算法注意事项 -->
+                        <div class="algorithm-notes">
+                            <h5>注意事项</h5>
+                            <ul>
+                                <li>数据预处理对KNN的性能影响很大，需要对数据进行归一化处理，避免数值范围大的特征主导距离计算。</li>
+                                <li>K值的选择对模型性能影响显著，建议通过交叉验证选择最优的K值。</li>
+                                <li>对于高维数据，KNN的性能可能下降，因为在高维空间中，所有样本点之间的距离都变得非常相似（维度灾难）。</li>
+                                <li>对于大规模数据集，KNN的预测速度可能较慢，因为需要计算新样本与所有训练样本之间的距离。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 算法局限性 -->
+                        <div class="algorithm-limitations">
+                            <h5>局限性</h5>
+                            <ul>
+                                <li>计算复杂度高，预测时需要计算新样本与所有训练样本之间的距离。</li>
+                                <li>内存消耗大，需要存储所有训练样本。</li>
+                                <li>对高维数据效果较差，存在维度灾难问题。</li>
+                                <li>对不平衡数据敏感，多数类样本可能主导预测结果。</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- 技术文档链接 -->
+                        <div class="mt-3">
+                            <a href="#" class="text-blue-600 hover:text-blue-800 font-weight-bold">
+                                <i class="fas fa-book"></i> 查看技术文档
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button class="btn btn-primary btn-block" onclick="useModel('knn')">使用模型</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 算法使用指南 -->
+        <div class="card mb-4 shadow-lg border-0">
+            <div class="card-header text-white d-flex align-items-center" style="background: linear-gradient(135deg, #007bff, #20c997);">
+                <i class="fas fa-book-open mr-2" style="font-size: 1.5rem;"></i>
+                <h3 class="mb-0">算法使用指南</h3>
+            </div>
+            <div class="card-body bg-white">
+                <div class="row">
+                    <!-- 选择算法 -->
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-blue-100 rounded-full p-2 mr-3">
+                                        <i class="fas fa-check-circle text-blue-600"></i>
+                                    </div>
+                                    <h5 class="text-blue-800 font-weight-bold m-0">1. 选择算法</h5>
+                                </div>
+                                <p class="text-gray-700">从上方的算法卡片中选择适合您需求的算法。每个算法卡片显示了算法的基本信息、性能指标和适用场景。</p>
+                                <p class="text-gray-700">您可以根据以下因素选择算法：</p>
+                                <ul class="list-unstyled text-gray-700 ml-4">
+                                    <li class="mb-2"><i class="fas fa-caret-right text-blue-500 mr-2"></i>算法的准确率和召回率</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-blue-500 mr-2"></i>算法的适用数据类型</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-blue-500 mr-2"></i>算法的计算效率</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-blue-500 mr-2"></i>算法的可解释性</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 填写数据 -->
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-green-100 rounded-full p-2 mr-3">
+                                        <i class="fas fa-check-circle text-green-600"></i>
+                                    </div>
+                                    <h5 class="text-green-800 font-weight-bold m-0">2. 填写病人数据</h5>
+                                </div>
+                                <p class="text-gray-700">点击算法卡片下方的"使用模型"按钮，在弹出的模态框中填写病人的基本信息和医疗数据。</p>
+                                <p class="text-gray-700">需要填写的信息包括：</p>
+                                <ul class="list-unstyled text-gray-700 ml-4">
+                                    <li class="mb-2"><i class="fas fa-caret-right text-green-500 mr-2"></i>基本信息：姓名、年龄、性别</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-green-500 mr-2"></i>生活习惯：吸烟史、BMI指数</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-green-500 mr-2"></i>医疗数据：肿瘤标志物、基因突变情况</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 查看结果 -->
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-purple-100 rounded-full p-2 mr-3">
+                                        <i class="fas fa-check-circle text-purple-600"></i>
+                                    </div>
+                                    <h5 class="text-purple-800 font-weight-bold m-0">3. 查看预测结果</h5>
+                                </div>
+                                <p class="text-gray-700">填写完数据后，点击"提交数据"按钮，系统将使用选择的算法进行预测。</p>
+                                <p class="text-gray-700">预测结果将在新的模态框中显示，包括：</p>
+                                <ul class="list-unstyled text-gray-700 ml-4">
+                                    <li class="mb-2"><i class="fas fa-caret-right text-purple-500 mr-2"></i>风险等级：低风险、中风险或高风险</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-purple-500 mr-2"></i>置信度：预测结果的可信度</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-purple-500 mr-2"></i>风险分布：不同风险等级的概率</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-purple-500 mr-2"></i>建议：针对预测结果的健康建议</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 下载报告 -->
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-orange-100 rounded-full p-2 mr-3">
+                                        <i class="fas fa-check-circle text-orange-600"></i>
+                                    </div>
+                                    <h5 class="text-orange-800 font-weight-bold m-0">4. 下载报告</h5>
+                                </div>
+                                <p class="text-gray-700">在预测结果模态框中，您可以点击"下载报告"按钮，将预测结果保存为HTML文件。</p>
+                                <p class="text-gray-700">报告包含：</p>
+                                <ul class="list-unstyled text-gray-700 ml-4">
+                                    <li class="mb-2"><i class="fas fa-caret-right text-orange-500 mr-2"></i>完整的预测结果</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-orange-500 mr-2"></i>风险等级和置信度</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-orange-500 mr-2"></i>风险分布图表</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-orange-500 mr-2"></i>个性化健康建议</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 算法更新指南和日志 -->
+        <div class="card mb-4 shadow-lg border-0">
+            <div class="card-header text-white d-flex align-items-center" style="background: linear-gradient(135deg, #28a745, #17a2b8);">
+                <i class="fas fa-history mr-2" style="font-size: 1.5rem;"></i>
+                <h3 class="mb-0">算法更新指南</h3>
+            </div>
+            <div class="card-body bg-white">
+                <h4 class="text-blue-800 mb-4">算法更新日志</h4>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h5 class="text-primary">2025-12-15</h5>
+                        </div>
+                        <div class="timeline-content">
+                            <h6 class="font-weight-bold">版本 1.3.0</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>移除了CNN算法，简化了算法列表</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>优化了算法比较表格的布局和样式</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>修复了模态框显示问题</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>增强了算法卡片的信息展示</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h5 class="text-primary">2025-12-10</h5>
+                        </div>
+                        <div class="timeline-content">
+                            <h6 class="font-weight-bold">版本 1.2.0</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>添加了算法使用指南</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>优化了预测结果的展示样式</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>添加了报告下载功能</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <h5 class="text-primary">2025-12-05</h5>
+                        </div>
+                        <div class="timeline-content">
+                            <h6 class="font-weight-bold">版本 1.1.0</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>添加了四种核心算法：随机森林、SVM、决策树、KNN</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>实现了算法比较功能</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>添加了病人数据输入模态框</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="text-blue-800 mt-5 mb-4">算法选择建议</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <h5 class="text-green-800 font-weight-bold mb-3">适合初学者</h5>
+                                <ul class="list-unstyled text-gray-700 ml-4">
+                                    <li class="mb-2"><i class="fas fa-caret-right text-green-500 mr-2"></i>随机森林：易于使用，效果稳定</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-green-500 mr-2"></i>决策树：可解释性强，易于理解</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <h5 class="text-blue-800 font-weight-bold mb-3">适合专业用户</h5>
+                                <ul class="list-unstyled text-gray-700 ml-4">
+                                    <li class="mb-2"><i class="fas fa-caret-right text-blue-500 mr-2"></i>SVM：适合复杂数据，精度高</li>
+                                    <li class="mb-2"><i class="fas fa-caret-right text-blue-500 mr-2"></i>KNN：适合增量学习，无需训练</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 算法应用案例 -->
+        <div class="card mb-4 shadow-lg border-0">
+            <div class="card-header text-white d-flex align-items-center" style="background: linear-gradient(135deg, #fd7e14, #dc3545);">
+                <i class="fas fa-vial mr-2" style="font-size: 1.5rem;"></i>
+                <h3 class="mb-0">算法应用案例</h3>
+            </div>
+            <div class="card-body bg-white">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <h5 class="text-orange-800 font-weight-bold mb-3">乳腺癌筛查</h5>
+                                <p class="text-gray-700 mb-3">使用随机森林算法对1000名女性进行乳腺癌风险预测，准确率达到92%。</p>
+                                <div class="algorithm-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">92%</div>
+                                        <div class="metric-label">准确率</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <h5 class="text-orange-800 font-weight-bold mb-3">肺癌早期检测</h5>
+                                <p class="text-gray-700 mb-3">使用SVM算法分析低剂量CT图像，早期肺癌检测率提高了30%。</p>
+                                <div class="algorithm-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">89%</div>
+                                        <div class="metric-label">召回率</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm rounded-lg mb-3 hover:shadow-md transition-shadow duration-300">
+                            <div class="card-body">
+                                <h5 class="text-orange-800 font-weight-bold mb-3">结直肠癌预测</h5>
+                                <p class="text-gray-700 mb-3">结合决策树和临床数据，结直肠癌风险预测准确率达到88%。</p>
+                                <div class="algorithm-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">88%</div>
+                                        <div class="metric-label">准确率</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 病人数据输入模态框 -->
+    <div class="modal fade" id="patientDataModal" tabindex="-1" role="dialog" aria-labelledby="patientDataModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="patientDataModalLabel">病人数据输入</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="patientDataForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>基本信息</h5>
+                                <div class="form-group">
+                                    <label for="patientName">姓名</label>
+                                    <input type="text" class="form-control" id="patientName" placeholder="请输入病人姓名">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="patientAge">年龄</label>
+                                        <input type="number" class="form-control" id="patientAge" placeholder="请输入年龄" min="0" max="120">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="patientGender">性别</label>
+                                        <select class="form-control" id="patientGender">
+                                            <option value="male">男</option>
+                                            <option value="female">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="patientSmoke">吸烟史</label>
+                                        <select class="form-control" id="patientSmoke">
+                                            <option value="current">正在吸烟</option>
+                                            <option value="former">曾经吸烟</option>
+                                            <option value="never">从不吸烟</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="patientBmi">BMI指数</label>
+                                        <input type="number" class="form-control" id="patientBmi" placeholder="请输入BMI指数" step="0.1" min="10" max="50">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>医疗数据</h5>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="patientTumorMarker1">肿瘤标志物1</label>
+                                        <input type="number" class="form-control" id="patientTumorMarker1" placeholder="请输入肿瘤标志物1数值" step="0.1" min="0" max="1000">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="patientTumorMarker2">肿瘤标志物2</label>
+                                        <input type="number" class="form-control" id="patientTumorMarker2" placeholder="请输入肿瘤标志物2数值" step="0.1" min="0" max="1000">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="patientMutation1">基因突变1</label>
+                                        <select class="form-control" id="patientMutation1">
+                                            <option value="positive">阳性</option>
+                                            <option value="negative">阴性</option>
+                                            <option value="unknown">未知</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="patientMutation2">基因突变2</label>
+                                        <select class="form-control" id="patientMutation2">
+                                            <option value="positive">阳性</option>
+                                            <option value="negative">阴性</option>
+                                            <option value="unknown">未知</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="submitPatientData()">提交数据</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 结果展示模态框 -->
+    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">预测结果</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="resultContent">
+                        <!-- 预测结果将通过JavaScript动态加载 -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="downloadReport()">下载报告</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="loginTabsContent">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？点击注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                        </div>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // API基础URL
+        const API_BASE_URL = window.APP_CONFIG.API_BASE_URL + '/api';
+        
+        // 使用模型
+        function useModel(algorithmName) {
+            console.log('使用模型:', algorithmName);
+            // 保存当前使用的算法名称
+            localStorage.setItem('currentAlgorithm', algorithmName);
+            
+            // 显示病人数据输入模态框
+            $('#patientDataModal').modal('show');
+        }
+
+        // 提交病人数据（真实调用后端 API）
+        async function submitPatientData() {
+            const algorithmName = localStorage.getItem('currentAlgorithm') || 'random-forest';
+            const patientData = {
+                name: document.getElementById('patientName').value || '未知',
+                age: parseInt(document.getElementById('patientAge').value) || 30,
+                gender: document.getElementById('patientGender').value,
+                smoke: document.getElementById('patientSmoke').value,
+                bmi: parseFloat(document.getElementById('patientBmi').value) || 22.0,
+                tumorMarker1: parseFloat(document.getElementById('patientTumorMarker1').value) || 2.0,
+                tumorMarker2: parseFloat(document.getElementById('patientTumorMarker2').value) || 5.0,
+                mutation1: document.getElementById('patientMutation1').value,
+                mutation2: document.getElementById('patientMutation2').value,
+                algorithm: algorithmName,
+                polish: false
+            };
+
+            // 显示 Loading 状态
+            const submitBtn = document.querySelector('#patientDataModal .btn-primary');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>预测中...';
+            submitBtn.disabled = true;
+
+            try {
+                // NOTE: 调用后端真实预测接口
+                const response = await fetch(`${API_BASE_URL}/predict_form`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(patientData)
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || `服务器错误 (${response.status})`);
+                }
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.error || '预测失败');
+                }
+
+                // 使用后端返回的真实数据展示结果
+                displayPredictionResult(result);
+                console.log('✓ 后端真实预测完成，概率:', result.probability + '%');
+
+            } catch (error) {
+                console.warn('后端调用失败，降级使用本地模拟:', error.message);
+
+                // HACK: 降级逻辑 - 后端不可用时使用前端本地模拟计算
+                const fallbackResult = generateLocalFallback(patientData, algorithmName);
+                displayPredictionResult(fallbackResult);
+
+                // 显示降级提示
+                setTimeout(() => {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-warning alert-dismissible fade show mt-2';
+                    alertDiv.innerHTML = `
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <strong>提示：</strong>后端服务暂时不可用（${error.message}），当前结果为本地模拟计算，仅供参考。
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    `;
+                    const resultContent = document.getElementById('resultContent');
+                    if (resultContent) {
+                        resultContent.insertBefore(alertDiv, resultContent.firstChild);
+                    }
+                }, 300);
+            } finally {
+                // 恢复按钮状态
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+
+                // 关闭数据输入模态框，显示结果模态框
+                $('#patientDataModal').modal('hide');
+                $('#resultModal').modal('show');
+            }
+        }
+
+        /**
+         * 本地降级模拟计算（后端不可用时的备用方案）
+         * @param {Object} patientData - 患者数据
+         * @param {string} algorithmName - 算法名称
+         * @returns {Object} 模拟预测结果
+         */
+        function generateLocalFallback(patientData, algorithmName) {
+            // 简化版权重计算，模拟后端的 sigmoid 逻辑
+            const smokeFactor = patientData.smoke === 'current' ? 1.0 : (patientData.smoke === 'former' ? 0.5 : 0.0);
+            const mut1Factor = patientData.mutation1 === 'positive' ? 1.0 : 0.0;
+
+            // 简化风险分数
+            let riskScore = 0;
+            riskScore += (patientData.age - 30) * 0.01;
+            riskScore += (patientData.bmi - 22) * 0.02;
+            riskScore += smokeFactor * 0.15;
+            riskScore += mut1Factor * 0.1;
+            riskScore += (patientData.tumorMarker1 > 5 ? 0.1 : 0);
+            riskScore += (patientData.tumorMarker2 > 10 ? 0.1 : 0);
+            const probability = Math.max(0.05, Math.min(0.95, 0.2 + riskScore));
+
+            let riskLevel, probabilities;
+            if (probability >= 0.7) {
+                riskLevel = '高风险';
+                probabilities = { '低风险': 0.05, '中风险': 0.15, '高风险': probability };
+            } else if (probability >= 0.3) {
+                riskLevel = '中风险';
+                probabilities = { '低风险': 0.25, '中风险': probability, '高风险': 0.1 };
+            } else {
+                riskLevel = '低风险';
+                probabilities = { '低风险': 1 - probability, '中风险': 0.1, '高风险': 0.02 };
+            }
+
+            const confidence = Math.round(Math.min(99, Math.max(60, 50 + Math.abs(probability - 0.5) * 90)));
+            const smokeLabels = { current: '正在吸烟', former: '曾经吸烟', never: '从不吸烟' };
+
+            return {
+                patientName: patientData.name || '未知',
+                patientGender: patientData.gender || '未知',
+                patientAge: patientData.age || 0,
+                patientBmi: patientData.bmi || 22.0,
+                patientSmoke: smokeLabels[patientData.smoke] || patientData.smoke,
+                algorithm: algorithmName,
+                riskLevel: riskLevel,
+                confidence: confidence,
+                probabilities: probabilities,
+                factors: [
+                    { name: '年龄', value: `${patientData.age}岁`, impact: patientData.age < 45 ? '年龄较低，风险较低' : '年龄增长，风险增加', isPositive: patientData.age < 45 },
+                    { name: '吸烟史', value: smokeLabels[patientData.smoke] || patientData.smoke, impact: patientData.smoke === 'never' ? '不吸烟，风险较低' : '吸烟增加风险', isPositive: patientData.smoke === 'never' },
+                    { name: 'BMI指数', value: `${patientData.bmi}`, impact: (patientData.bmi >= 18.5 && patientData.bmi <= 24.9) ? 'BMI正常' : 'BMI偏离正常', isPositive: (patientData.bmi >= 18.5 && patientData.bmi <= 24.9) },
+                    { name: '肿瘤标志物1', value: `${patientData.tumorMarker1}`, impact: patientData.tumorMarker1 < 5 ? '正常范围内' : '偏高，需检查', isPositive: patientData.tumorMarker1 < 5 },
+                    { name: '肿瘤标志物2', value: `${patientData.tumorMarker2}`, impact: patientData.tumorMarker2 < 10 ? '正常范围内' : '偏高，需检查', isPositive: patientData.tumorMarker2 < 10 }
+                ],
+                tumorMarkers: [
+                    { name: 'CEA', value: parseFloat((patientData.tumorMarker1 * 0.8).toFixed(1)), normalRange: '0-5 ng/mL', status: (patientData.tumorMarker1 * 0.8) <= 5 ? '正常' : '偏高' },
+                    { name: 'AFP', value: parseFloat((patientData.tumorMarker2 * 0.6).toFixed(1)), normalRange: '0-20 ng/mL', status: (patientData.tumorMarker2 * 0.6) <= 20 ? '正常' : '偏高' },
+                    { name: 'CA125', value: parseFloat((patientData.tumorMarker1 * 2.0).toFixed(1)), normalRange: '0-35 U/mL', status: (patientData.tumorMarker1 * 2.0) <= 35 ? '正常' : '偏高' },
+                    { name: 'CA19-9', value: parseFloat((patientData.tumorMarker2 * 1.5).toFixed(1)), normalRange: '0-37 U/mL', status: (patientData.tumorMarker2 * 1.5) <= 37 ? '正常' : '偏高' }
+                ],
+                recommendations: [
+                    { title: '定期体检', content: '建议每年进行一次常规体检筛查。' },
+                    { title: '健康饮食', content: '多吃蔬菜水果，减少红肉摄入。' },
+                    { title: '适量运动', content: '每周至少150分钟中等强度有氧运动。' },
+                    { title: '心理调节', content: '保持良好心态，学会放松和减压。' }
+                ]
+            };
+        }
+
+        // 生成报告ID
+        function generateReportId() {
+            return 'RPT_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        }
+
+        // 显示预测结果
+        function displayPredictionResult(result) {
+            const resultContent = document.getElementById('resultContent');
+            if (!resultContent) return;
+            
+            // 确定风险等级对应的样式类
+            let riskClass = '';
+            switch(result.riskLevel) {
+                case '低风险':
+                    riskClass = 'alert-success';
+                    break;
+                case '中风险':
+                    riskClass = 'alert-warning';
+                    break;
+                case '高风险':
+                    riskClass = 'alert-danger';
+                    break;
+                default:
+                    riskClass = 'alert-info';
+            }
+            
+            // 保存结果到localStorage，用于报告页面
+            localStorage.setItem('predictionResult', JSON.stringify(result));
+            
+            // 生成结果HTML
+            const html = `
+                <div class="result-header mb-4">
+                    <h3 class="text-center">癌症风险预测报告</h3>
+                    <p class="text-center text-muted">报告ID: ${generateReportId()}</p>
+                    <p class="text-center text-muted">生成时间: ${new Date().toLocaleString()}</p>
+                </div>
+                
+                <!-- 报告操作按钮 -->
+                <div class="text-center mb-4">
+                    <button class="btn btn-primary mr-2" onclick="openFullReport()">
+                        <i class="fas fa-file-alt"></i> 查看完整报告
+                    </button>
+                    <button class="btn btn-success" onclick="downloadReport()">
+                        <i class="fas fa-download"></i> 下载报告
+                    </button>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>患者信息</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>姓名:</strong> ${result.patientName}</p>
+                                <p><strong>性别:</strong> ${result.patientGender}</p>
+                                <p><strong>年龄:</strong> ${result.patientAge}岁</p>
+                                <p><strong>BMI指数:</strong> ${result.patientBmi}</p>
+                                <p><strong>吸烟史:</strong> ${result.patientSmoke}</p>
+                                <p><strong>使用算法:</strong> ${result.algorithm}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>风险评估</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert ${riskClass} text-center" role="alert" style="font-size: 24px; font-weight: bold;">
+                                    ${result.riskLevel}
+                                </div>
+                                <p class="text-center mt-3"><strong>置信度:</strong> ${result.confidence}%</p>
+                                
+                                <!-- 风险因素摘要 -->
+                                <div class="mt-4">
+                                    <h6><strong>主要风险因素:</strong></h6>
+                                    <ul class="list-unstyled mt-2">
+                                        ${result.factors ? result.factors.slice(0, 3).map(factor => `<li class="mb-1"><i class="fas ${factor.isPositive ? 'fa-check text-success' : 'fa-exclamation-triangle text-warning'}"></i> ${factor.name}: ${factor.value}</li>`).join('') : ''}
+                                    </ul>
+                                    ${result.factors && result.factors.length > 3 ? `<p class="text-sm text-muted mt-1">+${result.factors.length - 3} 项其他因素</p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>风险分布</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="progress-container">
+                            <div class="progress-item">
+                                <div class="progress-header d-flex justify-content-between">
+                                    <span>低风险</span>
+                                    <span>${(result.probabilities['低风险'] * 100).toFixed(1)}%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: ${(result.probabilities['低风险'] * 100).toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header d-flex justify-content-between">
+                                    <span>中风险</span>
+                                    <span>${(result.probabilities['中风险'] * 100).toFixed(1)}%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" style="width: ${(result.probabilities['中风险'] * 100).toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-header d-flex justify-content-between">
+                                    <span>高风险</span>
+                                    <span>${(result.probabilities['高风险'] * 100).toFixed(1)}%</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-danger" style="width: ${(result.probabilities['高风险'] * 100).toFixed(1)}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 肿瘤标志物摘要 -->
+                ${result.tumorMarkers ? `
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>肿瘤标志物摘要</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            ${result.tumorMarkers.slice(0, 4).map(marker => `
+                                <div class="col-md-3 text-center mb-3">
+                                    <div class="p-2 bg-light rounded">
+                                        <h6>${marker.name}</h6>
+                                        <p class="mb-0" style="font-size: 18px; font-weight: bold;">${marker.value}</p>
+                                        <p class="text-xs text-muted">${marker.normalRange}</p>
+                                        <span class="badge badge-${marker.status === '正常' ? 'success' : 'danger'}">${marker.status}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+                ` : ''}
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5>健康建议</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            ${result.recommendations.map(rec => 
+                                typeof rec === 'string' ? 
+                                `<li class="list-group-item">${rec}</li>` : 
+                                `<li class="list-group-item"><strong>${rec.title}:</strong> ${rec.content}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // 更新结果内容
+            resultContent.innerHTML = html;
+        }
+
+        // 查看完整报告
+        function openFullReport() {
+            // 获取预测结果
+            const result = JSON.parse(localStorage.getItem('predictionResult'));
+            if (!result) {
+                alert('报告数据不存在，请重新生成预测结果');
+                return;
+            }
+            
+            // 将结果转换为URL编码的JSON字符串
+            const resultJson = encodeURIComponent(JSON.stringify(result));
+            
+            // 打开新的报告页面
+            window.open(`report.html?data=${resultJson}`, '_blank');
+        }
+        
+        // 下载报告
+        function downloadReport() {
+            // 获取预测结果
+            const result = JSON.parse(localStorage.getItem('predictionResult'));
+            if (!result) {
+                alert('报告数据不存在，请重新生成预测结果');
+                return;
+            }
+            
+            // 创建一个临时的iframe，用于生成完整报告
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            
+            // 将结果转换为URL编码的JSON字符串
+            const resultJson = encodeURIComponent(JSON.stringify(result));
+            
+            // 设置iframe的src，指向报告页面
+            iframe.src = `report.html?data=${resultJson}&download=true`;
+            
+            // 等待iframe加载完成后，触发打印或下载
+            iframe.onload = function() {
+                // 等待一段时间，确保报告已经渲染完成
+                setTimeout(function() {
+                    // 触发打印，用户可以选择保存为PDF
+                    iframe.contentWindow.print();
+                    // 移除iframe
+                    document.body.removeChild(iframe);
+                }, 1000);
+            };
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('核心算法页面加载完成');
+            
+            // 为所有"使用模型"按钮添加调试事件监听
+            const useModelButtons = document.querySelectorAll('button[onclick^="useModel"]');
+            console.log('找到', useModelButtons.length, '个"使用模型"按钮');
+            
+            // 检查登录状态
+            checkLoginStatus();
+            
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
+        
+        // 登录注册功能
+        // 显示登录模态框
+        function showLoginModal() {
+            $('#loginModal').modal('show');
+            $('#registerModal').modal('hide');
+        }
+        
+        // 显示注册模态框
+        function showRegisterModal() {
+            $('#registerModal').modal('show');
+            $('#loginModal').modal('hide');
+        }
+        
+        // 检查登录状态（使用localStorage模拟）
+        function checkLoginStatus() {
+            console.log('开始检查登录状态...');
+            // 从localStorage获取登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const username = localStorage.getItem('username') || '用户';
+            const email = localStorage.getItem('email') || '';
+            
+            console.log('登录状态检查结果:', isLoggedIn);
+            
+            if (isLoggedIn) {
+                // 已登录则显示用户中心按钮，隐藏登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'block';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'none';
+                }
+            } else {
+                // 未登录则隐藏用户中心按钮，显示登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'block';
+                }
+            }
+        }
+        
+        // 登录功能
+        function login() {
+            // 获取当前激活的选项卡
+            const activeTab = document.querySelector('#loginTabs .nav-link.active');
+            
+            if (activeTab.id === 'user-login-tab') {
+                // 用户登录
+                const username = document.getElementById('userLoginUsername').value;
+                const password = document.getElementById('userLoginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                
+                errorDiv.textContent = '';
+                
+                // 使用localStorage模拟登录
+                if (username && password) {
+                    // 存储登录状态到localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('email', username + '@example.com');
+                    
+                    $('#loginModal').modal('hide');
+                    checkLoginStatus();
+                    alert('登录成功！');
+                } else {
+                    errorDiv.textContent = '请输入用户名和密码';
+                }
+            } else if (activeTab.id === 'admin-login-tab') {
+                // 管理员登录 - 直接进行前端验证
+                const username = document.getElementById('adminLoginUsername').value;
+                const password = document.getElementById('adminLoginPassword').value;
+                const errorDiv = document.getElementById('adminLoginError');
+                
+                errorDiv.textContent = '';
+                
+                if (username && password) {
+                    // 简单的管理员账号验证，实际项目应连接后端API
+                    // 根据初始设计，管理员用户名为admin，密码为admin123
+                    if (username === 'admin' && password === 'admin123') {
+                        // 登录成功，存储状态
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        
+                        $('#loginModal').modal('hide');
+                        alert('管理员登录成功！');
+                        
+                        // 跳转到管理员后台页面
+                        setTimeout(() => {
+                            window.location.href = 'admin_dashboard.html';
+                        }, 1000);
+                    } else {
+                        errorDiv.textContent = '管理员账号或密码错误';
+                    }
+                } else {
+                    errorDiv.textContent = '请输入管理员用户名和密码';
+                }
+            }
+        }
+        
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            
+            errorDiv.textContent = '';
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+            
+            // 使用localStorage模拟注册
+            if (username && password && email) {
+                // 存储注册信息到localStorage
+                localStorage.setItem('username', username);
+                localStorage.setItem('email', email);
+                
+                $('#registerModal').modal('hide');
+                alert('注册成功，请登录！');
+                showLoginModal();
+            } else {
+                errorDiv.textContent = '请填写完整的注册信息';
+            }
+        }
+        
+
+    </script>
+</body>
+</html>

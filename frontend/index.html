@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慧眼识癌 - 癌症风险综合预测平台</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 区块渐入动画 */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 平滑滚动效果 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 按钮点击反馈效果 */
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* 导航栏滚动效果 */
+        .navbar {
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 0.25rem 1rem;
+        }
+        
+        /* 表单提交反馈 */
+        .form-control:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* 模态框动画增强 */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(-25px);
+        }
+        
+        .modal.show .modal-dialog {
+            transform: translateY(0);
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            color: #007BFF !important;
+        }
+        
+        .navbar-brand .logo-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .brand-main {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .brand-sub {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .nav-item {
+            margin: 0 15px;
+        }
+        
+        .nav-link {
+            color: #495057 !important;
+            font-weight: 500;
+            padding: 8px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #007BFF !important;
+        }
+        
+        .nav-link.active {
+            background-color: #007BFF;
+            color: white !important;
+            border-radius: 4px;
+            padding: 8px 16px;
+        }
+        
+        /* 确保导航栏背景色透明 */
+        .navbar .container {
+            max-width: 1200px;
+            padding: 0 1rem;
+            margin: 0 auto;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-icon {
+            font-size: 20px;
+            color: #495057;
+            margin-right: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .login-btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* 水波纹背景效果 */
+        .ripple-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(220, 53, 69, 0.1);
+            animation: ripple-animation 20s infinite;
+        }
+
+        @keyframes ripple-animation {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* 英雄区 */
+        .hero-section {
+            position: relative;
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 核心功能卡片 */
+        .core-features {
+            background-color: white;
+            padding: 4rem 0;
+        }
+
+        .feature-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        /* 文章卡片 */
+        .articles-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+        }
+
+        .article-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .article-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .article-card:hover img {
+            transform: scale(1.05);
+        }
+
+        /* 图片容器，用于实现图片hover效果 */
+        .article-image-container {
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* 图片加载中效果 */
+        .article-image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDUwdjUwSDB6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTAuMDQ2NEwyNSA0LjAzMjAzQTIgMiAwIDAgMCAyNCAySDE2QTEyIDEyIDAgMCAwIDE2IDEyVjM4QTEyIDEyIDAgMCAwIDI4IDMwVjE1Ljk2NzJDMjcuOTY5NiAxNS45ODA5IDI4IDE1Ljk5NDcgMjggMTZWMzBDMjggMzYuNjI3NCAyMy42Mjc0IDQxIDIwIDQxQTE5Ljk2NzIgNDEgMCAwIDEgMjAgMjEuNTMzNkwxNSAxNC41MTc3TDIwIDEwLjA0NjRaIiBmaWxsPSIjMzMzMzMzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTUuODMzM0MxOC4zNzI2IDE1LjgzMzMgMTMuODMzMyAyMC4zNzI2IDEzLjgzMzMgMjcgMTMuODMzMyAzMy42Mjc0IDE4LjMyNzYgMzggMjUgMzggMjUgMzggMzAuMzcyNCAzMy42Mjc0IDM1IDI1IDM1IDIwLjM3MjYgMzAuMzcyNCAxNS44MzMzIDM1IDI1IDE1LjgzMzMgMjUgMTUuODMzMyAyMC4zNzI2IDE1LjgzMzMgMTUuODMzM1oiIGZpbGw9IiMzMzMzMzMiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PC9wYXRoPjwvc3ZnPg==') center center no-repeat;
+            background-size: 50px;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        /* 图片加载成功后隐藏加载动画 */
+        .article-card img.loaded + .article-image-container::before {
+            display: none;
+        }
+
+        .article-content {
+            padding: 1.5rem;
+        }
+
+        .article-content h3 {
+            margin-bottom: 0.8rem;
+            color: #333;
+            font-size: 1.3rem;
+            transition: color 0.3s ease;
+        }
+
+        .article-card:hover .article-content h3 {
+            color: #007BFF;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .article-excerpt {
+            color: #555;
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* 专家卡片 */
+        .experts-section {
+            background-color: white;
+            padding: 4rem 0;
+        }
+
+        .expert-card {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            background: linear-gradient(180deg, white 0%, #f8f9fa 100%);
+        }
+
+        .expert-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(180deg, white 0%, #e9ecef 100%);
+        }
+
+        /* 专家头像容器 */
+        .expert-avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .expert-avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            object-fit: cover;
+            border: 5px solid #007BFF;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .expert-card:hover .expert-avatar {
+            transform: scale(1.1);
+            border-color: #dc3545;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        /* 专家头像加载动画 */
+        .expert-avatar-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 130px;
+            height: 130px;
+            margin: -65px 0 0 -65px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDUwdjUwSDB6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTAuMDQ2NEwyNSA0LjAzMjAzQTIgMiAwIDAgMCAyNCAySDE2QTEyIDEyIDAgMCAwIDE2IDEyVjM4QTEyIDEyIDAgMCAwIDI4IDMwVjE1Ljk2NzJDMjcuOTY5NiAxNS45ODA5IDI4IDE1Ljk5NDcgMjggMTZWMzBDMjggMzYuNjI3NCAyMy42Mjc0IDQxIDIwIDQxQTE5Ljk2NzIgNDEgMCAwIDEgMjAgMjEuNTMzNkwxNSAxNC41MTc3TDIwIDEwLjA0NjRaIiBmaWxsPSIjMzMzMzMzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTUuODMzM0MxOC4zNzI2IDE1LjgzMzMgMTMuODMzMyAyMC4zNzI2IDEzLjgzMzMgMjcgMTMuODMzMyAzMy42Mjc0IDE4LjMyNzYgMzggMjUgMzggMjUgMzggMzAuMzcyNCAzMy42Mjc0IDM1IDI1IDM1IDIwLjM3MjYgMzAuMzcyNCAxNS44MzMzIDM1IDI1IDE1LjgzMzMgMjUgMTUuODMzMyAyMC4zNzI2IDE1LjgzMzMgMTUuODMzM1oiIGZpbGw9IiMzMzMzMzMiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PC9wYXRoPjwvc3ZnPg==') center center no-repeat;
+            background-size: 40px;
+            opacity: 0.5;
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        /* 图片加载成功后隐藏加载动画 */
+        .expert-avatar.loaded + .expert-avatar-container::before {
+            display: none;
+        }
+
+        .expert-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .expert-title {
+            color: #007BFF;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .expert-card:hover .expert-title {
+            color: #dc3545;
+        }
+
+        /* 通知徽章 */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .nav-link {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            .feature-card, .article-card, .expert-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section {
+                padding: 4rem 0;
+            }
+
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <div class="brand-text">
+                    <span class="brand-main">慧眼识癌</span>
+                    <span class="brand-sub">癌症风险综合预测平台</span>
+                </div>
+            </a>
+            
+            <!-- 响应式菜单按钮 -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- 导航菜单 -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">首页 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">产品服务</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cases.html">客户案例</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="experts.html">专家团队</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="knowledge.html">知识科普</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="group.html">团体方案</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="algorithms.html">核心算法</a>
+                    </li>
+                </ul>
+                
+                <!-- 右侧登录按钮，在移动设备上显示在菜单内 -->
+                <div class="navbar-right mt-3 mt-lg-0">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <button id="navbarLoginBtn" class="login-btn" onclick="showLoginModal()" style="background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-left: 10px;">登录/注册</button>
+                    <button id="navbarUserCenterBtn" class="login-btn" onclick="window.location.href='user_center.html'" style="background-color: #2196F3; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-left: 10px; display: none;">用户中心</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <section class="hero-section fade-in-section">
+        <div class="ripple-bg">
+            <div class="ripple" style="width: 300px; height: 300px; left: 20%; top: 30%; animation-delay: 0s;"></div>
+            <div class="ripple" style="width: 400px; height: 400px; right: 15%; top: 20%; animation-delay: 3s;"></div>
+            <div class="ripple" style="width: 250px; height: 250px; left: 10%; top: 60%; animation-delay: 6s;"></div>
+        </div>
+        <div class="container">
+            <h1>癌症风险综合预测平台</h1>
+            <p>基于先进的机器学习算法，为您提供全面的癌症风险综合预测服务。整合多维度健康数据，提供精准的风险评估和个性化预防建议。</p>
+        </div>
+    </section>
+
+    <!-- 核心功能展示 -->
+    <section class="core-features fade-in-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                            <i class="fas fa-upload"></i>
+                            <h3>数据上传</h3>
+                            <p>支持多种格式的数据上传，包括体检报告、影像资料、家族病史等关键数据。</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>智能分析</h3>
+                            <p>运用机器学习模型，结合多维健康数据进行综合分析，为您提供精准的癌症风险评估。</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card">
+                            <i class="fas fa-file-medical"></i>
+                            <h3>报告生成</h3>
+                            <p>自动生成详细的分析报告，包括风险等级、影响因素和个性化预防建议。</p>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 文章推荐 -->
+    <section class="articles-section fade-in-section">
+        <div class="container">
+            <h2 class="text-center mb-4">癌症知识推荐</h2>
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="article-card">
+                        <div class="article-image-container">
+                            <img src="https://images.unsplash.com/photo-1516559828984-fb3b99548b21?w=300&h=220&fit=crop&crop=center&q=80" alt="癌症预防" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="article-content">
+                            <h3>癌症的预防措施</h3>
+                            <div class="article-meta">
+                                <i class="far fa-calendar"></i> 2023-05-15
+                                <i class="far fa-eye ml-3"></i> 1245
+                            </div>
+                            <p class="article-excerpt">了解癌症的预防措施，包括饮食、运动、生活习惯等方面的建议...</p>
+                            <a href="article-detail-1.html" class="btn btn-link text-danger">阅读更多 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="article-card">
+                        <div class="article-image-container">
+                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=300&h=220&fit=crop&crop=center&q=80" alt="癌症筛查" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="article-content">
+                            <h3>癌症的早期筛查</h3>
+                            <div class="article-meta">
+                                <i class="far fa-calendar"></i> 2023-06-22
+                                <i class="far fa-eye ml-3"></i> 987
+                            </div>
+                            <p class="article-excerpt">学习如何识别癌症的早期症状，包括肿块、疼痛、异常出血等...</p>
+                            <a href="article-detail-2.html" class="btn btn-link text-danger">阅读更多 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="article-card">
+                        <div class="article-image-container">
+                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=220&fit=crop&crop=center&q=80" alt="癌症治疗" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="article-content">
+                            <h3>癌症的治疗方法</h3>
+                            <div class="article-meta">
+                                <i class="far fa-calendar"></i> 2023-07-10
+                                <i class="far fa-eye ml-3"></i> 1567
+                            </div>
+                            <p class="article-excerpt">了解癌症的各种治疗方法，包括手术、放疗、化疗、免疫治疗等...</p>
+                            <a href="article-detail-3.html" class="btn btn-link text-danger">阅读更多 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="knowledge.html" class="btn btn-primary" style="background-color: #28a745; border-color: #28a745; padding: 0.75rem 2rem; border-radius: 25px; font-size: 1.1rem; font-weight: bold;">查看更多知识 <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 专家团队 -->
+    <section class="experts-section fade-in-section">
+        <div class="container">
+            <h2 class="text-center mb-4">专家团队</h2>
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
+                    <div class="expert-card">
+                        <div class="expert-avatar-container">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg?w=130&h=130&fit=crop&crop=face" alt="张医生" class="expert-avatar" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="expert-name">张医生</div>
+                        <div class="expert-title">肿瘤外科专家</div>
+                        <p>从事肿瘤外科工作20余年，在癌症治疗领域有着丰富的经验。</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="expert-card">
+                        <div class="expert-avatar-container">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg?w=130&h=130&fit=crop&crop=face" alt="李教授" class="expert-avatar" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="expert-name">李教授</div>
+                        <div class="expert-title">遗传学专家</div>
+                        <p>致力于癌症遗传学研究，发表多篇国际学术论文。</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="expert-card">
+                        <div class="expert-avatar-container">
+                            <img src="https://randomuser.me/api/portraits/men/67.jpg?w=130&h=130&fit=crop&crop=face" alt="王医生" class="expert-avatar" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="expert-name">王医生</div>
+                        <div class="expert-title">影像诊断专家</div>
+                        <p>擅长各种肿瘤的影像诊断，尤其在早期癌症筛查方面经验丰富。</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="expert-card">
+                        <div class="expert-avatar-container">
+                            <img src="https://randomuser.me/api/portraits/women/29.jpg?w=130&h=130&fit=crop&crop=face" alt="刘博士" class="expert-avatar" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="expert-name">刘博士</div>
+                        <div class="expert-title">生物信息学专家</div>
+                        <p>研究癌症基因组学和生物信息学，为癌症预防提供科学依据。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="experts.html" class="btn btn-primary" style="background-color: #28a745; border-color: #28a745; padding: 0.75rem 2rem; border-radius: 25px; font-size: 1.1rem; font-weight: bold;">查看更多专家 <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <style>
+        /* 页脚样式调整 - 确保背景色和文字颜色正确 */
+        footer {
+            background-color: #0056b3 !important;
+            background: #0056b3 !important;
+            color: #ffffff !important;
+            padding: 30px 0 !important;
+        }
+        footer .container {
+            background-color: #0056b3 !important;
+        }
+        footer .row {
+            background-color: #0056b3 !important;
+        }
+        footer .col-md-4 {
+            background-color: #0056b3 !important;
+        }
+        footer p, footer li {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ffffff !important;
+            background-color: #0056b3 !important;
+        }
+        footer h5 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff !important;
+            background-color: #0056b3 !important;
+        }
+        footer a {
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+            background-color: #0056b3 !important;
+        }
+        footer a:hover {
+            color: #cce7ff !important;
+            text-decoration: underline !important;
+            background-color: #0056b3 !important;
+        }
+        footer .social-icons {
+            background-color: #0056b3 !important;
+        }
+        footer .social-icons a {
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+        footer .social-icons a:hover {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+            color: #cce7ff !important;
+            transform: translateY(-3px);
+        }
+        footer hr {
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            background-color: #0056b3 !important;
+        }
+        footer .text-center {
+            background-color: #0056b3 !important;
+        }
+    </style>
+    <footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
+                    <p>专注于癌症风险评估的智能平台，为您的健康保驾护航。</p>
+                    <div class="social-icons mt-4">
+                        <a href="#" class="text-white mr-3"><i class="fab fa-weixin"></i></a>
+                        <a href="#" class="text-white mr-3"><i class="fab fa-weibo"></i></a>
+                        <a href="#" class="text-white mr-3"><i class="fab fa-qq"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">快速链接</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
+                        <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
+                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
+                        <li><a href="experts.html" class="text-white text-decoration-none">专家团队</a></li>
+                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
+                        <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">联系我们</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区科技园区</li>
+                        <li class="mb-2"><i class="fas fa-phone mr-2"></i> 400-123-4567</li>
+                        <li class="mb-2"><i class="fas fa-envelope mr-2"></i> contact@huianyanshiai.com</li>
+                        <li class="mb-2"><i class="fas fa-clock mr-2"></i> 周一至周五 9:00-18:00</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="bg-white opacity-25 mt-4">
+            <div class="text-center">
+                <p class="mb-0">© 2025 慧眼识癌. 保留所有权利.</p>
+                <p class="small mt-1">京ICP备12345678号 | 医疗机构执业许可证11010802023456号</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        // 登录注册功能
+        // 显示登录模态框
+        function showLoginModal() {
+            $('#loginModal').modal('show');
+            $('#registerModal').modal('hide');
+        }
+
+        // 显示注册模态框
+        function showRegisterModal() {
+            $('#registerModal').modal('show');
+            $('#loginModal').modal('hide');
+        }
+
+        // 显示用户信息模态框
+        function showUserInfoModal() {
+            $('#userInfoModal').modal('show');
+            loadUserReports();
+        }
+        
+        // 检查登录状态并显示用户中心
+        function checkLoginAndShowCenter() {
+            // 使用localStorage模拟登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                // 已登录则显示用户信息模态框
+                showUserInfoModal();
+            } else {
+                // 未登录则显示登录模态框
+                $('#loginModal').modal('show');
+                alert('请先登录查看用户中心');
+            }
+        }
+
+        // 登录功能
+        function login() {
+            // 获取当前激活的选项卡
+            const activeTab = document.querySelector('#loginTabs .nav-link.active');
+            
+            if (activeTab.id === 'user-login-tab') {
+                // 用户登录
+                const username = document.getElementById('userLoginUsername').value;
+                const password = document.getElementById('userLoginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                
+                errorDiv.textContent = '';
+                
+                // 使用localStorage模拟登录
+                if (username && password) {
+                    // 存储登录状态到localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('email', username + '@example.com');
+                    
+                    $('#loginModal').modal('hide');
+                    checkLoginStatus();
+                    alert('登录成功！');
+                } else {
+                    errorDiv.textContent = '请输入用户名和密码';
+                }
+            } else if (activeTab.id === 'admin-login-tab') {
+                // 管理员登录 - 直接进行前端验证
+                const username = document.getElementById('adminLoginUsername').value;
+                const password = document.getElementById('adminLoginPassword').value;
+                const errorDiv = document.getElementById('adminLoginError');
+                
+                errorDiv.textContent = '';
+                
+                if (username && password) {
+                    // 简单的管理员账号验证，实际项目应连接后端API
+                    // 根据初始设计，管理员用户名为admin，密码为admin123
+                    if (username === 'admin' && password === 'admin123') {
+                        // 登录成功，存储状态
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        
+                        $('#loginModal').modal('hide');
+                        alert('管理员登录成功！');
+                        
+                        // 跳转到管理员后台页面
+                        setTimeout(() => {
+                            window.location.href = 'admin_dashboard.html';
+                        }, 1000);
+                    } else {
+                        errorDiv.textContent = '管理员账号或密码错误';
+                    }
+                } else {
+                    errorDiv.textContent = '请输入管理员用户名和密码';
+                }
+            }
+        }
+
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            
+            errorDiv.textContent = '';
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+            
+            // 使用localStorage模拟注册
+            if (username && password && email) {
+                // 存储注册信息到localStorage
+                localStorage.setItem('username', username);
+                localStorage.setItem('email', email);
+                
+                $('#registerModal').modal('hide');
+                alert('注册成功，请登录！');
+                showLoginModal();
+            } else {
+                errorDiv.textContent = '请填写完整的注册信息';
+            }
+        }
+
+        // 检查登录状态（使用localStorage模拟）
+        function checkLoginStatus() {
+            console.log('开始检查登录状态...');
+            // 从localStorage获取登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const username = localStorage.getItem('username') || '用户';
+            const email = localStorage.getItem('email') || '';
+            
+            console.log('登录状态检查结果:', isLoggedIn);
+            
+            if (isLoggedIn) {
+                // 已登录则显示用户中心按钮，隐藏登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'block';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'none';
+                }
+                
+                // 更新用户信息
+                if (document.getElementById('userName')) {
+                    document.getElementById('userName').textContent = username;
+                }
+                if (document.getElementById('userEmail')) {
+                    document.getElementById('userEmail').textContent = email;
+                }
+            } else {
+                // 未登录则隐藏用户中心按钮，显示登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'block';
+                }
+            }
+        }
+
+        // 加载用户报告
+        function loadUserReports() {
+            const reportsList = document.getElementById('reportsList');
+            
+            // 模拟数据加载
+            const mockReports = [
+                { id: 1, name: '张女士', age: 45, riskScore: 85, date: '2023-01-15' },
+                { id: 2, name: '李女士', age: 45, riskScore: 78, date: '2023-02-20' }
+            ];
+            
+            reportsList.innerHTML = '';
+            mockReports.forEach(report => {
+                const reportCard = document.createElement('div');
+                reportCard.className = 'card mb-3';
+                reportCard.innerHTML = `
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">癌症风险评估报告</h5>
+                                <p class="card-text">被评估人：${report.name}</p>
+                                <p class="card-text">年龄：${report.age}岁</p>
+                                <p class="card-text">风险分数：${report.riskScore}分</p>
+                                <p class="card-text text-muted">评估日期：${report.date}</p>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="viewReport(${report.id})">查看报告</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                reportsList.appendChild(reportCard);
+            });
+        }
+        
+        // 查看报告详情
+        function viewReport(patientId) {
+            window.location.href = `report.html?id=${patientId}`;
+        }
+        
+        // 修改密码
+        function updatePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmNewPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (!newPassword) {
+                alert('请输入新密码');
+                return;
+            }
+            
+            // 调用相应的API修改密码
+            alert('密码修改功能待实现');
+        }
+        
+        // 退出登录
+        function logout() {
+            // 清除localStorage中的登录状态
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('email');
+            
+            // 更新按钮状态
+            checkLoginStatus();
+            
+            // 关闭模态框
+            $('#userInfoModal').modal('hide');
+            
+            alert('已退出登录');
+        }
+
+        // 页面加载完成后检查登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            
+            // 页面加载完成后隐藏加载动画
+            setTimeout(function() {
+                const loader = document.getElementById('pageLoader');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }, 0);
+            
+            // 初始化区块渐入效果
+            const fadeSections = document.querySelectorAll('.fade-in-section');
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            fadeSections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+            
+            // 表单提交反馈效果
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // 添加表单提交动画
+                    const submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('button.onclick');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        const originalText = submitBtn.textContent;
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 提交中...';
+                        
+                        // 模拟提交延迟
+                        setTimeout(function() {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalText;
+                        }, 1500);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="loginTabsContent">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？点击注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                        </div>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户信息模态框 -->
+    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="user-profile">
+                                <div class="avatar">
+                                    <i class="fas fa-user-circle fa-5x"></i>
+                                </div>
+                                <h4 id="userName">用户</h4>
+                                <p id="userEmail">用户邮箱</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="nav nav-tabs" id="userTabs" role="tablist">
+                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
+                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
+                            </div>
+                            <div class="tab-content mt-3" id="userTabsContent">
+                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                                    <h5>历史报告</h5>
+                                    <div id="reportsList" class="mt-3">
+                                        <!-- 报告列表将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                    <h5>账户设置</h5>
+                                    <div class="form-group">
+                                        <label for="newPassword">新密码</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmNewPassword">确认新密码</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
+                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

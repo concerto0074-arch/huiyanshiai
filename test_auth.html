@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户认证测试</title>
+    <script>
+        // 测试注册功能
+        async function testRegister() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'testuser',
+                        password: 'password123',
+                        email: 'test@example.com'
+                    })
+                });
+                const data = await response.json();
+                console.log('注册结果:', data);
+                document.getElementById('registerResult').textContent = JSON.stringify(data);
+            } catch (error) {
+                console.error('注册失败:', error);
+                document.getElementById('registerResult').textContent = '注册失败: ' + error.message;
+            }
+        }
+
+        // 测试登录功能
+        async function testLogin() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        username: 'testuser',
+                        password: 'password123'
+                    })
+                });
+                const data = await response.json();
+                console.log('登录结果:', data);
+                document.getElementById('loginResult').textContent = JSON.stringify(data);
+            } catch (error) {
+                console.error('登录失败:', error);
+                document.getElementById('loginResult').textContent = '登录失败: ' + error.message;
+            }
+        }
+
+        // 测试获取当前用户功能
+        async function testGetCurrentUser() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/current_user', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                console.log('当前用户:', data);
+                document.getElementById('currentUserResult').textContent = JSON.stringify(data);
+            } catch (error) {
+                console.error('获取当前用户失败:', error);
+                document.getElementById('currentUserResult').textContent = '获取当前用户失败: ' + error.message;
+            }
+        }
+
+        // 测试获取患者列表功能
+        async function testGetPatients() {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/patients', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                console.log('患者列表:', data);
+                document.getElementById('patientsResult').textContent = JSON.stringify(data);
+            } catch (error) {
+                console.error('获取患者列表失败:', error);
+                document.getElementById('patientsResult').textContent = '获取患者列表失败: ' + error.message;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>用户认证测试</h1>
+    
+    <h2>注册测试</h2>
+    <button onclick="testRegister()">测试注册</button>
+    <div id="registerResult"></div>
+    
+    <h2>登录测试</h2>
+    <button onclick="testLogin()">测试登录</button>
+    <div id="loginResult"></div>
+    
+    <h2>当前用户测试</h2>
+    <button onclick="testGetCurrentUser()">获取当前用户</button>
+    <div id="currentUserResult"></div>
+    
+    <h2>患者列表测试</h2>
+    <button onclick="testGetPatients()">获取患者列表</button>
+    <div id="patientsResult"></div>
+</body>
+</html>

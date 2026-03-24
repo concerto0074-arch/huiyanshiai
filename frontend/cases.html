@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户案例 - 慧眼识癌</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #E6F7FF 0%, #F0F8FF 50%, #E6F7FF 100%);
+            background-attachment: fixed;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 区块渐入动画 */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 平滑滚动效果 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 按钮点击反馈效果 */
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            color: #007BFF !important;
+        }
+        .navbar-brand .logo-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .brand-main {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .brand-sub {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .nav-item {
+            margin: 0 15px;
+        }
+        .nav-link {
+            color: #495057 !important;
+            font-weight: 500;
+            padding: 8px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #007BFF !important;
+        }
+        .nav-link.active {
+            background-color: #007BFF;
+            color: white !important;
+            border-radius: 4px;
+            padding: 8px 16px;
+        }
+        
+        /* 确保导航栏容器样式优先级 */
+        .navbar .container {
+            max-width: 1200px;
+            padding: 0 1rem;
+            margin: 0 auto;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+        .notification-icon {
+            font-size: 20px;
+            color: #495057;
+            margin-right: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-btn {
+            background-color: #FFA500;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            background-color: #e69500;
+        }
+        
+        /* 主内容区样式 */
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .page-title h1 {
+            color: #212529;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .page-title p {
+            color: #6c757d;
+            font-size: 18px;
+        }
+        
+        /* 案例卡片 */
+        .case-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .case-card .card-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        /* 案例图片容器 */
+        .case-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .case-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .case-card:hover .case-image img {
+            transform: scale(1.1);
+        }
+        
+        .case-card .card-body {
+            padding: 25px;
+        }
+        
+        .case-card .card-title {
+            color: #212529;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .case-card .card-text {
+            color: #6c757d;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        /* 案例信息 */
+        .case-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .case-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .case-info-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .case-info-item i {
+            color: #007BFF;
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .case-info-item span {
+            color: #495057;
+        }
+        
+        /* 案例结果 */
+        .case-result {
+            border-left: 4px solid #007BFF;
+            padding-left: 20px;
+            margin-top: 20px;
+        }
+        
+        .case-result h4 {
+            color: #212529;
+            margin-bottom: 10px;
+        }
+        
+        .case-result p {
+            color: #6c757d;
+            line-height: 1.8;
+        }
+        
+        /* 右侧固定浮窗样式 */
+        .sticky-sidebar {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        
+        .sticky-btn {
+            background-color: #FFA500;
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounceIn 0.5s ease-out both;
+        }
+        
+        .sticky-btn:nth-child(1) { animation-delay: 1.9s; }
+        .sticky-btn:nth-child(2) { animation-delay: 2.0s; }
+        .sticky-btn:nth-child(3) { animation-delay: 2.1s; }
+        
+        .sticky-btn:hover {
+            background-color: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4);
+        }
+        
+        /* 页面底部样式 */
+        .disclaimer {
+            margin-top: 50px;
+            font-size: 12px;
+            color: #6c757d;
+            text-align: center;
+        }
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <div class="brand-text">
+                    <span class="brand-main">慧眼识癌</span>
+                    <span class="brand-sub">您身边的癌症预防专家</span>
+                </div>
+            </a>
+            
+            <!-- 响应式汉堡菜单按钮 -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- 导航菜单 -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">产品服务</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="cases.html">客户案例</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="experts.html">专家在线</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="knowledge.html">知识科普</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="group.html">团体方案</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="algorithms.html">核心算法</a>
+                    </li>
+                </ul>
+                
+                <!-- 右侧功能区（在移动设备上显示在菜单内） -->
+                <div class="navbar-right mt-3 mt-lg-0">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <button id="navbarLoginBtn" class="login-btn" onclick="showLoginModal()" style="background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-left: 10px;">登录/注册</button>
+                    <button id="navbarUserCenterBtn" class="login-btn" onclick="window.location.href='user_center.html'" style="background-color: #2196F3; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-left: 10px; display: none;">用户中心</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主内容区 -->
+    <div class="container">
+        <div class="page-title">
+            <h1>客户案例</h1>
+            <p>真实用户的成功故事</p>
+        </div>
+        
+        <div class="row">
+            <!-- 案例1 -->
+            <div class="col-md-6">
+                <div class="card case-card">
+                    <div class="card-header">
+                        <h3 class="card-title">张先生 - 肺癌早期发现</h3>
+                        <span class="badge badge-light">成功案例</span>
+                    </div>
+                    <div class="case-image">
+                        <img src="images/lung_cancer.png" alt="肺癌早期发现案例">
+                    </div>
+                    <div class="card-body">
+                        <div class="case-info">
+                            <div class="case-info-item">
+                                <i class="fas fa-user"></i>
+                                <span>性别：男 | 年龄：58岁</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-smoking"></i>
+                                <span>风险因素：长期吸烟史</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>评估时间：2023年3月</span>
+                            </div>
+                        </div>
+                        <p class="card-text">张先生是一位有30年吸烟史的企业高管，因工作繁忙一直没有进行定期体检。2023年3月，他通过我们的平台进行了肺癌风险评估，结果显示风险偏高。</p>
+                        <p class="card-text">根据评估建议，张先生立即前往医院进行了详细检查，最终确诊为早期肺癌。由于发现及时，医生成功为他进行了手术治疗，目前恢复良好。</p>
+                        <div class="case-result">
+                            <h4>案例启示</h4>
+                            <p>定期进行癌症风险评估对于高风险人群至关重要，早期发现可以显著提高治愈率和生存率。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 案例2 -->
+            <div class="col-md-6">
+                <div class="card case-card">
+                    <div class="card-header">
+                        <h3 class="card-title">李女士 - 乳腺癌预防</h3>
+                        <span class="badge badge-light">预防案例</span>
+                    </div>
+                    <div class="case-image">
+                        <img src="images/breast_cancer.png" alt="乳腺癌预防案例">
+                    </div>
+                    <div class="card-body">
+                        <div class="case-info">
+                            <div class="case-info-item">
+                                <i class="fas fa-user"></i>
+                                <span>性别：女 | 年龄：45岁</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-heartbeat"></i>
+                                <span>风险因素：家族乳腺癌史</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>评估时间：2022年11月</span>
+                            </div>
+                        </div>
+                        <p class="card-text">李女士的母亲和姑姑都曾患乳腺癌，因此她非常关注自己的乳腺健康。2022年11月，她通过我们的平台进行了乳腺癌风险评估。</p>
+                        <p class="card-text">评估结果提示风险较高，我们立即安排她进行了胸部CT检查，早期发现了乳腺癌病灶。由于发现及时，手术治疗非常成功，目前李女士恢复良好，已调整作息并定期复查。</p>
+                        <div class="case-result">
+                            <h4>案例启示</h4>
+                            <p>即使没有明显症状，有家族病史的人群也应该提前进行风险评估和预防干预，防患于未然。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 案例3 -->
+            <div class="col-md-6">
+                <div class="card case-card" data-case-id="3">
+                    <div class="card-header">
+                        <h3 class="card-title">王先生 - 结肠癌筛查</h3>
+                        <span class="badge badge-light">筛查案例</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="case-info">
+                            <div class="case-info-item">
+                                <i class="fas fa-user"></i>
+                                <span>性别：男 | 年龄：62岁</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-apple-alt"></i>
+                                <span>风险因素：饮食不规律</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>评估时间：2023年6月</span>
+                            </div>
+                        </div>
+                        <p class="card-text">王先生退休后生活节奏放缓，但饮食不太规律，经常吃高脂肪、低纤维的食物。2023年6月，在子女的建议下，他进行了结肠癌风险评估。</p>
+                        <p class="card-text">评估结果显示存在肠道风险，我们建议他进行结肠镜检查。检查发现了几个息肉，医生及时进行了切除，避免了癌症的发生。</p>
+                        <div class="case-result">
+                            <h4>案例启示</h4>
+                            <p>良好的生活习惯对于预防癌症至关重要，定期筛查可以早期发现癌前病变，有效降低癌症发生风险。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 案例4 -->
+            <div class="col-md-6">
+                <div class="card case-card" data-case-id="4">
+                    <div class="card-header">
+                        <h3 class="card-title">赵女士 - 宫颈癌疫苗咨询</h3>
+                        <span class="badge badge-light">咨询案例</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="case-info">
+                            <div class="case-info-item">
+                                <i class="fas fa-user"></i>
+                                <span>性别：女 | 年龄：32岁</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-question-circle"></i>
+                                <span>需求：宫颈癌疫苗咨询</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>咨询时间：2023年1月</span>
+                            </div>
+                        </div>
+                        <p class="card-text">赵女士想接种宫颈癌疫苗，但对疫苗种类和接种时机存在疑问。通过我们的平台，她进行了宫颈癌风险评估并咨询了专家。</p>
+                        <p class="card-text">我们的专家根据她的年龄、健康状况和家族史，建议她接种九价HPV疫苗，并为她提供了详细的接种指导和后续筛查建议。赵女士顺利完成了疫苗接种。</p>
+                        <div class="case-result">
+                            <h4>案例启示</h4>
+                            <p>接种疫苗是预防某些癌症的有效手段，专业的咨询可以帮助人们做出更合适的健康决策。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 案例5 -->
+            <div class="col-md-6">
+                <div class="card case-card" data-case-id="5">
+                    <div class="card-header">
+                        <h3 class="card-title">刘先生 - 肺癌早期诊断</h3>
+                        <span class="badge badge-light">诊断案例</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="case-info">
+                            <div class="case-info-item">
+                                <i class="fas fa-user"></i>
+                                <span>性别：男 | 年龄：55岁</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-smoking"></i>
+                                <span>风险因素：长期吸烟</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>诊断时间：2023年3月</span>
+                            </div>
+                        </div>
+                        <p class="card-text">刘先生有30年的吸烟史，2023年初出现咳嗽、胸闷症状。在家人的劝说下，他通过我们的平台进行了肺癌风险评估。</p>
+                        <p class="card-text">评估发现高风险，我们立即安排他进行了胸部CT检查，及早发现了肺癌病灶。由于发现及时，手术治疗非常成功，目前刘先生恢复良好，已戒烟并定期复查。</p>
+                        <div class="case-result">
+                            <h4>案例启示</h4>
+                            <p>有吸烟史的人群应定期进行肺癌筛查，早期发现和治疗可以显著提高治愈率和生存率。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 案例6 -->
+            <div class="col-md-6">
+                <div class="card case-card" data-case-id="6">
+                    <div class="card-header">
+                        <h3 class="card-title">张女士 - 乳腺癌预防干预</h3>
+                        <span class="badge badge-light">预防案例</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="case-info">
+                            <div class="case-info-item">
+                                <i class="fas fa-user"></i>
+                                <span>性别：女 | 年龄：45岁</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-heartbeat"></i>
+                                <span>风险因素：乳腺增生史</span>
+                            </div>
+                            <div class="case-info-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>干预时间：2022年9月</span>
+                            </div>
+                        </div>
+                        <p class="card-text">张女士有多年乳腺增生病史，担心发展为乳腺癌。2022年9月，她通过我们的平台进行了乳腺癌风险评估和预防咨询。</p>
+                        <p class="card-text">我们的专家团队为她制定了个性化的预防干预方案，包括定期乳腺检查、饮食调整、运动计划和心理疏导。经过一年的干预，张女士的乳腺增生症状明显改善，风险等级也有所降低。</p>
+                        <div class="case-result">
+                            <h4>案例启示</h4>
+                            <p>针对有风险因素的人群，早期进行预防干预可以有效降低癌症发生的可能性。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-5 text-center">
+            <p class="text-muted">以上案例均来自真实用户，为保护隐私，姓名和部分细节已做处理。</p>
+        </div>
+        
+        <!-- 分页控件 -->
+        <div class="pagination-container mt-4">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    
+    <!-- 免责声明 -->
+    <div class="disclaimer">
+        <p>免责声明：本页面展示的案例仅供参考，每个人的健康状况和治疗方案都不同，具体情况请咨询专业医生。</p>
+    </div>
+    
+    <!-- 右侧固定浮窗 -->
+    <div class="sticky-sidebar">
+        <button class="sticky-btn" title="我的">
+            <i class="fas fa-user"></i>
+        </button>
+        <button class="sticky-btn" title="客服">
+            <i class="fas fa-headset"></i>
+        </button>
+        <button class="sticky-btn" title="顶部" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="loginTabsContent">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？立即注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                        </div>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？立即登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户信息模态框 -->
+    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="user-profile">
+                                <div class="avatar">
+                                    <i class="fas fa-user-circle fa-5x"></i>
+                                </div>
+                                <h4 id="userName">用户</h4>
+                                <p id="userEmail">用户邮箱</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="nav nav-tabs" id="userTabs" role="tablist">
+                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
+                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
+                            </div>
+                            <div class="tab-content mt-3" id="userTabsContent">
+                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                                    <h5>历史报告</h5>
+                                    <div id="reportsList" class="mt-3">
+                                        <!-- 报告列表将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                    <h5>账户设置</h5>
+                                    <div class="form-group">
+                                        <label for="newPassword">新密码</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmNewPassword">确认新密码</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
+                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 页面加载完成后执行
+        $(document).ready(function() {
+            // 滚动时的导航栏样式变化
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 50) {
+                    $('.navbar').addClass('scrolled');
+                } else {
+                    $('.navbar').removeClass('scrolled');
+                }
+            });
+            
+            // 导航链接点击事件
+            $('.nav-link').click(function() {
+                // 关闭移动设备上的导航菜单
+                if ($('.navbar-toggler').attr('aria-expanded') === 'true') {
+                    $('.navbar-toggler').click();
+                }
+            });
+            
+            // 筛选功能
+            $('.filter-btn').click(function() {
+                var category = $('.filter select').val();
+                var result = $('.filter-result');
+                
+                if (category === 'all') {
+                    result.html('所有案例');
+                } else {
+                    result.html(category + '案例');
+                }
+                
+                // 这里可以添加实际的筛选逻辑
+                console.log('筛选分类:', category);
+            });
+            
+            // 点赞功能
+            $('.like-btn').click(function() {
+                var likeCount = $(this).find('.like-count');
+                var currentCount = parseInt(likeCount.text());
+                
+                if ($(this).hasClass('liked')) {
+                    // 如果已经点赞，取消点赞
+                    $(this).removeClass('liked');
+                    likeCount.text(currentCount - 1);
+                } else {
+                    // 如果未点赞，添加点赞
+                    $(this).addClass('liked');
+                    likeCount.text(currentCount + 1);
+                }
+            });
+            
+            // 分页功能
+            $('.page-link').click(function(e) {
+                e.preventDefault();
+                
+                // 移除所有页码的active类
+                $('.page-item').removeClass('active');
+                
+                // 添加当前页码的active类
+                $(this).parent().addClass('active');
+                
+                // 这里可以添加实际的分页逻辑
+                console.log('切换到第', $(this).text(), '页');
+            });
+            
+            // 分享功能
+            $('.share-btn').click(function() {
+                var caseId = $(this).closest('.case-card').attr('data-case-id');
+                alert('分享案例 ' + caseId + ' 功能开发中');
+            });
+            
+            // 案例详情查看
+            $('.case-card').click(function(e) {
+                // 如果点击的是按钮，不执行跳转
+                if ($(e.target).is('button') || $(e.target).closest('button').length) {
+                    return;
+                }
+                
+                var caseId = $(this).attr('data-case-id');
+                console.log('查看案例详情:', caseId);
+                // 这里可以添加跳转到案例详情页的逻辑
+                // window.location.href = 'case_detail.html?id=' + caseId;
+            });
+            
+            // 页面加载完成后检查登录状态
+            checkLoginStatus();
+        });
+        
+        // 显示登录模态框
+        function showLoginModal() {
+            $('#loginModal').modal('show');
+            $('#registerModal').modal('hide');
+        }
+
+        // 显示注册模态框
+        function showRegisterModal() {
+            $('#registerModal').modal('show');
+            $('#loginModal').modal('hide');
+        }
+
+        // 显示用户信息模态框
+        function showUserInfoModal() {
+            $('#userInfoModal').modal('show');
+            loadUserReports();
+        }
+        
+        // 检查登录状态并显示用户中心
+        function checkLoginAndShowCenter() {
+            // 使用localStorage检查登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                // 已登录，显示用户信息模态框
+                showUserInfoModal();
+            } else {
+                // 未登录，显示登录模态框
+                $('#loginModal').modal('show');
+                alert('请先登录后查看用户中心');
+            }
+        }
+
+        // 登录功能
+        function login() {
+            // 检查当前激活的选项卡
+            const activeTab = document.querySelector('#loginTabs .nav-link.active');
+            
+            if (activeTab.id === 'user-login-tab') {
+                // 用户登录
+                const username = document.getElementById('userLoginUsername').value;
+                const password = document.getElementById('userLoginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                
+                errorDiv.textContent = '';
+                
+                // 使用localStorage模拟登录
+                if (username && password) {
+                    // 存储登录状态到localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('email', username + '@example.com');
+                    
+                    $('#loginModal').modal('hide');
+                    checkLoginStatus();
+                    alert('登录成功！');
+                } else {
+                    errorDiv.textContent = '请输入用户名和密码';
+                }
+            } else if (activeTab.id === 'admin-login-tab') {
+                // 管理员登录 - 直接在前端验证
+                const username = document.getElementById('adminLoginUsername').value;
+                const password = document.getElementById('adminLoginPassword').value;
+                const errorDiv = document.getElementById('adminLoginError');
+                
+                errorDiv.textContent = '';
+                
+                if (username && password) {
+                    // 简单的管理员账号验证（实际项目中应连接后端API）
+                    // 根据初始化脚本，管理员用户名是admin，密码是admin123
+                    if (username === 'admin' && password === 'admin123') {
+                        // 登录成功，设置本地存储
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        
+                        $('#loginModal').modal('hide');
+                        alert('管理员登录成功！');
+                        
+                        // 跳转到管理员后台页面
+                        setTimeout(() => {
+                            window.location.href = 'admin_dashboard.html';
+                        }, 1000);
+                    } else {
+                        errorDiv.textContent = '管理员账号或密码错误';
+                    }
+                } else {
+                    errorDiv.textContent = '请输入管理员用户名和密码';
+                }
+            }
+        }
+
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            
+            errorDiv.textContent = '';
+            
+            // 验证输入完整性
+            if (!username || !email || !password) {
+                errorDiv.textContent = '请填写完整的注册信息';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+            
+            // 使用localStorage模拟注册
+            // 存储用户信息（实际项目中使用安全的存储方式）
+            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
+            
+            // 关闭注册模态框，提示用户注册成功并跳转到登录界面
+            $('#registerModal').modal('hide');
+            alert('注册成功！请登录。');
+            showLoginModal();
+        }
+
+        // 检查登录状态（使用localStorage模拟）
+        function checkLoginStatus() {
+            console.log('开始检查登录状态...');
+            // 从localStorage获取登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const username = localStorage.getItem('username') || '用户';
+            const email = localStorage.getItem('email') || '';
+            
+            console.log('登录状态检查结果:', isLoggedIn);
+            
+            if (isLoggedIn) {
+                // 已登录，显示导航栏用户中心按钮，隐藏登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'block';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'none';
+                }
+                
+                // 更新用户信息
+                if (document.getElementById('userName')) {
+                    document.getElementById('userName').textContent = username;
+                }
+                if (document.getElementById('userEmail')) {
+                    document.getElementById('userEmail').textContent = email;
+                }
+            } else {
+                // 未登录，隐藏导航栏用户中心按钮，显示登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'block';
+                }
+            }
+        }
+
+        // 加载用户报告
+        function loadUserReports() {
+            const reportsList = document.getElementById('reportsList');
+            
+            // 使用前端模拟数据替代API调用
+            setTimeout(() => {
+                // 模拟API响应数据
+                const data = {
+                    success: true,
+                    data: [
+                        {
+                            id: 1,
+                            name: '张三',
+                            age: 45,
+                            gender: 'F',
+                            diagnosis: '乳腺增生',
+                            created_at: new Date().toISOString()
+                        },
+                        {
+                            id: 2,
+                            name: '李四',
+                            age: 52,
+                            gender: 'F',
+                            diagnosis: '乳腺结节',
+                            created_at: new Date(Date.now() - 86400000).toISOString()
+                        },
+                        {
+                            id: 3,
+                            name: '王五',
+                            age: 38,
+                            gender: 'F',
+                            diagnosis: '乳腺纤维瘤',
+                            created_at: new Date(Date.now() - 172800000).toISOString()
+                        }
+                    ]
+                };
+                if (data.success) {
+                    // 渲染报告列表
+                    reportsList.innerHTML = '';
+                    if (data.data.length === 0) {
+                        reportsList.innerHTML = '<div class="alert alert-info" role="alert">暂无报告</div>';
+                        return;
+                    }
+                    
+                    data.data.forEach(patient => {
+                        const reportCard = document.createElement('div');
+                        reportCard.className = 'card mb-3';
+                        reportCard.innerHTML = `
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title">${patient.name} - ${patient.age}岁 ${patient.gender === 'M' ? '男' : '女'}</h6>
+                                    <span class="badge badge-primary">${patient.diagnosis}</span>
+                                </div>
+                                <p class="card-text text-muted">报告日期：${new Date(patient.created_at).toLocaleString()}</p>
+                                <button class="btn btn-sm btn-primary" onclick="viewReport(${patient.id})">查看详情</button>
+                            </div>
+                        `;
+                        reportsList.appendChild(reportCard);
+                    });
+                }
+            }, 800); // 模拟800毫秒的网络延迟
+        }
+        
+        // 查看报告详情
+        function viewReport(patientId) {
+            window.location.href = `report.html?id=${patientId}`;
+        }
+        
+        // 修改密码
+        function updatePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmNewPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (!newPassword) {
+                alert('请输入新密码');
+                return;
+            }
+            
+            // 这里应该调用API修改密码
+            alert('密码修改功能待实现');
+        }
+        
+        // 退出登录
+        function logout() {
+            // 清除localStorage中的登录状态
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('email');
+            
+            // 更新按钮状态
+            checkLoginStatus();
+            
+            // 关闭模态框
+            $('#userInfoModal').modal('hide');
+            
+            alert('已退出登录');
+        }
+        
+        // 案例数据
+        const caseData = [
+            {
+                id: 1,
+                title: '张先生 - 肺癌早期发现',
+                category: '诊断案例',
+                patientInfo: '性别：男 | 年龄：58岁',
+                riskFactor: '长期吸烟史',
+                date: '2023年10月',
+                description: '张先生有25年的吸烟史，2023年10月在我们的平台进行了肺癌风险评估，结果呈高风险。我们立即建议他进行胸部CT检查，检查结果早期发现了肺癌病灶。由于发现及时，张先生接受了手术治疗，目前恢复良好。',
+                lesson: '定期进行癌症风险评估对于早期发现癌症至关重要，特别是有吸烟史等高危因素的人群。',
+                fullDescription: '张先生，58岁，有25年的吸烟史，平均每天1包烟。2023年10月，他在家人的建议下，通过我们的平台进行了肺癌风险评估。评估结果显示存在高风险，我们医疗团队立即联系了他，并建议他尽快进行胸部CT检查。\n\n在我们的安排下，张先生很快进行了胸部CT检查，结果显示在右肺上叶有一个直径约8mm的小结节，高度怀疑为早期肺癌。张先生顺利在我们的合作医院接受了胸腔镜手术，成功切除了病灶。病理结果证实为肺腺癌早期，没有淋巴结转移。\n\n手术后，张先生在我们的康复指导下，积极调整生活方式，彻底戒烟，并定期进行复查。目前，张先生的恢复状态良好，已经重返工作岗位。他非常感谢我们平台的早期发现和及时干预，让他能够在癌症早期得到治疗，避免了更严重的后果。',
+                likes: 128,
+                views: 2543
+            },
+            {
+                id: 2,
+                title: '李女士 - 乳腺癌预防案例',
+                category: '预防案例',
+                patientInfo: '性别：女 | 年龄：42岁',
+                riskFactor: '家族乳腺癌史',
+                date: '2022年11月',
+                description: '李女士的母亲和姑姑都曾患乳腺癌，因此她非常关注自己的乳腺健康。2022年11月，她通过我们的平台进行了乳腺癌风险评估。评估提示较高风险，我们立即安排她进行了胸部CT检查，并早期发现了乳腺癌病灶。由于发现及时，手术治疗非常成功，目前李女士恢复良好，已戒烟并定期复查。',
+                lesson: '即使没有明显症状，有家族病史的人群也应该提前进行风险评估和预防干预，防患于未然。',
+                fullDescription: '李女士，42岁，某公司高级管理人员。由于母亲和姑姑都曾患乳腺癌，她一直非常关注自己的乳腺健康。2022年11月，她在同事的推荐下，通过我们的平台进行了乳腺癌风险评估。\n\n评估结果显示，李女士的乳腺癌风险处于中高水平。我们的专家团队立即为她制定了个性化的预防方案，包括：\n1. 定期乳腺超声和钼靶检查（每6个月一次）\n2. 饮食调整（增加蔬菜、水果摄入，减少高脂肪食物）\n3. 规律运动（每周至少150分钟中等强度有氧运动）\n4. 心理干预（定期进行压力管理和放松训练）\n\n李女士严格按照我们的方案执行，并定期在平台上更新自己的健康数据。一年多来，她的康复状态良好，乳腺检查未发现异常。李女士表示，我们的平台不仅为她提供了专业的风险评估，更有利于她制定了可行的预防方案，让她能够主动管理自己的健康。',
+                likes: 95,
+                views: 1876
+            },
+            {
+                id: 3,
+                title: '王先生 - 结肠癌筛查',
+                category: '筛查案例',
+                patientInfo: '性别：男 | 年龄：62岁',
+                riskFactor: '饮食不规律',
+                date: '2023年6月',
+                description: '王先生退休后生活节奏放缓，但饮食不太规律，经常吃高脂肪、低纤维的食物。2023年6月，在子女的建议下，他进行了结肠癌风险评估。评估结果提示存在肠道隐患，我们建议他进行结肠镜检查。',
+                lesson: '良好的生活习惯对于预防癌症至关重要，定期筛查可以早期发现癌前病变，有效降低癌症发生风险。',
+                fullDescription: '王先生，62岁，退休教师。退休后，他的生活节奏明显放缓，饮食也变得不太规律，经常吃一些高脂肪、低纤维的食物，如红烧肉、油炸食品等。2023年6月，在子女的建议下，王先生通过我们的平台进行了结肠癌风险评估。\n\n评估结果显示，王先生的结肠癌风险处于中等水平。我们的专家团队建议他立即进行结肠镜检查，以排除潜在的肠道病变。王先生听从了我们的建议，在当地医院进行了结肠镜检查。\n\n检查结果表明，王先生的结肠内有3个息肉，其中一个直径约1.5cm，病理结果为腺瘤性息肉，属于癌前病变。医生及时为王先生进行了息肉切除术，避免了癌症的发生。\n\n手术后，王先生在我们的指导下，调整了饮食习惯，增加了蔬菜、水果和全谷物的摄入，并开始每天散步30分钟。现在，王先生的恢复状态良好，定期进行复查。',
+                likes: 112,
+                views: 2134
+            },
+            {
+                id: 4,
+                title: '赵女士 - 宫颈癌疫苗咨询',
+                category: '咨询案例',
+                patientInfo: '性别：女 | 年龄：32岁',
+                riskFactor: '无明显风险因素',
+                date: '2023年1月',
+                description: '赵女士想接种宫颈癌疫苗，但对疫苗种类和接种时机存在疑问。通过我们的平台，她进行了宫颈癌风险评估并咨询了专家。我们的专家为她提供了详细的接种指导和后续筛查建议。',
+                lesson: '接种疫苗是预防某些癌症的有效手段，专业的咨询可以帮助人们做出更合适的健康决策。',
+                fullDescription: '赵女士，32岁，公司职员。近年来，她经常在媒体上看到关于宫颈癌疫苗的报道，想接种宫颈癌疫苗，但对疫苗的种类、接种时机和效果存在疑问。2023年1月，赵女士通过我们的平台进行了宫颈癌风险评估，并预约了专家咨询。\n\n在咨询过程中，我们的专家详细了解了赵女士的年龄、健康状况和家族史，为她解答了关于宫颈癌疫苗的各种疑问。专家建议赵女士接种九价HPV疫苗，因为她的年龄（32岁）还在九价疫苗的适用范围内，九价疫苗可以预防更多类型的HPV感染。\n\n在我们的帮助下，赵女士顺利预约了疫苗接种，并按照专家的建议，在接种后定期进行宫颈癌筛查。赵女士表示，我们的平台不仅为她提供了专业的咨询服务，还帮助她解决了疫苗接种的实际问题，让她能够安心地进行宫颈癌预防。',
+                likes: 87,
+                views: 1654
+            },
+            {
+                id: 5,
+                title: '刘先生 - 肺癌早期诊断',
+                category: '诊断案例',
+                patientInfo: '性别：男 | 年龄：55岁',
+                riskFactor: '长期吸烟',
+                date: '2023年3月',
+                description: '刘先生有30年的吸烟史，2023年初出现咳嗽、胸闷症状。在家人的劝说下，他通过我们的平台进行了肺癌风险评估。评估结果显示存在高风险，我们立即安排他进行了胸部CT检查，早期发现了肺癌病灶。由于发现及时，手术治疗非常成功，目前刘先生恢复良好，已戒烟并定期复查。',
+                lesson: '有吸烟史的人群应定期进行肺癌筛查，早期发现和治疗可以显著提高治愈率和生存率。',
+                fullDescription: '刘先生，55岁，货车司机。由于工作原因，他有30年的吸烟史，平均每天吸烟2包以上。2023年初，刘先生开始出现咳嗽、胸闷症状，起初他认为是感冒引起的，并没有太在意。但症状持续了一个多月仍未缓解，在家人的劝说下，他通过我们的平台进行了肺癌风险评估。\n\n评估结果显示，刘先生的肺癌风险处于高水平。我们的医疗团队立即联系了刘先生，并安排他在我们合作的医院进行胸部CT检查。检查结果明确指出，在刘先生的左肺上叶有一个直径约1.2cm的结节，高度怀疑为肺癌。\n\n刘先生顺利接受了手术治疗，病理结果证实为肺腺癌早期。由于发现及时，手术非常成功，没有进行化疗或放疗。手术后，刘先生彻底戒烟，并在我们的康复指导下，逐渐恢复了健康。目前，刘先生已经重返工作岗位，并定期进行复查。',
+                likes: 145,
+                views: 3012
+            },
+            {
+                id: 6,
+                title: '张女士 - 乳腺癌预防干预',
+                category: '预防案例',
+                patientInfo: '性别：女 | 年龄：45岁',
+                riskFactor: '乳腺增生史',
+                date: '2022年9月',
+                description: '张女士有多年乳腺增生病史，担心发展为乳腺癌。2022年9月，她通过我们的平台进行了乳腺癌风险评估和预防咨询。我们的专家团队为她制定了个性化的预防干预方案。',
+                lesson: '针对有风险因素的人群，早期进行预防干预可以有效降低癌症发生的可能性。',
+                fullDescription: '张女士，45岁，家庭主妇。她有多年的乳腺增生病史，经常感到乳房胀痛，尤其是在月经前。由于担心乳腺增生会发展为乳腺癌，张女士一直处于焦虑状态。2022年9月，在朋友的推荐下，她通过我们的平台进行了乳腺癌风险评估和预防咨询。\n\n评估结果显示，张女士的乳腺癌风险处于中等水平。我们的专家团队根据她的具体情况，为她制定了个性化的预防干预方案：\n1. 定期乳腺检查（每3个月进行一次乳腺超声检查）\n2. 药物干预（在医生的指导下服用中药调理乳腺增生）\n3. 生活方式调整（保持规律作息，避免熬夜）\n4. 饮食调整（减少咖啡因和辛辣食物的摄入，增加大豆制品的摄入）\n5. 心理干预（定期进行心理咨询，缓解焦虑情绪）\n\n张女士严格按照我们的方案执行，经过一年的干预，她的乳腺增生症状明显改善，焦虑情绪也得到了缓解。最近的乳腺检查显示，她的乳腺增生情况稳定，没有进一步发展的迹象。张女士表示，我们的平台不仅为她提供了专业的医疗建议，还帮助她树立了战胜疾病的信心。',
+                likes: 103,
+                views: 1987
+            }
+        ];
+        
+        // 筛选功能
+        $('.filter-btn').click(function() {
+            var category = $('.filter select').val();
+            var result = $('.filter-result');
+            
+            if (category === 'all') {
+                result.html('所有案例');
+                $('.case-card').show();
+            } else {
+                result.html(category + '案例');
+                $('.case-card').each(function() {
+                    var caseId = $(this).attr('data-case-id');
+                    var caseItem = caseData.find(c => c.id == caseId);
+                    if (caseItem && caseItem.category === category) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+        });
+        
+        // 分页功能
+        let currentPage = 1;
+        const casesPerPage = 4;
+        
+        function showPage(page) {
+            const startIndex = (page - 1) * casesPerPage;
+            const endIndex = startIndex + casesPerPage;
+            
+            $('.case-card').hide().slice(startIndex, endIndex).show();
+            
+            // 更新页码状态
+            $('.page-item').removeClass('active');
+            $('.page-item').eq(page).addClass('active');
+            
+            // 更新分页按钮状态
+            $('.page-item:first').toggleClass('disabled', page === 1);
+            $('.page-item:last').toggleClass('disabled', endIndex >= $('.case-card').length);
+            
+            currentPage = page;
+        }
+        
+        // 分页点击事件
+        $('.page-link').click(function(e) {
+            e.preventDefault();
+            
+            if ($(this).parent().hasClass('disabled')) return;
+            
+            let page = currentPage;
+            
+            if ($(this).text() === '«') {
+                page--;
+            } else if ($(this).text() === '»') {
+                page++;
+            } else {
+                page = parseInt($(this).text());
+            }
+            
+            showPage(page);
+        });
+        
+        // 案例详情模态框
+        function showCaseDetail(caseId) {
+            const caseItem = caseData.find(c => c.id == caseId);
+            if (!caseItem) return;
+            
+            $('#caseDetailTitle').text(caseItem.title);
+            $('#caseDetailCategory').text(caseItem.category);
+            $('#caseDetailDate').text(caseItem.date);
+            $('#caseDetailPatientInfo').text(caseItem.patientInfo);
+            $('#caseDetailRiskFactor').text(caseItem.riskFactor);
+            $('#caseDetailFullDescription').text(caseItem.fullDescription);
+            $('#caseDetailLesson').text(caseItem.lesson);
+            $('#caseDetailLikes').text(caseItem.likes);
+            $('#caseDetailViews').text(caseItem.views);
+            
+            $('#caseDetailModal').modal('show');
+        }
+        
+        // 案例卡片点击事件
+        $('.case-card').click(function(e) {
+            // 如果点击的是按钮，不执行跳转
+            if ($(e.target).is('button') || $(e.target).closest('button').length) {
+                return;
+            }
+            
+            var caseId = $(this).attr('data-case-id');
+            showCaseDetail(caseId);
+        });
+        
+        // 分享案例功能
+        function shareCase() {
+            const caseTitle = $('#caseDetailTitle').text();
+            const caseUrl = window.location.href;
+            const shareText = `【${caseTitle}】 - 癌症风险评估平台案例分享\n${caseUrl}`;
+            
+            // 创建临时文本域用于复制
+            const tempTextarea = $('<textarea>').val(shareText).appendTo('body').select();
+            
+            // 复制到剪贴板
+            document.execCommand('copy');
+            
+            // 移除临时文本域
+            tempTextarea.remove();
+            
+            alert('案例链接已复制到剪贴板，可以分享给他人了！');
+        }
+        
+        // 初始化页面
+        $(document).ready(function() {
+            showPage(1);
+        });
+    </script>
+    
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="loginTabsContent">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？立即注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                        </div>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？立即登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户信息模态框 -->
+    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="user-profile">
+                                <div class="avatar">
+                                    <i class="fas fa-user-circle fa-5x"></i>
+                                </div>
+                                <h4 id="userName">用户名</h4>
+                                <p id="userEmail">用户邮箱</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="nav nav-tabs" id="userTabs" role="tablist">
+                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
+                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
+                            </div>
+                            <div class="tab-content mt-3" id="userTabsContent">
+                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                                    <h5>历史报告</h5>
+                                    <div id="reportsList" class="mt-3">
+                                        <div class="alert alert-info" role="alert">
+                                            加载中...
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                    <h5>账户设置</h5>
+                                    <div class="form-group">
+                                        <label for="newPassword">新密码</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmNewPassword">确认新密码</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
+                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 案例详情模态框 -->
+    <div class="modal fade" id="caseDetailModal" tabindex="-1" role="dialog" aria-labelledby="caseDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="caseDetailModalLabel">案例详情</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h3 id="caseDetailTitle"></h3>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p><strong>分类：</strong><span id="caseDetailCategory"></span></p>
+                            <p><strong>时间：</strong><span id="caseDetailDate"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>患者信息：</strong><span id="caseDetailPatientInfo"></span></p>
+                            <p><strong>风险因素：</strong><span id="caseDetailRiskFactor"></span></p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h4>案例详情</h4>
+                        <p id="caseDetailFullDescription"></p>
+                    </div>
+                    <div class="mt-4">
+                        <h4>案例启示</h4>
+                        <p id="caseDetailLesson"></p>
+                    </div>
+                    <div class="mt-3 text-muted">
+                        <p><i class="fas fa-heart"></i> <span id="caseDetailLikes"></span> 点赞 | <i class="fas fa-eye"></i> <span id="caseDetailViews"></span> 浏览</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="shareCase()">分享案例</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <style>
+        /* 页脚样式优化 - 确保背景和文字颜色清晰可见 */
+        footer {
+            background-color: #0056b3 !important;
+            background: #0056b3 !important;
+            color: #ffffff !important;
+            padding: 30px 0 !important;
+        }
+        footer .container {
+            background-color: #0056b3 !important;
+        }
+        footer .row {
+            background-color: #0056b3 !important;
+        }
+        footer .col-md-4 {
+            background-color: #0056b3 !important;
+        }
+        footer p, footer li {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ffffff !important;
+            background-color: #0056b3 !important;
+        }
+        footer h5 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff !important;
+            background-color: #0056b3 !important;
+        }
+        footer a {
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+            background-color: #0056b3 !important;
+        }
+        footer a:hover {
+            color: #cce7ff !important;
+            text-decoration: underline !important;
+            background-color: #0056b3 !important;
+        }
+        footer .social-icons {
+            background-color: #0056b3 !important;
+        }
+        footer .social-icons a {
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+        footer .social-icons a:hover {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+            color: #cce7ff !important;
+            transform: translateY(-3px);
+        }
+        footer hr {
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            background-color: #0056b3 !important;
+        }
+        footer .text-center {
+            background-color: #0056b3 !important;
+        }
+    </style>
+    <footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
+                    <p>专注于早期癌症发现的人工智能系统，为您的健康保驾护航。</p>
+                    <div class="social-icons mt-4">
+                        <a href="#" class="text-white mr-3"><i class="fab fa-weixin"></i></a>
+                        <a href="#" class="text-white mr-3"><i class="fab fa-weibo"></i></a>
+                        <a href="#" class="text-white mr-3"><i class="fab fa-qq"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">快速链接</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
+                        <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
+                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
+                        <li><a href="experts.html" class="text-white text-decoration-none">专家在线</a></li>
+                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
+                        <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">联系我们</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区中关村科技园区</li>
+                        <li class="mb-2"><i class="fas fa-phone mr-2"></i> 400-123-4567</li>
+                        <li class="mb-2"><i class="fas fa-envelope mr-2"></i> contact@huianyanshiai.com</li>
+                        <li class="mb-2"><i class="fas fa-clock mr-2"></i> 周一至周五 9:00-18:00</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="bg-white opacity-25 mt-4">
+            <div class="text-center">
+                <p class="mb-0">© 2025 慧眼识癌. 保留所有权利.</p>
+                <p class="small mt-1">京ICP备12345678号 | 京公网安备11010802023456号</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 隐藏页面加载动画
+            setTimeout(function() {
+                const loader = document.getElementById('pageLoader');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }, 800);
+            
+            // 初始化区块渐入效果
+            const fadeSections = document.querySelectorAll('.fade-in-section');
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            fadeSections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模态框测试</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>模态框测试页面</h1>
+        <p>点击下面的按钮测试模态框功能：</p>
+        
+        <!-- 测试按钮 -->
+        <button type="button" class="btn btn-primary" onclick="useModel('random-forest')">使用模型</button>
+    </div>
+
+    <!-- 病人数据输入模态框 -->
+    <div class="modal fade" id="patientDataModal" tabindex="-1" role="dialog" aria-labelledby="patientDataModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="patientDataModalLabel">病人数据输入</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="patientDataForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>基本信息</h5>
+                                <div class="form-group">
+                                    <label for="patientName">姓名</label>
+                                    <input type="text" class="form-control" id="patientName" placeholder="请输入病人姓名">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="patientAge">年龄</label>
+                                        <input type="number" class="form-control" id="patientAge" placeholder="请输入年龄" min="0" max="120">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="patientGender">性别</label>
+                                        <select class="form-control" id="patientGender">
+                                            <option value="male">男</option>
+                                            <option value="female">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>医疗数据</h5>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="patientTumorMarker1">肿瘤标志物1</label>
+                                        <input type="number" class="form-control" id="patientTumorMarker1" placeholder="请输入肿瘤标志物1数值" step="0.1" min="0" max="1000">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="patientTumorMarker2">肿瘤标志物2</label>
+                                        <input type="number" class="form-control" id="patientTumorMarker2" placeholder="请输入肿瘤标志物2数值" step="0.1" min="0" max="1000">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="submitPatientData()">提交数据</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 使用模型
+        function useModel(algorithmName) {
+            console.log('使用模型:', algorithmName);
+            // 保存当前使用的算法名称
+            localStorage.setItem('currentAlgorithm', algorithmName);
+            // 显示模态框
+            $('#patientDataModal').modal('show');
+        }
+
+        // 提交病人数据
+        function submitPatientData() {
+            const algorithmName = localStorage.getItem('currentAlgorithm') || 'random-forest';
+            console.log('提交数据，算法:', algorithmName);
+            // 关闭模态框
+            $('#patientDataModal').modal('hide');
+            alert('数据已提交，算法: ' + algorithmName);
+        }
+    </script>
+</body>
+</html>

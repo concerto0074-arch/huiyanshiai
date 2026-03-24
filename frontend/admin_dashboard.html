@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员后台 - 慧眼识癌</title>
+    <!-- 引入Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- 引入Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 区块渐入动画 */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 平滑滚动效果 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 按钮点击反馈效果 */
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* 侧边栏样式 */
+        .sidebar {
+            height: 100vh;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .sidebar-menu li {
+            padding: 0 20px;
+        }
+        
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 15px 20px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: #34495e;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .sidebar-menu a.active {
+            background-color: #3498db;
+        }
+        
+        /* 主内容区样式 */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        /* 头部样式 */
+        .main-header {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* 卡片样式 */
+        .stats-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 图标圆圈样式 */
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+        
+        /* 图表容器样式 */
+        .chart-container {
+            height: 300px;
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        /* 图表类型切换按钮样式 */
+        .chart-type-toggle button {
+            margin-left: 5px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-type-toggle button:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* 数据分析控制面板样式 */
+        .data-table.p-4.mb-4 {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 优化统计卡片样式 */
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-card h4 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        /* 通知样式 */
+        .alert.position-fixed {
+            z-index: 9999;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #007bff, #0056b3);
+        }
+        
+        .stats-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        .stats-card h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stats-card p {
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        /* 表格样式 */
+        .data-table {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        
+        /* 表格样式优化 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+            transition: background-color 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* 按钮样式优化 */
+        .btn {
+            transition: all 0.2s ease;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 徽章样式优化 */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* 表单元素样式优化 */
+        .form-control, .form-select {
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* 内容区域过渡动画 */
+        .content-section {
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(10px);
+        }
+        
+        .content-section.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            /* 侧边栏在移动设备上折叠 */
+            .sidebar {
+                width: 70px;
+                padding: 10px 0;
+            }
+            
+            .sidebar-header h3 {
+                font-size: 18px;
+            }
+            
+            .sidebar-menu li {
+                padding: 0 10px;
+            }
+            
+            .sidebar-menu a {
+                padding: 15px 10px;
+                text-align: center;
+            }
+            
+            .sidebar-menu a span {
+                display: none;
+            }
+            
+            /* 主内容区域自适应 */
+            .main-content {
+                margin-left: 70px;
+                padding: 10px;
+            }
+            
+            /* 统计卡片在移动设备上垂直堆叠 */
+            .stats-card {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .stats-card h3 {
+                font-size: 28px;
+            }
+            
+            /* 头部在移动设备上居中对齐 */
+            .main-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            /* 表格在移动设备上可滚动 */
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            /* 按钮和表单元素在移动设备上调整大小 */
+            .btn {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+            
+            .form-control {
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            /* 进一步优化超小屏幕 */
+            .sidebar {
+                width: 60px;
+            }
+            
+            .main-content {
+                margin-left: 60px;
+            }
+            
+            .sidebar-menu a {
+                padding: 12px 8px;
+            }
+            
+            .main-header h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fa fa-dashboard mr-2"></i>管理后台</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="menu-item active" data-section="dashboard"><i class="fa fa-home mr-2"></i>仪表盘</a></li>
+            <li><a href="#" class="menu-item" data-section="users"><i class="fa fa-users mr-2"></i>用户管理</a></li>
+            <li><a href="#" class="menu-item" data-section="reports"><i class="fa fa-file-medical mr-2"></i>评估报告</a></li>
+            <li><a href="#" class="menu-item" data-section="analytics"><i class="fa fa-chart-line mr-2"></i>统计分析</a></li>
+            <li><a href="#" class="menu-item" data-section="settings"><i class="fa fa-cog mr-2"></i>系统设置</a></li>
+            <li><a href="#" onclick="logout()"><i class="fa fa-sign-out mr-2"></i>退出登录</a></li>
+        </ul>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 头部 -->
+        <div class="main-header">
+            <h2>管理员仪表盘</h2>
+            <div class="user-info">
+                <span>欢迎，管理员</span>
+            </div>
+        </div>
+        
+        <!-- 内容区域容器 -->
+        <div id="contentContainer">
+            <!-- 仪表盘内容 -->
+            <div id="dashboardContent" class="content-section">
+                <!-- 统计卡片 -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3 id="totalUsers">0</h3>
+                            <p>总用户数</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3 id="totalReports">0</h3>
+                            <p>总报告数</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3 id="highRisk">0</h3>
+                            <p>高风险用户</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <h3 id="todayReports">0</h3>
+                            <p>今日新增报告</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 最近报告表格 -->
+                <div class="data-table">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>患者姓名</th>
+                                <th>年龄</th>
+                                <th>性别</th>
+                                <th>风险等级</th>
+                                <th>报告时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentReports">
+                            <!-- 数据将通过JavaScript动态加载 -->
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 用户管理内容 -->
+            <div id="usersContent" class="content-section" style="display: none;">
+                <div class="data-table">
+                    <div class="p-4 border-bottom">
+                        <h3 class="mb-4">用户管理</h3>
+                        <div class="d-flex flex-wrap gap-3 mb-4">
+                            <div class="input-group" style="max-width: 300px;">
+                                <input type="text" id="userSearch" class="form-control" placeholder="搜索用户名或邮箱">
+                                <button class="btn btn-primary" onclick="searchUsers()">搜索</button>
+                            </div>
+                            <select id="userStatusFilter" class="form-select" style="max-width: 150px;">
+                                <option value="all">全部状态</option>
+                                <option value="active">活跃</option>
+                                <option value="inactive">禁用</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="addUser()">
+                                <i class="fa fa-plus mr-2"></i>新增用户
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortUsers('id')" style="cursor: pointer;">ID <span id="sortId">↑</span></th>
+                                    <th onclick="sortUsers('username')" style="cursor: pointer;">用户名 <span id="sortUsername">-</span></th>
+                                    <th onclick="sortUsers('email')" style="cursor: pointer;">邮箱 <span id="sortEmail">-</span></th>
+                                    <th onclick="sortUsers('age')" style="cursor: pointer;">年龄 <span id="sortAge">-</span></th>
+                                    <th onclick="sortUsers('gender')" style="cursor: pointer;">性别 <span id="sortGender">-</span></th>
+                                    <th onclick="sortUsers('registerTime')" style="cursor: pointer;">注册时间 <span id="sortRegisterTime">-</span></th>
+                                    <th onclick="sortUsers('status')" style="cursor: pointer;">状态 <span id="sortStatus">-</span></th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- 数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 评估报告内容 -->
+            <div id="reportsContent" class="content-section" style="display: none;">
+                <div class="data-table">
+                    <div class="p-4 border-bottom">
+                        <h3 class="mb-4">评估报告</h3>
+                        <div class="d-flex flex-wrap gap-3 mb-4">
+                            <div class="d-flex gap-2">
+                                <select class="form-select" id="riskFilter">
+                                    <option value="all">全部风险等级</option>
+                                    <option value="high">高风险</option>
+                                    <option value="medium">中风险</option>
+                                    <option value="low">低风险</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <input type="date" id="startDate" class="form-control">
+                                <input type="date" id="endDate" class="form-control">
+                            </div>
+                            <button class="btn btn-primary" onclick="filterReports()">
+                                <i class="fa fa-search mr-2"></i>筛选
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetReportFilters()">重置</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortReports('id')" style="cursor: pointer;">报告ID <span id="sortReportId">↑</span></th>
+                                    <th onclick="sortReports('patientName')" style="cursor: pointer;">患者姓名 <span id="sortPatientName">-</span></th>
+                                    <th onclick="sortReports('age')" style="cursor: pointer;">年龄 <span id="sortReportAge">-</span></th>
+                                    <th onclick="sortReports('gender')" style="cursor: pointer;">性别 <span id="sortReportGender">-</span></th>
+                                    <th onclick="sortReports('riskLevel')" style="cursor: pointer;">风险等级 <span id="sortRiskLevel">-</span></th>
+                                    <th onclick="sortReports('reportTime')" style="cursor: pointer;">报告时间 <span id="sortReportTime">-</span></th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTableBody">
+                                <!-- 数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 统计分析内容 -->
+            <div id="analyticsContent" class="content-section" style="display: none;">
+                <!-- 数据分析控制面板 -->
+                <div class="data-table p-4 mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <h3 class="mb-0">统计分析</h3>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="timeRange" class="mb-0">时间范围：</label>
+                                <select id="timeRange" class="form-select">
+                                    <option value="month">本月</option>
+                                    <option value="quarter">本季度</option>
+                                    <option value="year" selected>今年</option>
+                                    <option value="all">全部</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <input type="date" id="customStartDate" class="form-control">
+                                <input type="date" id="customEndDate" class="form-control">
+                            </div>
+                            <button class="btn btn-primary" onclick="updateAnalytics()">
+                                <i class="fa fa-refresh mr-1"></i>更新数据
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 核心统计指标 -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card stats-card text-center p-4">
+                            <div class="icon-circle mb-3 bg-primary">
+                                <i class="fa fa-file-medical-o text-white" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <h4 class="mb-1" id="totalReports">3892</h4>
+                            <p class="text-muted mb-0">总报告数</p>
+                            <small class="text-success"><i class="fa fa-arrow-up"></i> 12.5%</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card text-center p-4">
+                            <div class="icon-circle mb-3 bg-danger">
+                                <i class="fa fa-exclamation-triangle text-white" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <h4 class="mb-1" id="highRiskCount">231</h4>
+                            <p class="text-muted mb-0">高风险案例</p>
+                            <small class="text-danger"><i class="fa fa-arrow-up"></i> 8.2%</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card text-center p-4">
+                            <div class="icon-circle mb-3 bg-warning">
+                                <i class="fa fa-user-md text-white" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <h4 class="mb-1" id="avgProcessingTime">2.3</h4>
+                            <p class="text-muted mb-0">平均处理时间(分钟)</p>
+                            <small class="text-success"><i class="fa fa-arrow-down"></i> 15.3%</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stats-card text-center p-4">
+                            <div class="icon-circle mb-3 bg-success">
+                                <i class="fa fa-check-circle text-white" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <h4 class="mb-1" id="accuracyRate">97.8</h4>
+                            <p class="text-muted mb-0">准确率(%)</p>
+                            <small class="text-success"><i class="fa fa-arrow-up"></i> 2.1%</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 图表区域 -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="data-table p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4>风险等级分布</h4>
+                                <div class="chart-type-toggle">
+                                    <button class="btn btn-sm btn-outline-primary active" data-chart="pie" onclick="changeChartType('riskChart', 'pie')">饼图</button>
+                                    <button class="btn btn-sm btn-outline-primary" data-chart="doughnut" onclick="changeChartType('riskChart', 'doughnut')">环形图</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="riskChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="data-table p-4">
+                            <h4>月度报告数量</h4>
+                            <div class="chart-container">
+                                <canvas id="monthlyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="data-table p-4">
+                            <h4>年龄分布</h4>
+                            <div class="chart-container">
+                                <canvas id="ageChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="data-table p-4">
+                            <h4>性别分布</h4>
+                            <div class="chart-container">
+                                <canvas id="genderChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="data-table p-4">
+                            <h4>系统性能指标</h4>
+                            <div class="chart-container">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 系统设置内容 -->
+            <div id="settingsContent" class="content-section" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="data-table p-4">
+                            <h3>基本设置</h3>
+                            <form>
+                                <div class="form-group">
+                                    <label for="siteName">网站名称</label>
+                                    <input type="text" class="form-control" id="siteName" value="慧眼识癌">
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminEmail">管理员邮箱</label>
+                                    <input type="email" class="form-control" id="adminEmail" value="admin@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="maxReports">每日最大报告数</label>
+                                    <input type="number" class="form-control" id="maxReports" value="1000">
+                                </div>
+                                <button type="submit" class="btn btn-primary">保存设置</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="data-table p-4">
+                            <h3>安全设置</h3>
+                            <form>
+                                <div class="form-group">
+                                    <label for="passwordExpiry">密码有效期（天）</label>
+                                    <input type="number" class="form-control" id="passwordExpiry" value="90">
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="twoFactorAuth">
+                                        <label class="form-check-label" for="twoFactorAuth">
+                                            启用双因素认证
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="loginAttempts">
+                                        <label class="form-check-label" for="loginAttempts">
+                                            限制登录尝试次数
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">保存设置</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="loginTabsContent">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？立即注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                        </div>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？立即登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户管理模态框 (新增/编辑) -->
+    <div class="modal fade" id="userManageModal" tabindex="-1" role="dialog" aria-labelledby="userManageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userManageModalLabel">新增用户</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="userManageForm">
+                        <input type="hidden" id="manageUserId">
+                        <div class="form-group">
+                            <label for="manageUsername">用户名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="manageUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="manageEmail">邮箱 <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="manageEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="managePassword">密码</label>
+                            <input type="password" class="form-control" id="managePassword" placeholder="请输入密码(新建必填，修改留空不改)">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="manageAge">年龄</label>
+                                <input type="number" class="form-control" id="manageAge" min="0" max="150">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="manageGender">性别</label>
+                                <select class="form-control" id="manageGender">
+                                    <option value="">未知</option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="manageRole">角色</label>
+                                <select class="form-control" id="manageRole">
+                                    <option value="user">普通用户</option>
+                                    <option value="admin">管理员</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="manageStatus">状态</label>
+                                <select class="form-control" id="manageStatus">
+                                    <option value="active" selected>活跃</option>
+                                    <option value="inactive">禁用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="managePhone">手机号</label>
+                            <input type="text" class="form-control" id="managePhone" placeholder="请输入手机号">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="saveUser()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入jQuery和Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <!-- 引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // 页面加载完成后执行
+        $(document).ready(function() {
+            // 页面加载完成后检查登录状态
+            checkLogin();
+        });
+        
+        // 检查是否已登录
+        function checkLogin() {
+            if (!localStorage.getItem('adminLoggedIn')) {
+                // 未登录，显示登录模态框
+                $('#loginModal').modal('show');
+            }
+        }
+        
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('email');
+            window.location.href = 'index.html';
+        }
+        
+        // 显示登录模态框
+        function showLoginModal() {
+            $('#loginModal').modal('show');
+            $('#registerModal').modal('hide');
+        }
+
+        // 显示注册模态框
+        function showRegisterModal() {
+            $('#registerModal').modal('show');
+            $('#loginModal').modal('hide');
+        }
+        
+        // 登录功能
+        function login() {
+            // 检查当前激活的选项卡
+            const activeTab = document.querySelector('#loginTabs .nav-link.active');
+            
+            if (activeTab.id === 'user-login-tab') {
+                // 用户登录
+                const username = document.getElementById('userLoginUsername').value;
+                const password = document.getElementById('userLoginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                
+                errorDiv.textContent = '';
+                
+                // 使用localStorage模拟登录
+                if (username && password) {
+                    // 存储登录状态到localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('email', username + '@example.com');
+                    
+                    $('#loginModal').modal('hide');
+                    alert('登录成功！');
+                    // 跳转到用户中心
+                    window.location.href = 'user_center.html';
+                } else {
+                    errorDiv.textContent = '请输入用户名和密码';
+                }
+            } else if (activeTab.id === 'admin-login-tab') {
+                // 管理员登录 - 直接在前端验证
+                const username = document.getElementById('adminLoginUsername').value;
+                const password = document.getElementById('adminLoginPassword').value;
+                const errorDiv = document.getElementById('adminLoginError');
+                
+                errorDiv.textContent = '';
+                
+                if (username && password) {
+                    // 简单的管理员账号验证（实际项目中应连接后端API）
+                    // 根据初始化脚本，管理员用户名是admin，密码是admin123
+                    if (username === 'admin' && password === 'admin123') {
+                        // 登录成功，设置本地存储
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('username', username);
+                        localStorage.setItem('email', username + '@example.com');
+                        
+                        $('#loginModal').modal('hide');
+                        alert('管理员登录成功！');
+                        // 刷新页面以加载管理员内容
+                        window.location.reload();
+                    } else {
+                        errorDiv.textContent = '管理员账号或密码错误';
+                    }
+                } else {
+                    errorDiv.textContent = '请输入管理员用户名和密码';
+                }
+            }
+        }
+
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            
+            errorDiv.textContent = '';
+            
+            // 验证输入完整性
+            if (!username || !email || !password) {
+                errorDiv.textContent = '请填写完整的注册信息';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+            
+            // 使用localStorage模拟注册
+            // 存储用户信息（实际项目中应使用安全的存储方式）
+            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
+            
+            // 关闭注册模态框，提示用户注册成功并跳转到登录界面
+            $('#registerModal').modal('hide');
+            alert('注册成功！请登录。');
+            showLoginModal();
+        }
+        
+        // 为登录表单添加提交事件
+        document.getElementById('userLoginForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            login();
+        });
+        
+        // 为注册表单添加提交事件
+        document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            register();
+        });
+        
+        // 切换内容区域
+        function switchContent(section) {
+            // 隐藏所有内容区域
+            const contentSections = document.querySelectorAll('.content-section');
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+                section.classList.remove('active');
+            });
+            
+            // 显示选中的内容区域
+            const targetSection = document.getElementById(section + 'Content');
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                // 使用setTimeout确保动画效果生效
+                setTimeout(() => {
+                    targetSection.classList.add('active');
+                }, 10);
+            }
+            
+            // 更新侧边栏活跃状态
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeMenuItem = document.querySelector(`[data-section="${section}"]`);
+            if (activeMenuItem) {
+                activeMenuItem.classList.add('active');
+            }
+            
+            // 根据选中的区域加载相应数据
+            switch(section) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'users':
+                    loadUsersData();
+                    break;
+                case 'reports':
+                    loadReportsData();
+                    break;
+                case 'analytics':
+                    loadAnalyticsData();
+                    break;
+                case 'settings':
+                    // 设置页面无需额外加载数据
+                    break;
+            }
+        }
+        
+        // 模拟加载仪表盘数据
+        function loadDashboardData() {
+            // 模拟统计数据（带动画效果）
+            animateValue('totalUsers', 0, 1254, 1000);
+            animateValue('totalReports', 0, 3892, 1200);
+            animateValue('highRisk', 0, 231, 800);
+            animateValue('todayReports', 0, 45, 1000);
+            
+            // 模拟最近报告数据
+            const reports = [
+                {id: 1001, name: '张三', age: 45, gender: '男', risk: '高风险', time: '2024-01-15 14:30'},
+                {id: 1002, name: '李四', age: 38, gender: '女', risk: '低风险', time: '2024-01-15 13:15'},
+                {id: 1003, name: '王五', age: 52, gender: '男', risk: '中风险', time: '2024-01-15 11:45'},
+                {id: 1004, name: '赵六', age: 41, gender: '女', risk: '高风险', time: '2024-01-15 10:30'},
+                {id: 1005, name: '孙七', age: 35, gender: '男', risk: '低风险', time: '2024-01-15 09:15'}
+            ];
+            
+            const reportsBody = document.getElementById('recentReports');
+            reportsBody.innerHTML = '';
+            
+            // 逐行添加表格数据，添加动画效果
+            reports.forEach((report, index) => {
+                setTimeout(() => {
+                    const row = document.createElement('tr');
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateY(10px)';
+                    row.innerHTML = `
+                        <td>${report.id}</td>
+                        <td>${report.name}</td>
+                        <td>${report.age}</td>
+                        <td>${report.gender}</td>
+                        <td><span class="badge ${report.risk === '高风险' ? 'badge-danger' : report.risk === '中风险' ? 'badge-warning' : 'badge-success'}">${report.risk}</span></td>
+                        <td>${report.time}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></button>
+                        </td>
+                    `;
+                    reportsBody.appendChild(row);
+                    
+                    // 添加动画
+                    setTimeout(() => {
+                        row.style.transition = 'all 0.3s ease';
+                        row.style.opacity = '1';
+                        row.style.transform = 'translateY(0)';
+                    }, 10);
+                }, index * 100);
+            });
+        }
+        
+        // 数字动画函数
+        function animateValue(id, start, end, duration, decimals = 0) {
+            const element = document.getElementById(id);
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    clearInterval(timer);
+                    current = end;
+                }
+                
+                element.textContent = current.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }, 16);
+        }
+        
+        // 用户数据管理
+        let users = [];
+        let filteredUsers = [];
+        let currentUserSort = { column: 'id', direction: 'asc' };
+
+        async function fetchUsersFromAPI() {
+            try {
+                const response = await fetch('/api/admin/users', {
+                    headers: { 'X-Admin-Token': 'admin-secret-token' }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    users = data.map(u => ({
+                        id: u.id,
+                        username: u.username,
+                        email: u.email,
+                        age: u.age !== null && u.age !== undefined ? u.age : '-',
+                        gender: u.gender || '-',
+                        registerTime: u.created_at || '-',
+                        status: u.status || 'active',
+                        role: u.role || 'user',
+                        phone: u.phone || ''
+                    }));
+                    searchUsers(); // filters, sorts, and renders
+                } else {
+                    console.error('获取用户数据失败');
+                }
+            } catch (error) {
+                console.error('获取用户数据异常:', error);
+            }
+        }
+
+        // 加载用户管理数据
+        function loadUsersData() {
+            fetchUsersFromAPI();
+        }
+
+        // 渲染用户列表到DOM
+        function renderUsersData() {
+            const usersBody = document.getElementById('usersTableBody');
+            usersBody.innerHTML = '';
+            
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                const isStatusActive = user.status === 'active';
+                const statusBadge = `<span class="badge ${isStatusActive ? 'badge-success' : 'badge-secondary'}">${isStatusActive ? '活跃' : '禁用'}</span>`;
+                const toggleTitle = isStatusActive ? "禁用" : "启用";
+                const toggleIcon = isStatusActive ? "fa-ban" : "fa-check";
+                const toggleClass = isStatusActive ? "btn-warning" : "btn-success";
+                
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.age}</td>
+                    <td>${user.gender}</td>
+                    <td>${user.registerTime}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button class="btn btn-sm ${toggleClass} mr-1" onclick="toggleUserStatus(${user.id}, '${isStatusActive ? 'inactive' : 'active'}')" title="${toggleTitle}"><i class="fa ${toggleIcon}"></i></button>
+                        <button class="btn btn-sm btn-primary mr-1" onclick="editUser(${user.id})" title="编辑"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})" title="删除"><i class="fa fa-trash"></i></button>
+                    </td>
+                `;
+                usersBody.appendChild(row);
+            });
+        }
+
+        async function toggleUserStatus(id, newStatus) {
+            try {
+                const response = await fetch(`/api/admin/users/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Token': 'admin-secret-token'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                if (response.ok) {
+                    alert('用户状态已更新');
+                    fetchUsersFromAPI();
+                } else {
+                    const errorData = await response.json();
+                    alert('更新失败: ' + (errorData.error || '未知错误'));
+                }
+            } catch (error) {
+                console.error('更新状态异常:', error);
+                alert('网络异常，请稍后重试');
+            }
+        }
+
+        function searchUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('userStatusFilter').value;
+            
+            filteredUsers = users.filter(user => {
+                const matchesSearch = user.username.toLowerCase().includes(searchTerm) || 
+                                     user.email.toLowerCase().includes(searchTerm);
+                const matchesStatus = statusFilter === 'all' || user.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+            
+            sortUsers(currentUserSort.column, currentUserSort.direction);
+        }
+
+        function sortUsers(column, direction = null) {
+            if (direction === null) {
+                // 切换排序方向
+                direction = currentUserSort.column === column && currentUserSort.direction === 'asc' ? 'desc' : 'asc';
+                currentUserSort = { column, direction };
+            }
+            
+            // 重置所有排序指示器
+            document.querySelectorAll('#usersContent thead th span').forEach(span => {
+                span.textContent = '-';
+            });
+            
+            // 设置当前排序指示器
+            const currentSortSpan = document.getElementById(`sort${column.charAt(0).toUpperCase() + column.slice(1)}`);
+            if (currentSortSpan) {
+                currentSortSpan.textContent = direction === 'asc' ? '↑' : '↓';
+            }
+            
+            // 执行排序
+            filteredUsers.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+                
+                // 处理数字类型
+                if (typeof valA === 'number' && typeof valB === 'number') {
+                    return direction === 'asc' ? valA - valB : valB - valA;
+                }
+                
+                // 处理字符串类型
+                valA = String(valA || '').toLowerCase();
+                valB = String(valB || '').toLowerCase();
+                
+                if (valA < valB) return direction === 'asc' ? -1 : 1;
+                if (valA > valB) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            renderUsersData();
+        }
+
+        // 新增用户
+        function addUser() {
+            document.getElementById('userManageForm').reset();
+            document.getElementById('manageUserId').value = '';
+            document.getElementById('userManageModalLabel').textContent = '新增用户';
+            $('#userManageModal').modal('show');
+        }
+
+        // 编辑用户
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+            
+            document.getElementById('userManageForm').reset();
+            document.getElementById('manageUserId').value = user.id;
+            document.getElementById('manageUsername').value = user.username;
+            document.getElementById('manageEmail').value = user.email;
+            document.getElementById('manageAge').value = (user.age !== '-' && user.age !== null) ? user.age : '';
+            document.getElementById('manageGender').value = user.gender !== '-' ? user.gender : '';
+            document.getElementById('manageRole').value = user.role;
+            document.getElementById('manageStatus').value = user.status;
+            document.getElementById('managePhone').value = user.phone;
+            
+            document.getElementById('userManageModalLabel').textContent = '编辑用户';
+            $('#userManageModal').modal('show');
+        }
+
+        // 保存用户
+        async function saveUser() {
+            const id = document.getElementById('manageUserId').value;
+            const isEdit = !!id;
+            
+            const username = document.getElementById('manageUsername').value;
+            const email = document.getElementById('manageEmail').value;
+            const password = document.getElementById('managePassword').value;
+            const age = document.getElementById('manageAge').value;
+            const gender = document.getElementById('manageGender').value;
+            const role = document.getElementById('manageRole').value;
+            const status = document.getElementById('manageStatus').value;
+            const phone = document.getElementById('managePhone').value;
+            
+            if (!username || !email) {
+                alert('请填写用户名和邮箱');
+                return;
+            }
+            if (!isEdit && !password) {
+                alert('新建用户必须填写密码');
+                return;
+            }
+            
+            let payload = { username, email, role, status };
+            if (password) payload.password = password;
+            if (age) payload.age = parseInt(age);
+            if (gender) payload.gender = gender;
+            if (phone) payload.phone = phone;
+            
+            try {
+                const method = isEdit ? 'PUT' : 'POST';
+                const url = isEdit ? `/api/admin/users/${id}` : '/api/admin/users';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Admin-Token': 'admin-secret-token'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (response.ok) {
+                    $('#userManageModal').modal('hide');
+                    alert(isEdit ? '用户信息已更新' : '已成功新增用户');
+                    fetchUsersFromAPI();
+                } else {
+                    const errorData = await response.json();
+                    alert('操作失败: ' + (errorData.error || '未知错误'));
+                }
+            } catch (error) {
+                console.error('用户保存异常:', error);
+                alert('网络异常，请稍后重试');
+            }
+        }
+
+        // 删除用户
+        async function deleteUser(id) {
+            if (confirm('确定要删除这个用户吗？此操作不可逆。')) {
+                try {
+                    const response = await fetch(`/api/admin/users/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'X-Admin-Token': 'admin-secret-token' }
+                    });
+                    
+                    if (response.ok) {
+                        alert('已成功删除用户');
+                        fetchUsersFromAPI();
+                    } else {
+                        const errorData = await response.json();
+                        alert('删除失败: ' + (errorData.error || '未知错误'));
+                    }
+                } catch (error) {
+                    console.error('删除异常:', error);
+                    alert('网络异常，请稍后重试');
+                }
+            }
+        }
+        
+        // 报告数据管理
+        let reports = [
+            {id: 1001, patientName: '张三', age: 45, gender: '男', riskLevel: 'high', reportTime: '2024-01-15 14:30'},
+            {id: 1002, patientName: '李四', age: 38, gender: '女', riskLevel: 'low', reportTime: '2024-01-15 13:15'},
+            {id: 1003, patientName: '王五', age: 52, gender: '男', riskLevel: 'medium', reportTime: '2024-01-15 11:45'},
+            {id: 1004, patientName: '赵六', age: 41, gender: '女', riskLevel: 'high', reportTime: '2024-01-15 10:30'},
+            {id: 1005, patientName: '孙七', age: 35, gender: '男', riskLevel: 'low', reportTime: '2024-01-15 09:15'},
+            {id: 1006, patientName: '周八', age: 48, gender: '女', riskLevel: 'medium', reportTime: '2024-01-14 16:20'},
+            {id: 1007, patientName: '吴九', age: 33, gender: '男', riskLevel: 'low', reportTime: '2024-01-14 15:45'},
+            {id: 1008, patientName: '郑十', age: 55, gender: '女', riskLevel: 'high', reportTime: '2024-01-14 14:10'}
+        ];
+        let filteredReports = [...reports];
+        let currentReportSort = { column: 'id', direction: 'asc' };
+
+        // 模拟加载评估报告数据
+        function loadReportsData() {
+            const reportsBody = document.getElementById('reportsTableBody');
+            reportsBody.innerHTML = '';
+            
+            filteredReports.forEach(report => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${report.id}</td>
+                    <td>${report.patientName}</td>
+                    <td>${report.age}</td>
+                    <td>${report.gender}</td>
+                    <td><span class="badge ${report.riskLevel === 'high' ? 'badge-danger' : report.riskLevel === 'medium' ? 'badge-warning' : 'badge-success'}">${report.riskLevel === 'high' ? '高风险' : report.riskLevel === 'medium' ? '中风险' : '低风险'}</span></td>
+                    <td>${report.reportTime}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info mr-1" onclick="viewReport(${report.id})"><i class="fa fa-eye"></i></button>
+                        <button class="btn btn-sm btn-primary mr-1"><i class="fa fa-download"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteReport(${report.id})"><i class="fa fa-trash"></i></button>
+                    </td>
+                `;
+                reportsBody.appendChild(row);
+            });
+        }
+
+        function filterReports() {
+            const riskFilter = document.getElementById('riskFilter').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            filteredReports = reports.filter(report => {
+                const matchesRisk = riskFilter === 'all' || report.riskLevel === riskFilter;
+                
+                const reportDate = new Date(report.reportTime.split(' ')[0]);
+                const matchesStartDate = !startDate || reportDate >= new Date(startDate);
+                const matchesEndDate = !endDate || reportDate <= new Date(endDate);
+                
+                return matchesRisk && matchesStartDate && matchesEndDate;
+            });
+            
+            sortReports(currentReportSort.column, currentReportSort.direction);
+        }
+
+        function resetReportFilters() {
+            document.getElementById('riskFilter').value = 'all';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            filteredReports = [...reports];
+            sortReports(currentReportSort.column, currentReportSort.direction);
+        }
+
+        function sortReports(column, direction = null) {
+            if (direction === null) {
+                // 切换排序方向
+                direction = currentReportSort.column === column && currentReportSort.direction === 'asc' ? 'desc' : 'asc';
+                currentReportSort = { column, direction };
+            }
+            
+            // 重置所有排序指示器
+            document.querySelectorAll('thead th span').forEach(span => {
+                span.textContent = '-';
+            });
+            
+            // 设置当前排序指示器
+            const currentSortSpan = document.getElementById(`sort${column.charAt(0).toUpperCase() + column.slice(1)}`);
+            if (currentSortSpan) {
+                currentSortSpan.textContent = direction === 'asc' ? '↑' : '↓';
+            }
+            
+            // 执行排序
+            filteredReports.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+                
+                // 处理数字类型
+                if (typeof valA === 'number' && typeof valB === 'number') {
+                    return direction === 'asc' ? valA - valB : valB - valA;
+                }
+                
+                // 处理日期时间类型
+                if (column === 'reportTime') {
+                    valA = new Date(valA);
+                    valB = new Date(valB);
+                    return direction === 'asc' ? valA - valB : valB - valA;
+                }
+                
+                // 处理字符串类型
+                valA = String(valA).toLowerCase();
+                valB = String(valB).toLowerCase();
+                
+                if (valA < valB) return direction === 'asc' ? -1 : 1;
+                if (valA > valB) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            loadReportsData();
+        }
+
+        // 查看报告
+        function viewReport(id) {
+            // 这里可以实现查看报告的逻辑
+            alert(`查看报告 ${id}`);
+        }
+
+        // 删除报告
+        function deleteReport(id) {
+            // 这里可以实现删除报告的逻辑
+            if (confirm('确定要删除这个报告吗？')) {
+                reports = reports.filter(report => report.id !== id);
+                filterReports();
+                alert('报告已删除');
+            }
+        }
+        
+        // 模拟加载统计分析数据
+        // 存储所有图表实例
+        let charts = {};
+        
+        // 初始化或更新统计分析数据
+        function loadAnalyticsData() {
+            // 初始化图表
+            initRiskChart('pie');
+            initMonthlyChart();
+            initAgeChart();
+            initGenderChart();
+            initPerformanceChart();
+            
+            // 数字增长动画
+            animateStatNumbers();
+        }
+        
+        // 更新分析数据
+        function updateAnalytics() {
+            // 这里可以根据选择的时间范围从服务器获取数据
+            // 目前使用模拟数据更新
+            const timeRange = document.getElementById('timeRange').value;
+            const customStartDate = document.getElementById('customStartDate').value;
+            const customEndDate = document.getElementById('customEndDate').value;
+            
+            // 显示加载状态
+            showLoading();
+            
+            // 模拟异步数据加载
+            setTimeout(() => {
+                // 更新统计数字
+                updateStatNumbers();
+                
+                // 更新图表
+                updateCharts(timeRange);
+                
+                // 隐藏加载状态
+                hideLoading();
+                
+                // 显示更新成功提示
+                showNotification('数据分析已更新', 'success');
+            }, 1000);
+        }
+        
+        // 显示加载状态
+        function showLoading() {
+            // 这里可以添加全局加载指示器
+            document.querySelectorAll('.chart-container').forEach(container => {
+                container.style.opacity = '0.5';
+            });
+        }
+        
+        // 隐藏加载状态
+        function hideLoading() {
+            document.querySelectorAll('.chart-container').forEach(container => {
+                container.style.opacity = '1';
+            });
+        }
+        
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed top-2 right-2 z-3 p-3`;
+            notification.textContent = message;
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // 风险等级分布图表
+        function initRiskChart(type = 'pie') {
+            const riskCtx = document.getElementById('riskChart').getContext('2d');
+            
+            // 销毁已有图表
+            if (charts.riskChart) {
+                charts.riskChart.destroy();
+            }
+            
+            charts.riskChart = new Chart(riskCtx, {
+                type: type,
+                data: {
+                    labels: ['高风险', '中风险', '低风险'],
+                    datasets: [{
+                        data: [231, 745, 2916],
+                        backgroundColor: ['#dc3545', '#ffc107', '#28a745'],
+                        borderColor: ['#dc3545', '#ffc107', '#28a745'],
+                        borderWidth: 1,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 月度报告数量图表
+        function initMonthlyChart() {
+            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+            
+            if (charts.monthlyChart) {
+                charts.monthlyChart.destroy();
+            }
+            
+            charts.monthlyChart = new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                    datasets: [{
+                        label: '报告数量',
+                        data: [320, 450, 680, 520, 790, 950, 880, 1200, 1500, 1800, 2100, 3892],
+                        backgroundColor: '#007bff',
+                        borderColor: '#007bff',
+                        borderWidth: 1
+                    }, {
+                        label: '高风险报告',
+                        data: [23, 31, 45, 38, 56, 67, 59, 87, 102, 123, 145, 231],
+                        backgroundColor: '#dc3545',
+                        borderColor: '#dc3545',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 年龄分布图表
+        function initAgeChart() {
+            const ageCtx = document.getElementById('ageChart').getContext('2d');
+            
+            if (charts.ageChart) {
+                charts.ageChart.destroy();
+            }
+            
+            charts.ageChart = new Chart(ageCtx, {
+                type: 'line',
+                data: {
+                    labels: ['20-30', '31-40', '41-50', '51-60', '61-70', '70+'],
+                    datasets: [{
+                        label: '用户数量',
+                        data: [245, 389, 421, 156, 32, 11],
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        fill: true,
+                        tension: 0.1,
+                        pointBackgroundColor: '#28a745',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 性别分布图表
+        function initGenderChart() {
+            const genderCtx = document.getElementById('genderChart').getContext('2d');
+            
+            if (charts.genderChart) {
+                charts.genderChart.destroy();
+            }
+            
+            charts.genderChart = new Chart(genderCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['男性', '女性', '未知'],
+                    datasets: [{
+                        label: '用户数量',
+                        data: [1895, 1986, 11],
+                        backgroundColor: ['#007bff', '#e83e8c', '#6c757d'],
+                        borderColor: ['#007bff', '#e83e8c', '#6c757d'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 系统性能指标图表
+        function initPerformanceChart() {
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            
+            if (charts.performanceChart) {
+                charts.performanceChart.destroy();
+            }
+            
+            charts.performanceChart = new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [{
+                        label: '平均响应时间(秒)',
+                        data: [1.2, 1.1, 1.3, 1.0, 1.4, 1.2, 0.9],
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        fill: true,
+                        tension: 0.1,
+                        yAxisID: 'y'
+                    }, {
+                        label: '准确率(%)',
+                        data: [98.2, 97.8, 98.5, 97.9, 98.1, 97.7, 98.4],
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        fill: true,
+                        tension: 0.1,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '平均响应时间(秒)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '准确率(%)'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 切换图表类型
+        function changeChartType(chartId, type) {
+            // 更新按钮状态
+            const buttons = event.target.parentElement.querySelectorAll('button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 更新图表
+            if (chartId === 'riskChart') {
+                initRiskChart(type);
+            }
+        }
+        
+        // 数字增长动画
+        function animateStatNumbers() {
+            const statElements = document.querySelectorAll('.stats-card h4');
+            statElements.forEach(element => {
+                const target = parseInt(element.textContent);
+                const duration = 2000;
+                let start = 0;
+                const increment = target / (duration / 16);
+                
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start >= target) {
+                        element.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = Math.floor(start);
+                    }
+                }, 16);
+            });
+        }
+        
+        // 更新统计数字
+        function updateStatNumbers() {
+            // 模拟更新统计数字
+            document.getElementById('totalReports').textContent = '4123';
+            document.getElementById('highRiskCount').textContent = '245';
+            document.getElementById('avgProcessingTime').textContent = '2.1';
+            document.getElementById('accuracyRate').textContent = '98.1';
+            
+            // 应用数字增长动画
+            animateStatNumbers();
+        }
+        
+        // 更新图表数据
+        function updateCharts(timeRange) {
+            // 根据时间范围更新图表数据
+            // 目前使用模拟数据
+            
+            // 更新风险等级分布图表
+            if (charts.riskChart) {
+                charts.riskChart.data.datasets[0].data = [245, 789, 3089];
+                charts.riskChart.update();
+            }
+            
+            // 更新月度报告数量图表
+            if (charts.monthlyChart) {
+                charts.monthlyChart.data.datasets[0].data = [350, 480, 720, 560, 850, 1020, 950, 1280, 1600, 1900, 2200, 4123];
+                charts.monthlyChart.data.datasets[1].data = [25, 34, 48, 42, 61, 72, 65, 92, 110, 132, 156, 245];
+                charts.monthlyChart.update();
+            }
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
+            
+            // 页面加载完成后，显示第一个内容区域
+            document.getElementById('dashboardContent').style.display = 'block';
+            document.getElementById('dashboardContent').classList.add('active');
+            
+            loadDashboardData();
+            
+            // 绑定侧边栏点击事件
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    switchContent(section);
+                });
+            });
+            
+            // 绑定用户管理搜索和筛选事件
+            if (document.getElementById('userSearch')) {
+                document.getElementById('userSearch').addEventListener('input', searchUsers);
+            }
+            if (document.getElementById('userStatusFilter')) {
+                document.getElementById('userStatusFilter').addEventListener('change', searchUsers);
+            }
+            
+            // 绑定报告管理筛选事件
+            if (document.getElementById('riskFilter')) {
+                document.getElementById('riskFilter').addEventListener('change', filterReports);
+            }
+            if (document.getElementById('startDate')) {
+                document.getElementById('startDate').addEventListener('change', filterReports);
+            }
+            if (document.getElementById('endDate')) {
+                document.getElementById('endDate').addEventListener('change', filterReports);
+            }
+        });
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 隐藏页面加载动画
+            setTimeout(function() {
+                const loader = document.getElementById('pageLoader');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }, 800);
+            
+            // 初始化区块渐入效果
+            const fadeSections = document.querySelectorAll('.fade-in-section');
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            fadeSections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

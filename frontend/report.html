@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>癌症风险预测报告 - 慧眼识癌</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        /* 报告容器 */
+        .report-container {
+            background-color: white;
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        /* 报告页眉 */
+        .report-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        .report-title {
+            font-size: 2rem;
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-subtitle {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        
+        .report-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        /* 报告内容区块 */
+        .report-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            color: #007bff;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #495057;
+            margin-bottom: 0.8rem;
+            font-weight: bold;
+        }
+        
+        /* 患者信息卡片 */
+        .patient-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-row {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            width: 120px;
+            color: #6c757d;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        /* 风险评估卡片 */
+        .risk-assessment {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .risk-level {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .risk-low {
+            color: #28a745;
+        }
+        
+        .risk-medium {
+            color: #ffc107;
+        }
+        
+        .risk-high {
+            color: #dc3545;
+        }
+        
+        .risk-confidence {
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+        
+        /* 风险分布 */
+        .risk-distribution {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .distribution-item {
+            margin-bottom: 1rem;
+        }
+        
+        .distribution-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .distribution-progress {
+            height: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        /* 因素分析 */
+        .factors-analysis {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .factor-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .factor-name {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .factor-impact {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        /* 建议 */
+        .recommendations {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .recommendation-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #28a745;
+        }
+        
+        .recommendation-title {
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* 医学参考 */
+        .medical-references {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reference-item {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        /* 报告页脚 */
+        .report-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #007bff;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        /* 打印样式 */
+        @media print {
+            .report-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .report-section {
+                break-inside: avoid;
+            }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            color: #007bff !important;
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                慧眼识癌
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="algorithms.html">核心算法</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="report.html">报告页面</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 报告容器 -->
+    <div class="container">
+        <div class="report-container">
+            <!-- 报告页眉 -->
+            <div class="report-header">
+                <h1 class="report-title">癌症风险预测报告</h1>
+                <p class="report-subtitle">基于机器学习模型的综合风险评估</p>
+                <div class="report-meta">
+                    <span>报告ID: <strong id="reportId">RPT_123456_789</strong></span> | 
+                    <span>生成时间: <strong id="reportTime">2025-12-20 14:30:00</strong></span> | 
+                    <span>算法版本: <strong>v1.3.0</strong></span>
+                </div>
+            </div>
+
+            <!-- 患者基本信息 -->
+            <div class="report-section">
+                <h2 class="section-title">1. 患者基本信息</h2>
+                <div class="patient-info">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-row">
+                                <span class="info-label">姓名:</span>
+                                <span class="info-value" id="patientName">张三</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">性别:</span>
+                                <span class="info-value" id="patientGender">男</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">年龄:</span>
+                                <span class="info-value" id="patientAge">55</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">身高:</span>
+                                <span class="info-value" id="patientHeight">175 cm</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">体重:</span>
+                                <span class="info-value" id="patientWeight">70 kg</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">BMI:</span>
+                                <span class="info-value" id="patientBmi">22.9</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-row">
+                                <span class="info-label">吸烟史:</span>
+                                <span class="info-value" id="patientSmoke">有</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">饮酒史:</span>
+                                <span class="info-value" id="patientDrink">偶尔</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">家族病史:</span>
+                                <span class="info-value" id="patientFamilyHistory">无</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">既往病史:</span>
+                                <span class="info-value" id="patientPastHistory">高血压</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">使用算法:</span>
+                                <span class="info-value" id="algorithmName">随机森林</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 风险评估结果 -->
+            <div class="report-section">
+                <h2 class="section-title">2. 风险评估结果</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="risk-assessment">
+                            <div class="risk-level risk-low" id="riskLevel">低风险</div>
+                            <div class="risk-confidence">
+                                <p>置信度: <strong id="confidence">95%</strong></p>
+                                <p>评估时间: <strong id="assessmentTime">2025-12-20 14:30:00</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="risk-distribution">
+                            <h3 class="section-subtitle">风险分布</h3>
+                            <div class="distribution-item">
+                                <div class="distribution-label">
+                                    <span>低风险</span>
+                                    <span id="lowRisk">85%</span>
+                                </div>
+                                <div class="progress distribution-progress">
+                                    <div class="progress-bar bg-success" id="lowRiskBar" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="distribution-item">
+                                <div class="distribution-label">
+                                    <span>中风险</span>
+                                    <span id="mediumRisk">10%</span>
+                                </div>
+                                <div class="progress distribution-progress">
+                                    <div class="progress-bar bg-warning" id="mediumRiskBar" style="width: 10%"></div>
+                                </div>
+                            </div>
+                            <div class="distribution-item">
+                                <div class="distribution-label">
+                                    <span>高风险</span>
+                                    <span id="highRisk">5%</span>
+                                </div>
+                                <div class="progress distribution-progress">
+                                    <div class="progress-bar bg-danger" id="highRiskBar" style="width: 5%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 关键风险因素分析 -->
+            <div class="report-section">
+                <h2 class="section-title">3. 关键风险因素分析</h2>
+                <div class="factors-analysis">
+                    <h3 class="section-subtitle">主要影响因素</h3>
+                    <div id="factorsList">
+                        <!-- 风险因素将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 肿瘤标志物分析 -->
+            <div class="report-section">
+                <h2 class="section-title">4. 肿瘤标志物分析</h2>
+                <div class="factors-analysis" id="tumorMarkers">
+                    <!-- 肿瘤标志物将通过JavaScript动态生成 -->
+                </div>
+            </div>
+
+            <!-- 健康建议 -->
+            <div class="report-section">
+                <h2 class="section-title">5. 健康建议</h2>
+                <div class="recommendations" id="recommendations">
+                    <!-- 建议将通过JavaScript动态生成 -->
+                </div>
+            </div>
+
+            <!-- 医学参考 -->
+            <div class="report-section">
+                <h2 class="section-title">6. 医学参考</h2>
+                <div class="medical-references">
+                    <h3 class="section-subtitle">参考依据</h3>
+                    <div class="reference-item">
+                        <strong>1. 中国抗癌协会《癌症筛查指南》</strong>
+                        <p>根据最新版指南，结合患者年龄、性别、生活习惯等因素进行综合评估</p>
+                    </div>
+                    <div class="reference-item">
+                        <strong>2. 世界卫生组织(WHO)癌症预防建议</strong>
+                        <p>基于WHO发布的癌症预防策略，制定个性化的健康建议</p>
+                    </div>
+                    <div class="reference-item">
+                        <strong>3. 美国国家癌症研究所(NCI)风险评估模型</strong>
+                        <p>采用国际公认的风险评估算法，确保评估结果的科学性和准确性</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 报告页脚 -->
+            <div class="report-footer">
+                <p><strong>重要声明:</strong> 本报告仅作为医学参考，不能替代医生的诊断和治疗建议。如有不适，请及时就医。</p>
+                <p>&copy; 2025 慧眼识癌 - 癌症风险综合预测平台</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 回到顶部按钮 -->
+    <button onclick="topFunction()" id="backToTop" title="回到顶部" style="position: fixed; bottom: 20px; right: 30px; z-index: 99; font-size: 18px; border: none; outline: none; background-color: #007bff; color: white; cursor: pointer; padding: 15px; border-radius: 4px;">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 回到顶部功能
+        let mybutton = document.getElementById("backToTop");
+        window.onscroll = function() {scrollFunction()};
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+        
+        // 从URL获取报告数据
+        function getReportData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const reportData = urlParams.get('data');
+            if (reportData) {
+                return JSON.parse(decodeURIComponent(reportData));
+            }
+            // 默认数据
+            return {
+                patientName: "张三",
+                patientGender: "男",
+                patientAge: 55,
+                patientHeight: 175,
+                patientWeight: 70,
+                patientBmi: 22.9,
+                patientSmoke: "有",
+                patientDrink: "偶尔",
+                patientFamilyHistory: "无",
+                patientPastHistory: "高血压",
+                algorithm: "random-forest",
+                riskLevel: "低风险",
+                confidence: 95,
+                probabilities: {
+                    "低风险": 0.85,
+                    "中风险": 0.10,
+                    "高风险": 0.05
+                },
+                factors: [
+                    {
+                        name: "年龄",
+                        value: 55,
+                        impact: "随着年龄增长，癌症风险逐渐增加",
+                        isPositive: true
+                    },
+                    {
+                        name: "吸烟史",
+                        value: "有",
+                        impact: "长期吸烟会增加多种癌症的风险",
+                        isPositive: false
+                    },
+                    {
+                        name: "BMI指数",
+                        value: 22.9,
+                        impact: "BMI在正常范围内，有助于降低癌症风险",
+                        isPositive: true
+                    },
+                    {
+                        name: "饮酒史",
+                        value: "偶尔",
+                        impact: "偶尔饮酒对癌症风险影响较小",
+                        isPositive: true
+                    }
+                ],
+                tumorMarkers: [
+                    {
+                        name: "CEA",
+                        value: 2.5,
+                        normalRange: "0-5 ng/mL",
+                        status: "正常"
+                    },
+                    {
+                        name: "AFP",
+                        value: 8.2,
+                        normalRange: "0-20 ng/mL",
+                        status: "正常"
+                    },
+                    {
+                        name: "CA125",
+                        value: 15.8,
+                        normalRange: "0-35 U/mL",
+                        status: "正常"
+                    },
+                    {
+                        name: "CA19-9",
+                        value: 22.3,
+                        normalRange: "0-37 U/mL",
+                        status: "正常"
+                    }
+                ],
+                recommendations: [
+                    {
+                        title: "生活方式调整",
+                        content: "保持健康的生活方式，包括均衡饮食、适量运动、戒烟限酒，有助于降低癌症风险。"
+                    },
+                    {
+                        title: "定期体检",
+                        content: "建议每年进行一次全面体检，包括肿瘤标志物检测和影像学检查，以便早期发现潜在问题。"
+                    },
+                    {
+                        title: "疾病管理",
+                        content: "积极管理现有的高血压等慢性疾病，控制血压在正常范围内。"
+                    },
+                    {
+                        title: "饮食建议",
+                        content: "多吃新鲜蔬菜和水果，减少红肉和加工肉类的摄入，增加膳食纤维的摄入。"
+                    },
+                    {
+                        title: "运动建议",
+                        content: "每周至少进行150分钟的中等强度有氧运动，如快走、游泳、骑自行车等。"
+                    },
+                    {
+                        title: "心理调节",
+                        content: "保持良好的心态，避免长期处于压力状态，学会放松和减压。"
+                    }
+                ]
+            };
+        }
+        
+        // 生成报告ID
+        function generateReportId() {
+            return 'RPT_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        }
+        
+        // 填充报告内容
+        function populateReport() {
+            const data = getReportData();
+            
+            // 填充基本信息
+            document.getElementById('reportId').textContent = generateReportId();
+            const now = new Date();
+            const timeStr = now.toLocaleString();
+            document.getElementById('reportTime').textContent = timeStr;
+            document.getElementById('assessmentTime').textContent = timeStr;
+            
+            // 填充患者信息
+            document.getElementById('patientName').textContent = data.patientName || "未知";
+            document.getElementById('patientGender').textContent = data.patientGender || "未知";
+            document.getElementById('patientAge').textContent = data.patientAge || "未知";
+            document.getElementById('patientHeight').textContent = data.patientHeight ? `${data.patientHeight} cm` : "未知";
+            document.getElementById('patientWeight').textContent = data.patientWeight ? `${data.patientWeight} kg` : "未知";
+            document.getElementById('patientBmi').textContent = data.patientBmi || "未知";
+            document.getElementById('patientSmoke').textContent = data.patientSmoke || "未知";
+            document.getElementById('patientDrink').textContent = data.patientDrink || "未知";
+            document.getElementById('patientFamilyHistory').textContent = data.patientFamilyHistory || "未知";
+            document.getElementById('patientPastHistory').textContent = data.patientPastHistory || "未知";
+            document.getElementById('algorithmName').textContent = data.algorithm || "未知";
+            
+            // 填充风险评估
+            const riskLevel = data.riskLevel || "未知";
+            document.getElementById('riskLevel').textContent = riskLevel;
+            document.getElementById('riskLevel').className = `risk-level ${riskLevel === '低风险' ? 'risk-low' : riskLevel === '中风险' ? 'risk-medium' : 'risk-high'}`;
+            document.getElementById('confidence').textContent = `${data.confidence || 0}%`;
+            
+            // 填充风险分布
+            const probabilities = data.probabilities || {"低风险": 0, "中风险": 0, "高风险": 0};
+            document.getElementById('lowRisk').textContent = `${(probabilities['低风险'] * 100).toFixed(1)}%`;
+            document.getElementById('lowRiskBar').style.width = `${(probabilities['低风险'] * 100).toFixed(1)}%`;
+            document.getElementById('mediumRisk').textContent = `${(probabilities['中风险'] * 100).toFixed(1)}%`;
+            document.getElementById('mediumRiskBar').style.width = `${(probabilities['中风险'] * 100).toFixed(1)}%`;
+            document.getElementById('highRisk').textContent = `${(probabilities['高风险'] * 100).toFixed(1)}%`;
+            document.getElementById('highRiskBar').style.width = `${(probabilities['高风险'] * 100).toFixed(1)}%`;
+            
+            // 填充风险因素
+            const factorsList = document.getElementById('factorsList');
+            const factors = data.factors || [];
+            factorsList.innerHTML = factors.map(factor => `
+                <div class="factor-item">
+                    <div class="factor-name">${factor.name}: ${factor.value}</div>
+                    <div class="factor-impact">${factor.impact}</div>
+                </div>
+            `).join('');
+            
+            // 填充肿瘤标志物
+            const tumorMarkers = document.getElementById('tumorMarkers');
+            const markers = data.tumorMarkers || [];
+            tumorMarkers.innerHTML = `
+                <h3 class="section-subtitle">肿瘤标志物检测结果</h3>
+                ${markers.map(marker => `
+                    <div class="factor-item">
+                        <div class="factor-name">${marker.name}</div>
+                        <div class="factor-impact">
+                            <p>检测值: ${marker.value}</p>
+                            <p>正常范围: ${marker.normalRange}</p>
+                            <p>状态: <strong style="color: ${marker.status === '正常' ? '#28a745' : '#dc3545'}">${marker.status}</strong></p>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            
+            // 填充建议
+            const recommendations = document.getElementById('recommendations');
+            const recs = data.recommendations || [];
+            recommendations.innerHTML = recs.map(rec => `
+                <div class="recommendation-item">
+                    <div class="recommendation-title">${rec.title}</div>
+                    <div>${rec.content}</div>
+                </div>
+            `).join('');
+        }
+        
+        // 页面加载完成后填充报告内容
+        document.addEventListener('DOMContentLoaded', function() {
+            populateReport();
+        });
+        
+        // 打印报告功能
+        function printReport() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>肺癌早期筛查：低剂量CT的重要性 - 慧眼识癌</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        
+
+        /* 主内容区样式 */
+        .main-content {
+            padding: 40px 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* 文章详情页面样式 */
+        .article-detail {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-title {
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .article-meta span {
+            margin-right: 25px;
+        }
+
+        .article-content {
+            line-height: 2.0;
+            font-size: 1.15rem;
+            color: #333;
+        }
+
+        .article-content h2 {
+            color: #e74c3c;
+            margin-top: 40px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .article-content h3 {
+            color: #e74c3c;
+            margin-top: 35px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .article-content p {
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        .article-content ul {
+            margin-bottom: 25px;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 10px;
+        }
+
+        /* 相关文章样式 */
+        .related-articles {
+            margin-top: 60px;
+        }
+
+        .related-articles h3 {
+            color: #e74c3c;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .related-article-card {
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .related-article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .related-article-img {
+            height: 180px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .related-article-card .card-body {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .related-article-card .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .related-article-card .card-text {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* 页脚样式 */
+        .footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .article-detail {
+                padding: 20px;
+            }
+
+            .article-title {
+                font-size: 1.8rem;
+            }
+
+            .article-content {
+                font-size: 1rem;
+                line-height: 1.8;
+            }
+
+            .article-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .article-content h3 {
+                font-size: 1.3rem;
+            }
+
+            .related-articles {
+                margin-top: 40px;
+            }
+
+            .related-article-img {
+                height: 150px;
+            }
+        }
+
+        /* 页脚样式 */
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        .footer-links a {
+            display: block;
+            color: #fff;
+            margin-bottom: 10px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #e74c3c;
+        }
+
+        .social-links a {
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .social-links a:hover {
+            color: #e74c3c;
+        }
+
+        /* 页脚样式 */
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        .footer-links a {
+            color: #fff;
+            margin-right: 20px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* 返回按钮样式 */
+        .back-btn {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            background-color: #c0392b;
+            color: #fff;
+        }
+    
+        
+        
+        /* 导航栏样式 */
+        .navbar {
+            background-color: white !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+            padding: 0.5rem 1rem !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+        }
+        .navbar .container {
+            max-width: 1200px !important;
+            padding: 0 15px !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        .navbar-brand {
+            display: flex !important;
+            align-items: center !important;
+            color: #007BFF !important;
+            text-decoration: none !important;
+            margin-right: 30px !important;
+            padding: 0 !important;
+        }
+        .navbar-brand .logo-icon {
+            font-size: 24px !important;
+            margin-right: 10px !important;
+            color: #007BFF !important;
+        }
+        .brand-text {
+            display: flex !important;
+            flex-direction: column !important;
+            line-height: 1.2 !important;
+        }
+        .brand-main {
+            font-weight: bold !important;
+            font-size: 18px !important;
+            color: #007BFF !important;
+        }
+        .brand-sub {
+            font-size: 12px !important;
+            color: #6c757d !important;
+        }
+        .navbar-nav {
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            list-style: none !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+        }
+        .nav-item {
+            margin: 0 !important;
+        }
+        .nav-link {
+            color: #495057 !important;
+            font-weight: 500 !important;
+            padding: 8px 16px !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            text-decoration: none !important;
+        }
+        .nav-link:hover {
+            color: #007BFF !important;
+        }
+        .nav-link.active {
+            background-color: #007BFF !important;
+            color: white !important;
+            border-radius: 4px !important;
+        }
+        .navbar-right {
+            display: flex !important;
+            align-items: center !important;
+            gap: 15px !important;
+        }
+        .notification-icon {
+            font-size: 20px !important;
+            color: #495057 !important;
+            position: relative !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+        }
+        .notification-badge {
+            position: absolute !important;
+            top: -5px !important;
+            right: -5px !important;
+            background-color: #dc3545 !important;
+            color: white !important;
+            border-radius: 50% !important;
+            width: 18px !important;
+            height: 18px !important;
+            font-size: 11px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .login-btn {
+            background-color: #007BFF !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 20px !important;
+            border-radius: 20px !important;
+            font-weight: 500 !important;
+            font-size: 14px !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.2) !important;
+        }
+        .login-btn:hover {
+            background-color: #0056b3 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 15px rgba(0,123,255,0.3) !important;
+        }
+
+        /* 页脚样式 */
+        footer {
+            background-color: #0056b3 !important;
+            color: #ffffff !important;
+            padding: 40px 0 !important;
+            margin-top: 60px !important;
+        }
+        footer h4, footer h5 {
+            color: #ffffff !important;
+            font-weight: bold !important;
+            margin-bottom: 20px !important;
+        }
+        footer p, footer li {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-size: 14px !important;
+        }
+        footer a {
+            color: #ffffff !important;
+            text-decoration: none !important;
+            transition: all 0.3s ease !important;
+        }
+        footer a:hover {
+            color: #cce7ff !important;
+            text-decoration: underline !important;
+        }
+        .footer-links, .list-unstyled {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+            padding: 0 !important;
+            list-style: none !important;
+        }
+        .social-links, .social-icons {
+            display: flex !important;
+            gap: 15px !important;
+            margin-top: 15px !important;
+        }
+        .social-links a, .social-icons a {
+            font-size: 20px !important;
+            color: #ffffff !important;
+        }
+        footer hr {
+            border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+            margin: 30px 0 !important;
+        }
+
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">慧眼识癌</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首页</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="knowledge.html">知识科普</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="support.html">互助支持</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="expert.html">专家咨询</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="group.html">团体方案</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="algorithms.html">核心算法</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-bell"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-danger text-white" href="login.html">登录</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div class="container">
+            <!-- 返回按钮 -->
+            <a href="knowledge.html" class="back-btn"><i class="fas fa-arrow-left"></i> 返回知识列表</a>
+
+            <!-- 文章详情 -->
+            <div class="article-detail">
+                <h1 id="article-title">肺癌早期筛查：低剂量CT的重要性</h1>
+                <div class="article-meta">
+                    <span><i class="fas fa-tag"></i> <span id="article-category">筛查诊断</span></span>
+                    <span><i class="far fa-calendar"></i> <span id="article-date">2024-01-03</span></span>
+                    <span><i class="far fa-eye"></i> <span id="article-views">950</span></span>
+                </div>
+
+                <div class="article-content">
+                    <p>肺癌是全球范围内发病率和死亡率最高的恶性肿瘤之一。早期发现和治疗是提高肺癌患者生存率的关键。低剂量CT（LDCT）是目前公认的最有效的肺癌早期筛查方法。本文将介绍低剂量CT筛查肺癌的重要性、适用人群、筛查流程以及注意事项。</p>
+
+                    <h3>肺癌的严峻形势</h3>
+                    <p>根据世界卫生组织（WHO）的数据，肺癌是全球最常见的恶性肿瘤，每年新发病例约220万，死亡病例约180万。在我国，肺癌也是发病率和死亡率最高的恶性肿瘤，每年新发病例约80万，死亡病例约70万。</p>
+
+                    <p>肺癌的预后与诊断时的分期密切相关。早期肺癌（Ⅰ期）患者的5年生存率可达80%以上，而晚期肺癌（Ⅳ期）患者的5年生存率仅为5%左右。然而，由于肺癌早期症状不明显，约70%的患者在确诊时已经处于晚期，错过了最佳治疗时机。</p>
+
+                    <h3>低剂量CT筛查的优势</h3>
+                    <p>传统的肺癌筛查方法主要是胸部X线检查，但研究表明，胸部X线检查对早期肺癌的检出率较低，无法有效降低肺癌的死亡率。低剂量CT筛查相比胸部X线检查具有以下优势：</p>
+                    <ul>
+                        <li><strong>更高的检出率</strong>：低剂量CT能够检测到直径小于1厘米的肺结节，对早期肺癌的检出率是胸部X线检查的4-10倍。</li>
+                        <li><strong>更低的辐射剂量</strong>：低剂量CT的辐射剂量仅为常规CT的1/5-1/10，约为1-2毫西弗（mSv），与胸部X线检查的辐射剂量相当。</li>
+                        <li><strong>降低死亡率</strong>：多项大型临床试验表明，低剂量CT筛查能够降低肺癌死亡率20%-30%。</li>
+                        <li><strong>早期发现</strong>：低剂量CT能够发现更多的早期肺癌，使患者能够接受手术等根治性治疗。</li>
+                    </ul>
+
+                    <h3>低剂量CT筛查的适用人群</h3>
+                    <p>根据美国国家综合癌症网络（NCCN）和中国肺癌筛查指南的推荐，低剂量CT筛查的适用人群主要包括：</p>
+                    <ul>
+                        <li>年龄在50-75岁之间</li>
+                        <li>吸烟史≥20包年（包年=每天吸烟的包数×吸烟年数），包括曾经吸烟但戒烟时间&lt;15年的人群</li>
+                        <li>有肺癌家族史</li>
+                        <li>有职业暴露史（如石棉、氡、铍、铬、镉、镍、硅、煤烟和煤烟灰等）</li>
+                        <li>有慢性阻塞性肺疾病（COPD）或肺纤维化病史</li>
+                    </ul>
+
+                    <p>需要注意的是，低剂量CT筛查并不适用于所有人，过度筛查可能会导致不必要的焦虑和检查。因此，在进行低剂量CT筛查前，应该咨询医生，评估筛查的获益和风险。</p>
+
+                    <h3>低剂量CT筛查的流程</h3>
+                    <p>低剂量CT筛查的流程主要包括以下几个步骤：</p>
+                    <ol>
+                        <li><strong>筛查前评估</strong>：医生会询问患者的吸烟史、家族史、职业暴露史等，评估患者的肺癌风险，决定是否适合进行低剂量CT筛查。</li>
+                        <li><strong>知情同意</strong>：医生会向患者解释低剂量CT筛查的获益、风险和局限性，患者在充分了解后签署知情同意书。</li>
+                        <li><strong>CT检查</strong>：患者在检查前需要去除胸部的金属物品，采取仰卧位，进行胸部低剂量CT扫描，整个过程仅需几分钟。</li>
+                        <li><strong>结果解读</strong>：放射科医生会对CT图像进行解读，发现肺结节等异常情况。</li>
+                        <li><strong>后续管理</strong>：根据筛查结果，医生会制定相应的后续管理方案，如定期随访、进一步检查或治疗。</li>
+                    </ol>
+
+                    <h3>肺结节的管理</h3>
+                    <p>低剂量CT筛查可能会发现肺结节，大多数肺结节是良性的，但少数可能是恶性的。根据肺结节的大小、形态、密度等特征，医生会制定不同的随访方案：</p>
+                    <ul>
+                        <li>对于直径&lt;5毫米的实性结节，通常每年随访一次</li>
+                        <li>对于直径5-10毫米的实性结节，通常每6个月随访一次</li>
+                        <li>对于直径&gt;10毫米的实性结节，通常需要进一步检查，如增强CT、PET-CT或穿刺活检</li>
+                        <li>对于磨玻璃结节，随访时间可能更长，需要根据结节的大小和变化情况决定</li>
+                    </ul>
+
+                    <h3>低剂量CT筛查的注意事项</h3>
+                    <p>在进行低剂量CT筛查时，需要注意以下几点：</p>
+                    <ul>
+                        <li>筛查前应告知医生自己的病史、过敏史和正在服用的药物</li>
+                        <li>筛查时应去除胸部的金属物品，如项链、胸罩等</li>
+                        <li>孕妇或可能怀孕的女性应避免进行CT检查</li>
+                        <li>筛查后应遵循医生的建议进行随访或进一步检查</li>
+                        <li>筛查结果异常并不一定意味着患有肺癌，应保持冷静，及时咨询医生</li>
+                    </ul>
+
+                    <h3>结论</h3>
+                    <p>低剂量CT是目前最有效的肺癌早期筛查方法，能够显著提高早期肺癌的检出率，降低肺癌的死亡率。对于肺癌高风险人群，尤其是年龄在50-75岁之间、有长期吸烟史的人群，建议定期进行低剂量CT筛查。</p>
+
+                    <p>然而，低剂量CT筛查也存在一些局限性，如可能发现一些良性结节导致过度诊断和过度治疗。因此，在进行低剂量CT筛查前，应该咨询医生，评估筛查的获益和风险，做出明智的决策。</p>
+
+                    <p>早期发现、早期诊断、早期治疗是提高肺癌患者生存率的关键。通过低剂量CT筛查，我们可以更早地发现肺癌，为患者提供更多的治疗选择，提高治疗效果和生活质量。</p>
+                </div>
+            </div>
+
+            <!-- 相关文章样式 -->
+            <div class="related-articles">
+                <h3>相关文章推荐</h3>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card related-article-card">
+                            <img src="https://img.freepik.com/free-vector/medical-check-up-concept-illustration_114360-1775.jpg?w=740&t=st=1726029102~exp=1726029702~hmac=0c955c23f83b2d2c604453086d3d69294a6a2c5e1810b209207504250713a6dc" class="card-img-top related-article-img" alt="癌症筛查">
+                            <div class="card-body">
+                                <h5 class="card-title">癌症筛查：早发现早治疗的关键</h5>
+                                <p class="card-text">了解癌症筛查的重要性和常见的筛查方法。</p>
+                                <a href="article-detail-2.html" class="btn btn-link text-danger">阅读更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card related-article-card">
+                            <img src="https://img.freepik.com/free-vector/woman-suffering-stomachache_23-2148485559.jpg?w=740&t=st=1726029141~exp=1726029741~hmac=6a1223c1ca8b28b201f5b694039a567b2973d500606b25309176fa0b4d16a505" class="card-img-top related-article-img" alt="癌症早期症状">
+                            <div class="card-body">
+                                <h5 class="card-title">癌症的早期症状：哪些信号需要警惕？</h5>
+                                <p class="card-text">了解癌症的早期症状，做到早发现早治疗。</p>
+                                <a href="article-detail-10.html" class="btn btn-link text-danger">阅读更多</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card related-article-card">
+                            <img src="https://img.freepik.com/free-vector/healthy-lifestyle-concept_23-2149324135.jpg?w=740&t=st=1726029177~exp=1726029777~hmac=8b9c24b85973698b42e4c991c9c5a5561f08823651b76a2015e7917b714a0740" class="card-img-top related-article-img" alt="癌症预防">
+                            <div class="card-body">
+                                <h5 class="card-title">癌症预防：远离这些危险因素</h5>
+                                <p class="card-text">了解癌症的危险因素，做好癌症预防工作。</p>
+                                <a href="article-detail-1.html" class="btn btn-link text-danger">阅读更多</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
+                    <p>慧眼识癌是一个致力于为癌症患者和家属提供支持、信息和资源的平台。</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">快速链接</h5>
+                    <ul class="list-unstyled">
+                        <a href="index.html">首页</a>
+                        <a href="knowledge.html">知识科普</a>
+                        <a href="support.html">互助支持</a>
+                        <a href="expert.html">专家咨询</a>
+                        <a href="about.html">关于我们</a>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">联系我们</h5>
+                    <p>邮箱：contact@huiyanshiai.com</p>
+                    <p>电话：400-123-4567</p>
+                    <div class="social-links">
+                        <a href="#" class="mr-2"><i class="fab fa-weixin"></i></a>
+                        <a href="#" class="mr-2"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p>&copy; 2025 慧眼识癌. 保留所有权利.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？立即注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                        </div>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？立即登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户信息模态框 -->
+    <div id="userInfoModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">用户信息</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 用户信息将通过JavaScript动态填充 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">修改信息</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 导航栏滚动效果
+        $(window).scroll(function() {
+            if ($(window).scrollTop() > 50) {
+                $('.navbar').addClass('scrolled');
+            } else {
+                $('.navbar').removeClass('scrolled');
+            }
+        });
+        
+        // 导航链接点击事件
+        $('.nav-link').click(function() {
+            // 关闭移动端菜单
+            if ($('.navbar-toggler').attr('aria-expanded') === 'true') {
+                $('.navbar-toggler').click();
+            }
+        });
+        
+        // 登录/注册相关函数
+        function showLoginModal() {
+            $('#loginModal').modal('show');
+            $('#registerModal').modal('hide');
+        }
+
+        function showRegisterModal() {
+            $('#registerModal').modal('show');
+            $('#loginModal').modal('hide');
+        }
+
+        function showUserInfoModal() {
+            $('#userInfoModal').modal('show');
+        }
+        
+        // 登录功能
+        function login() {
+            // 检查当前激活的选项卡
+            const activeTab = document.querySelector('#loginTabs .nav-link.active');
+            
+            if (activeTab.id === 'user-login-tab') {
+                // 用户登录
+                const username = document.getElementById('userLoginUsername').value;
+                const password = document.getElementById('userLoginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                
+                errorDiv.textContent = '';
+                
+                // 使用localStorage模拟登录
+                if (username && password) {
+                    // 存储登录状态到localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('email', username + '@example.com');
+                    
+                    $('#loginModal').modal('hide');
+                    checkLoginStatus();
+                    alert('登录成功！');
+                } else {
+                    errorDiv.textContent = '请输入用户名和密码';
+                }
+            } else if (activeTab.id === 'admin-login-tab') {
+                // 管理员登录 - 直接在前端验证
+                const username = document.getElementById('adminLoginUsername').value;
+                const password = document.getElementById('adminLoginPassword').value;
+                const errorDiv = document.getElementById('adminLoginError');
+                
+                errorDiv.textContent = '';
+                
+                if (username && password) {
+                    // 简单的管理员账号验证（实际项目中应连接后端API）
+                    // 根据初始化脚本，管理员用户名是admin，密码是admin123
+                    if (username === 'admin' && password === 'admin123') {
+                        // 登录成功，设置本地存储
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        
+                        $('#loginModal').modal('hide');
+                        alert('管理员登录成功！');
+                        
+                        // 跳转到管理员后台页面
+                        setTimeout(() => {
+                            window.location.href = 'admin_dashboard.html';
+                        }, 1000);
+                    } else {
+                        errorDiv.textContent = '管理员账号或密码错误';
+                    }
+                } else {
+                    errorDiv.textContent = '请输入管理员用户名和密码';
+                }
+            }
+        }
+
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            
+            errorDiv.textContent = '';
+            
+            // 验证输入完整性
+            if (!username || !email || !password) {
+                errorDiv.textContent = '请填写完整的注册信息';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+            
+            // 使用localStorage模拟注册
+            // 存储用户信息（实际项目中应使用安全的存储方式）
+            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
+            
+            // 关闭注册模态框，提示用户注册成功并跳转到登录界面
+            $('#registerModal').modal('hide');
+            alert('注册成功！请登录。');
+            showLoginModal();
+        }
+        
+        // 检查登录状态（使用localStorage模拟）
+        function checkLoginStatus() {
+            // 从localStorage获取登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const username = localStorage.getItem('username') || '用户';
+            const email = localStorage.getItem('email') || '';
+            
+            if (isLoggedIn) {
+                // 已登录，显示导航栏用户中心按钮，隐藏登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'block';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'none';
+                }
+            } else {
+                // 未登录，隐藏导航栏用户中心按钮，显示登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'block';
+                }
+            }
+        }
+        
+        // 修改密码
+        function updatePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmNewPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (!newPassword) {
+                alert('请输入新密码');
+                return;
+            }
+            
+            // 这里应该调用API修改密码
+            alert('密码修改功能待实现');
+        }
+        
+        // 退出登录
+        function logout() {
+            // 清除localStorage中的登录状态
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('email');
+            
+            // 更新按钮状态
+            checkLoginStatus();
+            
+            // 关闭模态框
+            $('#userInfoModal').modal('hide');
+            
+            alert('已退出登录');
+        }
+        
+        // 页面加载完成后执行
+        $(document).ready(function() {
+            checkLoginStatus();
+        });
+    </script>
+</body>
+</html>

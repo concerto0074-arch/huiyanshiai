@@ -1,0 +1,2062 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专家在线 - 慧眼识癌</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #E6F7FF 0%, #F0F8FF 50%, #E6F7FF 100%);
+            background-attachment: fixed;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 区块渐入动画 */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 平滑滚动效果 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 按钮点击反馈效果 */
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            color: #007BFF !important;
+        }
+        .navbar-brand .logo-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .brand-main {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .brand-sub {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .nav-item {
+            margin: 0 15px;
+        }
+        .nav-link {
+            color: #495057 !important;
+            font-weight: 500;
+            padding: 8px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #007BFF !important;
+        }
+        .nav-link.active {
+            background-color: #007BFF;
+            color: white !important;
+            border-radius: 4px;
+            padding: 8px 16px;
+        }
+        
+        /* 确保导航栏容器样式优先级 */
+        .navbar .container {
+            max-width: 1200px;
+            padding: 0 1rem;
+            margin: 0 auto;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+        .notification-icon {
+            font-size: 20px;
+            color: #495057;
+            margin-right: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-btn {
+            background-color: #FFA500;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            background-color: #e69500;
+        }
+        
+        /* 主内容区样式 */
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .page-title h1 {
+            color: #212529;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .page-title p {
+            color: #6c757d;
+            font-size: 18px;
+        }
+        
+        /* 专家卡片 */
+        .expert-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+            margin-bottom: 30px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(248,250,252,1) 100%);
+        }
+        
+        .expert-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .expert-card .card-body {
+            padding: 30px 25px;
+        }
+        
+        /* 专家头像 */
+        .expert-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin: 0 auto 25px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .expert-card:hover .expert-avatar {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .expert-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .expert-info h3 {
+            color: #212529;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .expert-info p {
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+        
+        /* 专家标签 */
+        .expert-tags {
+            margin-bottom: 20px;
+        }
+        
+        .expert-tag {
+            background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+            color: #3730a3;
+            border-radius: 20px;
+            padding: 6px 16px;
+            margin: 0 5px 10px 0;
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+        
+        .expert-tag:hover {
+            background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
+            transform: translateY(-2px);
+        }
+        
+        /* 专家经验 */
+        .expert-experience {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(74, 222, 128, 0.1);
+        }
+        
+        .experience-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .experience-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .experience-item i {
+            color: #16a34a;
+            margin-right: 12px;
+            width: 22px;
+            font-size: 18px;
+        }
+        
+        .experience-item span {
+            color: #15803d;
+            font-weight: 500;
+        }
+        
+        /* 咨询时间 */
+        .consultation-time {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+        }
+        
+        .consultation-time h4 {
+            color: #92400e;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .time-slot {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #7c2d12;
+            border-radius: 8px;
+            padding: 6px 12px;
+            margin: 0 5px 8px 0;
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        
+        .time-slot:hover {
+            background-color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
+        }
+        
+        /* 右侧固定浮窗样式 */
+        .sticky-sidebar {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        
+        .sticky-btn {
+            background-color: #FFA500;
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounceIn 0.5s ease-out both;
+        }
+        
+        .sticky-btn:nth-child(1) { animation-delay: 1.9s; }
+        .sticky-btn:nth-child(2) { animation-delay: 2.0s; }
+        .sticky-btn:nth-child(3) { animation-delay: 2.1s; }
+        
+        .sticky-btn:hover {
+            background-color: #e69500;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4);
+        }
+        
+        /* 登录模态框美化 */
+        #loginModal .modal-content, #registerModal .modal-content {
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+        }
+        
+        #loginModal .modal-header, #registerModal .modal-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-bottom: 1px solid #eee;
+            padding: 25px 30px;
+        }
+        
+        #loginModal .nav-pills {
+            background-color: #f1f3f5;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        
+        #loginModal .nav-pills .nav-link {
+            border-radius: 10px;
+            color: #6c757d;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+        }
+        
+        #loginModal .nav-pills .nav-link.active {
+            background-color: #ffffff;
+            color: #007bff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .input-group-custom i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            z-index: 10;
+        }
+        
+        .input-group-custom .form-control {
+            padding-left: 45px;
+            height: 50px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group-custom .form-control:focus {
+            background-color: #ffffff;
+            border-color: #007bff;
+            box-shadow: 0 0 0 4px rgba(0,123,255,0.1);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #eee;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .btn-login {
+            width: 100%;
+            height: 50px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+        }
+
+        /* 页脚样式优化 */
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+    <!-- Flatpickr (Modern Datepicker) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+</head>
+<body>
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <!-- Logo -->
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <div class="brand-text">
+                    <span class="brand-main">慧眼识癌</span>
+                    <span class="brand-sub">您身边的癌症预防专家</span>
+                </div>
+            </a>
+            
+            <!-- 响应式汉堡菜单按钮 -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- 导航菜单 -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="products.html">产品服务</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cases.html">客户案例</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="experts.html">专家在线</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="knowledge.html">知识科普</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="group.html">团体方案</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="algorithms.html">核心算法</a>
+                    </li>
+                </ul>
+                
+                <!-- 右侧功能区（在移动设备上显示在菜单内） -->
+                <div class="navbar-right mt-3 mt-lg-0">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <button id="navbarLoginBtn" class="login-btn" onclick="showLoginModal()" style="background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-left: 10px;">登录/注册</button>
+                    <button id="navbarUserCenterBtn" class="login-btn" onclick="window.location.href='user_center.html'" style="background-color: #2196F3; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; margin-left: 10px; display: none;">用户中心</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 主内容区 -->
+    <div class="container">
+        <div class="page-title">
+            <h1>专家在线</h1>
+            <p>与权威癌症专家一对一咨询，获取专业的癌症预防、诊断和治疗建议</p>
+        </div>
+        
+
+
+        <!-- 专家详情模态框 -->
+        <div class="modal fade" id="expertDetailModal" tabindex="-1" role="dialog" aria-labelledby="expertDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="expertDetailModalLabel">专家详情</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="expert-avatar" style="width: 150px; height: 150px; font-size: 60px;">
+                                    <i class="fas fa-user-md"></i>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <h4 id="detailExpertName"></h4>
+                                    <p id="detailExpertTitle" class="expert-title"></p>
+                                    <div id="detailExpertHospital" class="expert-hospital"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="mb-3">
+                                    <h5>擅长领域</h5>
+                                    <div id="detailExpertTags"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <h5>专家简介</h5>
+                                    <p id="detailExpertIntro"></p>
+                                </div>
+                                <div class="mb-3">
+                                    <h5>学术成就</h5>
+                                    <div id="detailExpertAchievements"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <h5>工作经验</h5>
+                                    <div id="detailExpertExperience"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <h5>患者评价</h5>
+                                    <div class="mb-2">
+                                        <span id="detailExpertReviewStars"></span>
+                                        <span class="ml-2" id="detailExpertReviewText"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h5>本周可预约时间</h5>
+                            <div id="detailConsultationTime"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        <button id="detailAppointmentBtn" type="button" class="btn btn-primary" onclick="showBookingModal($('#detailExpertName').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 立即预约表单模态框 -->
+        <div class="modal fade" id="appointmentBookingModal" tabindex="-1" role="dialog" aria-labelledby="appointmentBookingModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="appointmentBookingModalLabel">预约专家咨询</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="appointmentForm">
+                            <div class="form-group">
+                                <label for="bookingExpertName">预约专家</label>
+                                <input type="text" class="form-control" id="bookingExpertName" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingDate">预约日期</label>
+                                <input type="text" class="form-control" id="bookingDate" placeholder="请选择预约日期" required style="cursor: pointer; background-color: #fff;">
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingTimeSlot">预约时段</label>
+                                <select class="form-control" id="bookingTimeSlot" required disabled>
+                                    <option value="">请先选择日期</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingPatientName">患者姓名</label>
+                                <input type="text" class="form-control" id="bookingPatientName" placeholder="方便专家称呼您" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingPatientPhone">联系电话</label>
+                                <input type="tel" class="form-control" id="bookingPatientPhone" placeholder="用于接收预约提醒" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingSymptom">主要症状或咨询内容</label>
+                                <textarea class="form-control" id="bookingSymptom" rows="3" placeholder="简要描述您的问题，帮助专家更好地为您提供建议" required></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="submitAppointment()">提交预约</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- 专家1 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>王医生</h3>
+                            <p>肿瘤内科主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>北京协和医院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">肺癌</span>
+                                <span class="expert-tag">胃癌</span>
+                                <span class="expert-tag">结肠癌</span>
+                                <span class="expert-tag">精准治疗</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>肿瘤内科领域权威专家，专注于肺癌、胃癌等恶性肿瘤的个体化治疗，擅长基因检测指导下的精准靶向治疗。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>发表SCI论文30余篇</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>参编肿瘤学专著2部</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作20年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学博士，博士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 98%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="review-text">"王医生非常专业，耐心解答了我所有问题，给了我很大帮助。"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周一 14:00-16:00</span>
+                            <span class="time-slot">周三 09:00-11:00</span>
+                            <span class="time-slot">周五 16:00-18:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 专家2 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>李医生</h3>
+                            <p>乳腺外科副主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>上海瑞金医院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">乳腺癌</span>
+                                <span class="expert-tag">乳腺疾病</span>
+                                <span class="expert-tag">保乳手术</span>
+                                <span class="expert-tag">术后康复</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>专注于乳腺疾病的诊治，尤其擅长早期乳腺癌的保乳手术和综合治疗，注重患者的生活质量和心理健康。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>上海市科技进步二等奖</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>发表学术论文20余篇</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作15年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学硕士，硕士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 97%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="review-text">"李医生技术精湛，术后恢复良好，非常感谢！"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周二 09:00-11:00</span>
+                            <span class="time-slot">周四 14:00-16:00</span>
+                            <span class="time-slot">周六 10:00-12:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 专家3 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>张医生</h3>
+                            <p>肿瘤放射治疗科主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>广州中山一院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">肺癌</span>
+                                <span class="expert-tag">鼻咽癌</span>
+                                <span class="expert-tag">食管癌</span>
+                                <span class="expert-tag">精准放疗</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>从事肿瘤放射治疗20余年，在肺癌、鼻咽癌等恶性肿瘤的精准放疗方面具有丰富经验，致力于减少放疗副作用。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>广东省科技进步一等奖</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>发表SCI论文40余篇</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作18年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学博士，博士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 96%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="review-text">"张医生的放疗方案非常精准，治疗效果很好。"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周一 16:00-18:00</span>
+                            <span class="time-slot">周三 14:00-16:00</span>
+                            <span class="time-slot">周日 09:00-11:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 专家4 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>刘医生</h3>
+                            <p>妇科肿瘤主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>北京妇产医院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">宫颈癌</span>
+                                <span class="expert-tag">卵巢癌</span>
+                                <span class="expert-tag">子宫内膜癌</span>
+                                <span class="expert-tag">妇科微创手术</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>妇科肿瘤专家，擅长宫颈癌、卵巢癌等妇科恶性肿瘤的微创手术治疗和综合管理，关注女性健康。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>北京市医学科技奖</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>主编妇科肿瘤学专著1部</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作16年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学博士，博士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 99%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="review-text">"刘医生非常专业，手术很成功，恢复得很好。"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周二 14:00-16:00</span>
+                            <span class="time-slot">周四 09:00-11:00</span>
+                            <span class="time-slot">周六 14:00-16:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 专家5 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>赵医生</h3>
+                            <p>血液肿瘤科副主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>上海同济医院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">白血病</span>
+                                <span class="expert-tag">淋巴瘤</span>
+                                <span class="expert-tag">多发性骨髓瘤</span>
+                                <span class="expert-tag">造血干细胞移植</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>专注于血液系统恶性肿瘤的诊治，在白血病、淋巴瘤等疾病的靶向治疗和免疫治疗方面有深入研究。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>上海市优秀青年医学人才</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>发表SCI论文15余篇</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作12年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学博士，硕士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 97%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="review-text">"赵医生对患者非常耐心，治疗方案很有效。"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周一 09:00-11:00</span>
+                            <span class="time-slot">周三 16:00-18:00</span>
+                            <span class="time-slot">周五 09:00-11:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 专家6 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>陈医生</h3>
+                            <p>泌尿外科主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>深圳人民医院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">前列腺癌</span>
+                                <span class="expert-tag">肾癌</span>
+                                <span class="expert-tag">膀胱癌</span>
+                                <span class="expert-tag">泌尿外科微创手术</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>从事泌尿外科临床工作20余年，擅长前列腺癌、肾癌等泌尿系统恶性肿瘤的诊治和微创手术治疗。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>深圳市科技创新奖</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>发表学术论文30余篇</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作17年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学博士，博士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 95%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="review-text">"陈医生技术高超，手术很成功，恢复很快。"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周二 16:00-18:00</span>
+                            <span class="time-slot">周四 14:00-16:00</span>
+                            <span class="time-slot">周六 09:00-11:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 专家7 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>周医生</h3>
+                            <p>肿瘤外科主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>华西医院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">胃癌</span>
+                                <span class="expert-tag">结肠癌</span>
+                                <span class="expert-tag">直肠癌</span>
+                                <span class="expert-tag">胃肠外科微创手术</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>胃肠肿瘤外科专家，擅长胃癌、结肠癌等消化道恶性肿瘤的微创手术治疗和综合管理，重视术后康复指导。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>四川省科技进步二等奖</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>发表SCI论文25余篇</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作20年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学博士，博士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 98%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="review-text">"周医生经验丰富，手术非常成功，术后恢复很好。"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周一 09:00-11:00</span>
+                            <span class="time-slot">周五 14:00-16:00</span>
+                            <span class="time-slot">周日 10:00-12:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 专家8 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>吴医生</h3>
+                            <p>肿瘤内科副主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>武汉同济医院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">肝癌</span>
+                                <span class="expert-tag">胰腺癌</span>
+                                <span class="expert-tag">胆道肿瘤</span>
+                                <span class="expert-tag">靶向治疗</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>肝胆胰肿瘤专家，擅长肝癌、胰腺癌等消化系统恶性肿瘤的综合治疗，专注于靶向治疗和免疫治疗的临床应用。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>湖北省优秀医学论文奖</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>发表SCI论文20余篇</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作14年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学博士，硕士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 97%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="review-text">"吴医生非常专业，治疗方案很有效，感谢吴医生。"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周二 09:00-11:00</span>
+                            <span class="time-slot">周三 14:00-16:00</span>
+                            <span class="time-slot">周六 14:00-16:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 专家9 -->
+            <div class="col-md-4">
+                <div class="card expert-card">
+                    <div class="card-body">
+                        <div class="expert-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="expert-info">
+                            <h3>郑医生</h3>
+                            <p>肿瘤免疫治疗科主任医师</p>
+                            <div class="expert-hospital">
+                                <i class="fas fa-hospital"></i>
+                                <span>复旦大学附属肿瘤医院</span>
+                            </div>
+                            <div class="expert-tags">
+                                <span class="expert-tag">肿瘤免疫治疗</span>
+                                <span class="expert-tag">PD-1/PD-L1抑制剂</span>
+                                <span class="expert-tag">CAR-T细胞治疗</span>
+                                <span class="expert-tag">免疫联合治疗</span>
+                            </div>
+                        </div>
+                        <div class="expert-intro">
+                            <p>肿瘤免疫治疗专家，专注于免疫检查点抑制剂、CAR-T细胞治疗等新型肿瘤治疗方法的临床应用和研究。</p>
+                        </div>
+                        <div class="expert-achievements">
+                            <div class="achievement-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>国家自然科学基金获得者</span>
+                            </div>
+                            <div class="achievement-item">
+                                <i class="fas fa-book"></i>
+                                <span>发表SCI论文50余篇</span>
+                            </div>
+                        </div>
+                        <div class="expert-experience">
+                            <div class="experience-item">
+                                <i class="fas fa-hospital"></i>
+                                <span>三甲医院工作19年</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>医学博士，博士生导师</span>
+                            </div>
+                            <div class="experience-item">
+                                <i class="fas fa-star"></i>
+                                <span>患者好评率 99%</span>
+                            </div>
+                        </div>
+                        <div class="patient-review">
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="review-text">"郑医生引领肿瘤治疗前沿，给了我新的希望。"</p>
+                        </div>
+                        <div class="consultation-time">
+                            <h4>本周可预约时间</h4>
+                            <span class="time-slot">周一 09:00-11:00</span>
+                            <span class="time-slot">周四 14:00-16:00</span>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="bookExpert($(this).siblings('.expert-info').find('h3').text())">立即预约</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">
+                        <i class="fas fa-sign-in-alt mr-2 text-primary"></i> 欢迎登录
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-pills nav-fill" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="loginTabsContent">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="input-group-custom">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="用户名/邮箱" required>
+                                </div>
+                                <div class="input-group-custom">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="密码" required>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="rememberMe">
+                                        <label class="custom-control-label text-muted<!-- 用户信息模态框 -->
+    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="user-profile">
+                                <div class="avatar">
+                                    <i class="fas fa-user-circle fa-5x"></i>
+                                </div>
+                                <h4 id="userName">用户名</h4>
+                                <p id="userEmail">用户邮箱</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="nav nav-tabs" id="userTabs" role="tablist">
+                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
+                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
+                            </div>
+                            <div class="tab-content mt-3" id="userTabsContent">
+                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                                    <h5>历史报告</h5>
+                                    <div id="reportsList" class="mt-3">
+                                        <div class="alert alert-info" role="alert">
+                                            加载中...
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                    <h5>账户设置</h5>
+                                    <div class="form-group">
+                                        <label for="newPassword">新密码</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmNewPassword">确认新密码</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
+                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后执行
+        $(document).ready(function() {
+            // 滚动时的导航栏样式变化
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 50) {
+                    $('.navbar').addClass('scrolled');
+                } else {
+                    $('.navbar').removeClass('scrolled');
+                }
+            });
+            
+            // 导航链接点击事件
+            $('.nav-link').click(function() {
+                // 关闭移动设备上的导航菜单
+                if ($('.navbar-toggler').attr('aria-expanded') === 'true') {
+                    $('.navbar-toggler').click();
+                }
+            });
+            
+            // 页面加载完成后检查登录状态
+            checkLoginStatus();
+        });
+        
+        // 显示登录模态框
+        function showLoginModal() {
+            // 通过判断是否有 active 状态来避免不必要的重复调用引起的闪烁
+            if (!$('#loginModal').hasClass('show')) {
+                $('#loginModal').modal('show');
+            }
+            $('#registerModal').modal('hide');
+        }
+
+        // 显示注册模态框
+        function showRegisterModal() {
+            if (!$('#registerModal').hasClass('show')) {
+                $('#registerModal').modal('show');
+            }
+            $('#loginModal').modal('hide');
+        }
+
+        // 显示用户信息模态框
+        function showUserInfoModal() {
+            $('#userInfoModal').modal('show');
+            loadUserReports();
+        }
+        
+        // 检查登录状态并显示用户中心
+        function checkLoginAndShowCenter() {
+            // 使用localStorage检查登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                // 已登录，显示用户信息模态框
+                showUserInfoModal();
+            } else {
+                // 未登录，显示登录模态框
+                $('#loginModal').modal('show');
+                alert('请先登录后查看用户中心');
+            }
+        }
+
+        // 登录功能
+        function login() {
+            // 检查当前激活的选项卡
+            const activeTab = document.querySelector('#loginTabs .nav-link.active');
+            
+            if (activeTab.id === 'user-login-tab') {
+                // 用户登录
+                const username = document.getElementById('userLoginUsername').value;
+                const password = document.getElementById('userLoginPassword').value;
+                const errorDiv = document.getElementById('loginError');
+                
+                errorDiv.textContent = '';
+                
+                // 使用localStorage模拟登录
+                if (username && password) {
+                    // 存储登录状态到localStorage
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('email', username + '@example.com');
+                    
+                    $('#loginModal').modal('hide');
+                    checkLoginStatus();
+                    alert('登录成功！');
+                } else {
+                    errorDiv.textContent = '请输入用户名和密码';
+                }
+            } else if (activeTab.id === 'admin-login-tab') {
+                // 管理员登录 - 直接在前端验证
+                const username = document.getElementById('adminLoginUsername').value;
+                const password = document.getElementById('adminLoginPassword').value;
+                const errorDiv = document.getElementById('adminLoginError');
+                
+                errorDiv.textContent = '';
+                
+                if (username && password) {
+                    // 简单的管理员账号验证（实际项目中应连接后端API）
+                    // 根据初始化脚本，管理员用户名是admin，密码是admin123
+                    if (username === 'admin' && password === 'admin123') {
+                        // 登录成功，设置本地存储
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        
+                        $('#loginModal').modal('hide');
+                        alert('管理员登录成功！');
+                        
+                        // 跳转到管理员后台页面
+                        setTimeout(() => {
+                            window.location.href = 'admin_dashboard.html';
+                        }, 1000);
+                    } else {
+                        errorDiv.textContent = '管理员账号或密码错误';
+                    }
+                } else {
+                    errorDiv.textContent = '请输入管理员用户名和密码';
+                }
+            }
+        }
+
+        // 注册功能
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            
+            errorDiv.textContent = '';
+            
+            // 验证输入完整性
+            if (!username || !email || !password) {
+                errorDiv.textContent = '请填写完整的注册信息';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '两次输入的密码不一致';
+                return;
+            }
+            
+            // 使用localStorage模拟注册
+            // 存储用户信息（实际项目中应使用安全的存储方式）
+            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
+            
+            // 关闭注册模态框，提示用户注册成功并跳转到登录界面
+            $('#registerModal').modal('hide');
+            alert('注册成功！请登录。');
+            showLoginModal();
+        }
+
+        // 检查登录状态（使用localStorage模拟）
+        function checkLoginStatus() {
+            console.log('开始检查登录状态...');
+            // 从localStorage获取登录状态
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const username = localStorage.getItem('username') || '用户';
+            const email = localStorage.getItem('email') || '';
+            
+            console.log('登录状态检查结果:', isLoggedIn);
+            
+            if (isLoggedIn) {
+                // 已登录，显示导航栏用户中心按钮，隐藏登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'block';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'none';
+                }
+                
+                // 更新用户信息
+                if (document.getElementById('userName')) {
+                    document.getElementById('userName').textContent = username;
+                }
+                if (document.getElementById('userEmail')) {
+                    document.getElementById('userEmail').textContent = email;
+                }
+            } else {
+                // 未登录，隐藏导航栏用户中心按钮，显示登录按钮
+                if (document.getElementById('navbarUserCenterBtn')) {
+                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
+                }
+                if (document.getElementById('navbarLoginBtn')) {
+                    document.getElementById('navbarLoginBtn').style.display = 'block';
+                }
+            }
+        }
+
+        // 加载用户报告
+        function loadUserReports() {
+            const reportsList = document.getElementById('reportsList');
+            
+            // 使用前端模拟数据替代API调用
+            setTimeout(() => {
+                // 模拟API响应数据
+                const data = {
+                    success: true,
+                    data: [
+                        {
+                            id: 1,
+                            name: '张三',
+                            age: 45,
+                            gender: 'F',
+                            diagnosis: '乳腺增生',
+                            created_at: new Date().toISOString()
+                        },
+                        {
+                            id: 2,
+                            name: '李四',
+                            age: 52,
+                            gender: 'F',
+                            diagnosis: '乳腺结节',
+                            created_at: new Date(Date.now() - 86400000).toISOString()
+                        },
+                        {
+                            id: 3,
+                            name: '王五',
+                            age: 38,
+                            gender: 'F',
+                            diagnosis: '乳腺纤维瘤',
+                            created_at: new Date(Date.now() - 172800000).toISOString()
+                        }
+                    ]
+                };
+                if (data.success) {
+                    // 渲染报告列表
+                    reportsList.innerHTML = '';
+                    if (data.data.length === 0) {
+                        reportsList.innerHTML = '<div class="alert alert-info" role="alert">暂无报告</div>';
+                        return;
+                    }
+                    
+                    data.data.forEach(patient => {
+                        const reportCard = document.createElement('div');
+                        reportCard.className = 'card mb-3';
+                        reportCard.innerHTML = `
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title">${patient.name} - ${patient.age}岁 ${patient.gender === 'M' ? '男' : '女'}</h6>
+                                    <span class="badge badge-primary">${patient.diagnosis}</span>
+                                </div>
+                                <p class="card-text text-muted">报告日期：${new Date(patient.created_at).toLocaleString()}</p>
+                                <button class="btn btn-sm btn-primary" onclick="viewReport(${patient.id})">查看详情</button>
+                            </div>
+                        `;
+                        reportsList.appendChild(reportCard);
+                    });
+                }
+            }, 800); // 模拟800毫秒的网络延迟
+        }
+        
+        // 查看报告详情
+        function viewReport(patientId) {
+            window.location.href = `report.html?id=${patientId}`;
+        }
+        
+        // 修改密码
+        function updatePassword() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmNewPassword) {
+                alert('两次输入的密码不一致');
+                return;
+            }
+            
+            if (!newPassword) {
+                alert('请输入新密码');
+                return;
+            }
+            
+            // 这里应该调用API修改密码
+            alert('密码修改功能待实现');
+        }
+        
+        // 退出登录
+        function logout() {
+            // 清除localStorage中的登录状态
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('email');
+            
+            // 更新按钮状态
+            checkLoginStatus();
+            
+            // 关闭模态框
+            $('#userInfoModal').modal('hide');
+            
+            alert('已退出登录');
+        }
+        
+
+        
+        // 专家详情模态框功能
+        function showExpertDetail(expertCard) {
+            var card = $(expertCard);
+            
+            // 从专家卡片中提取信息
+            var expertName = card.find('h3').text();
+            var expertTitle = card.find('.expert-title').text();
+            var expertDepartment = card.find('.expert-department').text();
+            var expertHospital = card.find('.expert-hospital').text();
+            var expertRating = card.find('.expert-rating').text();
+            var expertRatingText = card.find('.expert-review-text').text();
+            var expertIntro = card.find('.expert-intro').text();
+            var expertAchievements = card.find('.expert-achievements').html();
+            var expertExperience = card.find('.expert-experience').html();
+            var consultationTime = card.find('.consultation-time').html();
+            
+            // 提取标签信息
+            var expertTags = [];
+            card.find('.expert-tag').each(function() {
+                expertTags.push($(this).text());
+            });
+            
+            // 填充模态框内容
+            $('#detailExpertName').text(expertName);
+            $('#detailExpertTitle').text(expertTitle);
+            $('#detailExpertHospital').html(expertDepartment + ' | ' + expertHospital);
+            $('#detailExpertIntro').text(expertIntro);
+            $('#detailExpertAchievements').html(expertAchievements);
+            $('#detailExpertExperience').html(expertExperience);
+            $('#detailExpertReviewText').text(expertRatingText);
+            $('#detailConsultationTime').html(consultationTime);
+            
+            // 填充标签
+            var tagsHtml = '';
+            expertTags.forEach(function(tag) {
+                tagsHtml += '<span class="expert-tag">' + tag + '</span> ';
+            });
+            $('#detailExpertTags').html(tagsHtml);
+            
+            // 填充评分星星
+            var starsHtml = '';
+            var ratingNum = parseFloat(expertRating);
+            for (var i = 1; i <= 5; i++) {
+                if (i <= ratingNum) {
+                    starsHtml += '<i class="fas fa-star text-warning"></i>';
+                } else if (i - 0.5 <= ratingNum) {
+                    starsHtml += '<i class="fas fa-star-half-alt text-warning"></i>';
+                } else {
+                    starsHtml += '<i class="far fa-star text-warning"></i>';
+                }
+            }
+            starsHtml += ' ' + expertRating;
+            $('#detailExpertReviewStars').html(starsHtml);
+            
+            // 存储当前选中的专家信息
+            $('#detailAppointmentBtn').click(function() {
+                bookExpert(expertName);
+                $('#expertDetailModal').modal('hide');
+            });
+            
+            // 显示模态框
+            $('#expertDetailModal').modal('show');
+        }
+        
+        // 专家预约流程相关
+        function bookExpert(expertName) {
+            showBookingModal(expertName);
+        }
+
+        // 显示预约表单模态框
+        function showBookingModal(expertName) {
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                alert('为了方便管理预约信息，请先登录');
+                $('#loginModal').modal('show');
+                return;
+            }
+
+            $('#expertDetailModal').modal('hide');
+            $('#bookingExpertName').val(expertName);
+            
+            // 填充日期选择（未来3天）
+            var dateSelect = $('#bookingDate');
+            dateSelect.empty();
+            dateSelect.append('<option value="">请选择预约日期</option>');
+            
+            var today = new Date();
+            for (var i = 1; i <= 3; i++) {
+                var nextDay = new Date(today);
+                nextDay.setDate(today.getDate() + i);
+                var dateStr = nextDay.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
+                dateSelect.append('<option value="' + nextDay.toISOString().split('T')[0] + '">' + dateStr + '</option>');
+            }
+
+            // 日期变动时填充时段
+            $('#bookingDate').off('change').on('change', function() {
+                var timeSlotSelect = $('#bookingTimeSlot');
+                if ($(this).val()) {
+                    timeSlotSelect.empty();
+                    timeSlotSelect.prop('disabled', false);
+                    timeSlotSelect.append('<option value="">请选择预约时段</option>');
+                    timeSlotSelect.append('<option value="09:00-10:00">09:00 - 10:00 (余2)</option>');
+                    timeSlotSelect.append('<option value="10:00-11:00">10:00 - 11:00 (余1)</option>');
+                    timeSlotSelect.append('<option value="14:00-15:00">14:00 - 15:00 (余3)</option>');
+                    timeSlotSelect.append('<option value="15:00-16:00">15:00 - 16:00 (余1)</option>');
+                } else {
+                    timeSlotSelect.empty();
+                    timeSlotSelect.prop('disabled', true);
+                    timeSlotSelect.append('<option value="">请先选择日期</option>');
+                }
+            });
+
+            $('#appointmentBookingModal').modal('show');
+        }
+
+        // 提交预约
+        function submitAppointment() {
+            var expert = $('#bookingExpertName').val();
+            var date = $('#bookingDate').val();
+            var timeSlot = $('#bookingTimeSlot').val();
+            var patientName = $('#bookingPatientName').val();
+            var phone = $('#bookingPatientPhone').val();
+            var symptom = $('#bookingSymptom').val();
+
+            if (!date || !timeSlot || !patientName || !phone || !symptom) {
+                alert('请填写完整的预约信息');
+                return;
+            }
+
+            // 模拟提交成功
+            var appointmentData = {
+                id: Date.now(),
+                expertName: expert,
+                date: date,
+                timeSlot: timeSlot,
+                patientName: patientName,
+                phone: phone,
+                symptom: symptom,
+                status: '已预约',
+                createdAt: new Date().toISOString()
+            };
+
+            // 保存到localStorage（用户中心可以读取）
+            var appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            appointments.push(appointmentData);
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+
+            $('#appointmentBookingModal').modal('hide');
+            
+            // 显示成功反馈
+            alert('恭喜您，' + expert + '专家的预约已成功提交！请保持电话通畅，我们的客服专员将尽快与您核对预约时间。');
+        }
+        
+        // 页面加载完成后绑定事件
+        $(document).ready(function() {
+
+            
+            // 为所有专家卡片添加点击事件
+            $('.expert-card').click(function(e) {
+                // 排除预约按钮的点击
+                if (!$(e.target).closest('.btn').length) {
+                    showExpertDetail(this);
+                }
+            });
+        });
+    </script>
+
+    <!-- 页脚 -->
+    <style>
+        /* 页脚样式优化 - 确保背景和文字颜色清晰可见 */
+        footer {
+            background-color: #0056b3 !important;
+            background: #0056b3 !important;
+            color: #ffffff !important;
+            padding: 30px 0 !important;
+        }
+        footer .container {
+            background-color: #0056b3 !important;
+        }
+        footer .row {
+            background-color: #0056b3 !important;
+        }
+        footer .col-md-4 {
+            background-color: #0056b3 !important;
+        }
+        footer p, footer li {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ffffff !important;
+            background-color: #0056b3 !important;
+        }
+        footer h5 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff !important;
+            background-color: #0056b3 !important;
+        }
+        footer a {
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+            background-color: #0056b3 !important;
+        }
+        footer a:hover {
+            color: #cce7ff !important;
+            text-decoration: underline !important;
+            background-color: #0056b3 !important;
+        }
+        footer .social-icons {
+            background-color: #0056b3 !important;
+        }
+        footer .social-icons a {
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+        footer .social-icons a:hover {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+            color: #cce7ff !important;
+            transform: translateY(-3px);
+        }
+        footer hr {
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            background-color: #0056b3 !important;
+        }
+        footer .text-center {
+            background-color: #0056b3 !important;
+        }
+    </style>
+    <footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
+                    <p>专注于早期癌症发现的人工智能系统，为您的健康保驾护航。</p>
+                    <div class="social-icons mt-4">
+                        <a href="#" class="text-white mr-3"><i class="fab fa-weixin"></i></a>
+                        <a href="#" class="text-white mr-3"><i class="fab fa-weibo"></i></a>
+                        <a href="#" class="text-white mr-3"><i class="fab fa-qq"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">快速链接</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
+                        <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
+                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
+                        <li><a href="experts.html" class="text-white text-decoration-none">专家在线</a></li>
+                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
+                        <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">联系我们</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区中关村科技园区</li>
+                        <li class="mb-2"><i class="fas fa-phone mr-2"></i> 400-123-4567</li>
+                        <li class="mb-2"><i class="fas fa-envelope mr-2"></i> contact@huianyanshiai.com</li>
+                        <li class="mb-2"><i class="fas fa-clock mr-2"></i> 周一至周五 9:00-18:00</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="bg-white opacity-25 mt-4">
+            <div class="text-center">
+                <p class="mb-0">© 2025 慧眼识癌. 保留所有权利.</p>
+                <p class="small mt-1">京ICP备12345678号 | 京公网安备11010802023456号</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 隐藏页面加载动画
+            setTimeout(function() {
+                const loader = document.getElementById('pageLoader');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }, 0);
+            
+            // 初始化区块渐入效果
+            const fadeSections = document.querySelectorAll('.fade-in-section');
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            fadeSections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // 导航栏滚动效果
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
+    </script>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/zh.js"></script>
+    <script>
+        // 初始化日期选择器使其更美观和更大
+        document.addEventListener("DOMContentLoaded", function() {
+            var today = new Date();
+            var maxDate = new Date();
+            maxDate.setDate(today.getDate() + 30);
+            
+            flatpickr("#bookingDate", {
+                locale: "zh",
+                minDate: "today",
+                maxDate: maxDate,
+                dateFormat: "Y-m-d",
+                disableMobile: "true"
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+

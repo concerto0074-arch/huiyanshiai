@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员登录 - 慧眼识癌</title>
+    <!-- 引入Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- 引入Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        /* 全局样式 */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* 登录容器 */
+        .login-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* 标题样式 */
+        .login-title {
+            text-align: center;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        /* 输入框样式 */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-control {
+            height: 50px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            padding-left: 45px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        /* 输入框图标 */
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+        }
+        
+        /* 登录按钮 */
+        .login-btn {
+            width: 100%;
+            height: 50px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <!-- 全局环境配置 -->
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="login-title">
+            <i class="fa fa-lock mr-2"></i>管理员登录
+        </h1>
+        <form id="adminLoginForm">
+            <div class="form-group position-relative">
+                <i class="fa fa-user input-icon"></i>
+                <input type="text" class="form-control" id="username" placeholder="请输入管理员账号" required>
+            </div>
+            <div class="form-group position-relative">
+                <i class="fa fa-key input-icon"></i>
+                <input type="password" class="form-control" id="password" placeholder="请输入管理员密码" required>
+            </div>
+            <button type="submit" class="btn btn-primary login-btn">登录</button>
+        </form>
+    </div>
+    
+    <!-- 引入jQuery和Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        // 管理员登录表单提交
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // 简单的前端验证
+            if (username === '' || password === '') {
+                alert('请输入账号和密码');
+                return;
+            }
+            
+            // 这里使用模拟的管理员账号验证（实际项目中应连接后端API）
+            // 根据初始化脚本，管理员用户名是admin，密码是admin123
+            if (username === 'admin' && password === 'admin123') {
+                // 登录成功，设置本地存储
+                localStorage.setItem('adminLoggedIn', 'true');
+                alert('登录成功！');
+                // 跳转到管理员后台页面
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                alert('登录失败：账号或密码错误');
+            }
+        });
+    </script>
+</body>
+</html>

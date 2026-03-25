@@ -436,9 +436,13 @@
         .modal .nav-tabs {
             border-bottom: 1px solid #dee2e6;
             margin-bottom: 1rem;
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
         }
         .modal .nav-tabs .nav-item {
             margin-bottom: -1px;
+            flex: 1;
             width: 50%;
             text-align: center;
         }
@@ -450,6 +454,7 @@
             padding: 10px 15px !important;
             border-radius: 0 !important;
             background: transparent !important;
+            width: 100%;
         }
         .modal .nav-tabs .nav-link:hover {
             color: #007BFF !important;
@@ -466,23 +471,6 @@
     </style>
 </head>
 <body>
-    <!-- 悬停展开下拉菜单优化 -->
-    <style>
-        @media (min-width: 992px) {
-            .navbar .dropdown:hover > .dropdown-menu {
-                display: block;
-                margin-top: 0;
-                animation: navFadeIn 0.25s ease;
-            }
-        }
-        @keyframes navFadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .dropdown-menu { border-radius: 10px; padding: 8px 0; }
-        .dropdown-item { padding: 10px 20px; font-size: 15px; transition: all 0.2s ease; }
-        .dropdown-item:hover { background-color: #f0f7ff; color: #007BFF; }
-    </style>
     <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
@@ -505,24 +493,11 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="algorithms.html">AI风险预测</a></li>
-                    <!-- 产品服务 下拉菜单 -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="navbarProducts" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">产品服务</a>
-                        <div class="dropdown-menu shadow border-0" aria-labelledby="navbarProducts">
-                            <a class="dropdown-item" href="products.html"><i class="fas fa-user mr-2 text-primary"></i> 个人评估套餐</a>
-                            <a class="dropdown-item" href="group.html"><i class="fas fa-users mr-2 text-success"></i> 企业团体方案</a>
-                        </div>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">产品服务</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="group.html">团体方案</a></li>
                     <li class="nav-item"><a class="nav-link" href="experts.html">专家在线</a></li>
                     <li class="nav-item"><a class="nav-link" href="knowledge.html">知识科普</a></li>
-                    <!-- 关于我们 下拉菜单 -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarAbout" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">关于我们</a>
-                        <div class="dropdown-menu shadow border-0" aria-labelledby="navbarAbout">
-                            <a class="dropdown-item" href="cases.html"><i class="fas fa-star mr-2 text-warning"></i> 客户案例</a>
-                            <a class="dropdown-item" href="user_center.html"><i class="fas fa-id-card mr-2 text-info"></i> 用户中心</a>
-                        </div>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="cases.html">客户案例</a></li>
                 </ul>
                 
                 <!-- 右侧功能区（在移动设备上显示在菜单内） -->
@@ -1512,7 +1487,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" onclick="login()">登录</button>
-                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？立即注册</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？点击注册</button>
                 </div>
             </div>
         </div>
@@ -1520,7 +1495,7 @@
 
     <!-- 注册模态框 -->
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
@@ -1544,13 +1519,15 @@
                         </div>
                         <div class="form-group">
                             <label for="confirmPassword">确认密码</label>
-                            <input type="password" class="form-control" id="confirmPassword" placeholder="请确认密码" required>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">注册</button>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
                     </form>
-                    <div class="text-center mt-3">
-                        <p>已有账号？<a href="#" onclick="showLoginModal()">立即登录</a></p>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
                 </div>
             </div>
         </div>
@@ -1558,7 +1535,7 @@
 
     <!-- 用户信息模态框 -->
     <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
@@ -1567,85 +1544,43 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="user-info-item">
-                        <label>用户名:</label>
-                        <span id="userCenterUsername">---</span>
-                    </div>
-                    <div class="user-info-item">
-                        <label>邮箱:</label>
-                        <span id="userCenterEmail">---</span>
-                    </div>
-                    <div class="user-info-item">
-                        <label>注册时间:</label>
-                        <span id="userCenterRegTime">---</span>
-                    </div>
-                    
-                    <!-- 标签页 -->
-                    <ul class="nav nav-tabs mt-4" id="userCenterTabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="appointments-tab" data-toggle="tab" href="#appointments" role="tab" aria-controls="appointments" aria-selected="false">我的预约</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">账号设置</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content mt-3" id="userCenterTabContent">
-                        <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
-                            <div id="reportsContent">
-                                <p>暂无报告记录</p>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="user-profile">
+                                <div class="avatar">
+                                    <i class="fas fa-user-circle fa-5x"></i>
+                                </div>
+                                <h4 id="userName">用户</h4>
+                                <p id="userEmail">用户邮箱</p>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
-                            <div id="appointmentsContent">
-                                <p>暂无预约记录</p>
+                        <div class="col-md-9">
+                            <div class="nav nav-tabs" id="userTabs" role="tablist">
+                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
+                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
+                            </div>
+                            <div class="tab-content mt-3" id="userTabsContent">
+                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                                    <h5>历史报告</h5>
+                                    <div id="reportsList" class="mt-3">
+                                        <!-- 报告列表将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                    <h5>账户设置</h5>
+                                    <div class="form-group">
+                                        <label for="newPassword">新密码</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmNewPassword">确认新密码</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
+                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-                            <button class="btn btn-danger" onclick="logout()">退出登录</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 方案详情模态框 -->
-    <div class="modal fade" id="planDetailModal" tabindex="-1" role="dialog" aria-labelledby="planDetailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="planDetailModalLabel">方案详情</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="plan-detail-header">
-                        <h3 id="planDetailName">方案名称</h3>
-                        <p class="plan-price" id="planDetailPrice">价格</p>
-                        <p class="plan-description" id="planDetailDescription">方案描述</p>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <h4>体检项目</h4>
-                            <ul class="plan-items" id="planDetailItems">
-                                <!-- 项目列表将通过JavaScript动态填充 -->
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h4>方案优势</h4>
-                            <ul class="plan-advantages" id="planDetailAdvantages">
-                                <!-- 优势列表将通过JavaScript动态填充 -->
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4 text-center">
-                        <button class="btn btn-primary btn-lg" onclick="$('#planDetailModal').modal('hide'); submitContactForm();">立即预约</button>
                     </div>
                 </div>
             </div>

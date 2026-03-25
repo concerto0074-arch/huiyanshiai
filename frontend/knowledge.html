@@ -947,9 +947,13 @@
         .modal .nav-tabs {
             border-bottom: 1px solid #dee2e6;
             margin-bottom: 1rem;
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
         }
         .modal .nav-tabs .nav-item {
             margin-bottom: -1px;
+            flex: 1;
             width: 50%;
             text-align: center;
         }
@@ -961,6 +965,7 @@
             padding: 10px 15px !important;
             border-radius: 0 !important;
             background: transparent !important;
+            width: 100%;
         }
         .modal .nav-tabs .nav-link:hover {
             color: #007BFF !important;
@@ -984,23 +989,6 @@
     
     <!-- 阅读进度条 -->
     <div class="reading-progress" id="readingProgress"></div>
-    <!-- 悬停展开下拉菜单优化 -->
-    <style>
-        @media (min-width: 992px) {
-            .navbar .dropdown:hover > .dropdown-menu {
-                display: block;
-                margin-top: 0;
-                animation: navFadeIn 0.25s ease;
-            }
-        }
-        @keyframes navFadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .dropdown-menu { border-radius: 10px; padding: 8px 0; }
-        .dropdown-item { padding: 10px 20px; font-size: 15px; transition: all 0.2s ease; }
-        .dropdown-item:hover { background-color: #f0f7ff; color: #007BFF; }
-    </style>
     <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
@@ -1023,24 +1011,11 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="algorithms.html">AI风险预测</a></li>
-                    <!-- 产品服务 下拉菜单 -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarProducts" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">产品服务</a>
-                        <div class="dropdown-menu shadow border-0" aria-labelledby="navbarProducts">
-                            <a class="dropdown-item" href="products.html"><i class="fas fa-user mr-2 text-primary"></i> 个人评估套餐</a>
-                            <a class="dropdown-item" href="group.html"><i class="fas fa-users mr-2 text-success"></i> 企业团体方案</a>
-                        </div>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">产品服务</a></li>
+                    <li class="nav-item"><a class="nav-link" href="group.html">团体方案</a></li>
                     <li class="nav-item"><a class="nav-link" href="experts.html">专家在线</a></li>
                     <li class="nav-item"><a class="nav-link active" href="knowledge.html">知识科普</a></li>
-                    <!-- 关于我们 下拉菜单 -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarAbout" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">关于我们</a>
-                        <div class="dropdown-menu shadow border-0" aria-labelledby="navbarAbout">
-                            <a class="dropdown-item" href="cases.html"><i class="fas fa-star mr-2 text-warning"></i> 客户案例</a>
-                            <a class="dropdown-item" href="user_center.html"><i class="fas fa-id-card mr-2 text-info"></i> 用户中心</a>
-                        </div>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="cases.html">客户案例</a></li>
                 </ul>
                 
                 <!-- 右侧功能区（在移动设备上显示在菜单内） -->
@@ -2574,7 +2549,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" onclick="login()">登录</button>
-                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？立即注册</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？点击注册</button>
                 </div>
             </div>
         </div>
@@ -2614,7 +2589,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" onclick="register()">注册</button>
-                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？立即登录</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
                 </div>
             </div>
         </div>
@@ -2637,7 +2612,7 @@
                                 <div class="avatar">
                                     <i class="fas fa-user-circle fa-5x"></i>
                                 </div>
-                                <h4 id="userName">用户名</h4>
+                                <h4 id="userName">用户</h4>
                                 <p id="userEmail">用户邮箱</p>
                             </div>
                         </div>
@@ -2650,9 +2625,7 @@
                                 <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
                                     <h5>历史报告</h5>
                                     <div id="reportsList" class="mt-3">
-                                        <div class="alert alert-info" role="alert">
-                                            加载中...
-                                        </div>
+                                        <!-- 报告列表将通过JavaScript动态生成 -->
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
@@ -2675,325 +2648,7 @@
             </div>
         </div>
     </div>
-    
-    <!-- 文章详情模态框 -->
-    <div class="modal fade" id="articleDetailModal" tabindex="-1" role="dialog" aria-labelledby="articleDetailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="articleDetailModalLabel">文章详情</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="article-detail-header mb-4">
-                        <h3 id="articleDetailTitle">文章标题</h3>
-                        <div class="article-meta-info">
-                            <span class="article-category category-prevention" id="articleDetailCategory">分类</span>
-                            <span id="articleDetailDate">日期</span>
-                            <span id="articleDetailViews">阅读量</span>
-                        </div>
-                    </div>
-                    <div class="article-detail-content" id="articleDetailContent">
-                        文章内容...
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="window.print()">打印文章</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- 页脚 -->
-    <style>
-        /* 页脚样式优化 - 确保背景和文字颜色清晰可见 */
-        footer {
-            background-color: #0056b3 !important;
-            background: #0056b3 !important;
-            color: #ffffff !important;
-            padding: 30px 0 !important;
-        }
-        footer .container {
-            background-color: #0056b3 !important;
-        }
-        footer .row {
-            background-color: #0056b3 !important;
-        }
-        footer .col-md-4 {
-            background-color: #0056b3 !important;
-        }
-        footer p, footer li {
-            font-size: 16px;
-            line-height: 1.8;
-            color: #ffffff !important;
-            background-color: #0056b3 !important;
-        }
-        footer h5 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #ffffff !important;
-            background-color: #0056b3 !important;
-        }
-        footer a {
-            color: #ffffff !important;
-            transition: all 0.3s ease;
-            background-color: #0056b3 !important;
-        }
-        footer a:hover {
-            color: #cce7ff !important;
-            text-decoration: underline !important;
-            background-color: #0056b3 !important;
-        }
-        footer .social-icons {
-            background-color: #0056b3 !important;
-        }
-        footer .social-icons a {
-            font-size: 20px;
-            width: 40px;
-            height: 40px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2) !important;
-            color: #ffffff !important;
-            transition: all 0.3s ease;
-        }
-        footer .social-icons a:hover {
-            background-color: rgba(255, 255, 255, 0.3) !important;
-            color: #cce7ff !important;
-            transform: translateY(-3px);
-        }
-        footer hr {
-            border-color: rgba(255, 255, 255, 0.3) !important;
-            background-color: #0056b3 !important;
-        }
-        footer .text-center {
-            background-color: #0056b3 !important;
-        }
-    
-        /* 资源下载与视频课程卡片补充样式 */
-        .resource-card {
-            background: #fff; border-radius: 12px; padding: 25px 20px; text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;
-            margin-bottom: 25px; border: 1px solid #e9ecef;
-        }
-        .resource-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .resource-icon { font-size: 40px; color: #007BFF; margin-bottom: 15px; }
-        .resource-info h4 { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px; }
-        .resource-desc { font-size: 13px; color: #666; margin-bottom: 5px; height: 40px; overflow: hidden; }
-        .resource-size { font-size: 12px; color: #999; margin-bottom: 15px; }
-        .download-btn, .play-btn, .learn-btn {
-            background-color: #fff; border: 1px solid #ced4da; color: #495057;
-            padding: 6px 20px; border-radius: 20px; font-size: 13px; transition: all 0.3s; cursor: pointer;
-        }
-        .download-btn:hover { background-color: #007BFF; color: #fff; border-color: #007BFF; }
-        .play-btn:hover { background-color: #28a745; color: #fff; border-color: #28a745; }
-        .learn-btn:hover { background-color: #17a2b8; color: #fff; border-color: #17a2b8; }
-
-        .video-card, .course-card {
-            background: #fff; border-radius: 12px; overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 25px; transition: all 0.3s;
-        }
-        .video-card:hover, .course-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .video-thumbnail, .course-cover {
-            position: relative; width: 100%; height: 200px; background: #f8f9fa;
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        .video-thumbnail img, .course-cover img { width: 100%; height: 100%; object-fit: cover; }
-        .play-button {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 50px; color: rgba(255,255,255,0.9); cursor: pointer; transition: all 0.3s; text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-        .play-button:hover { color: #fff; transform: translate(-50%, -50%) scale(1.1); }
-        .video-info, .course-info { padding: 20px; }
-        .video-info h4, .course-info h4 { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #333; }
-        .video-desc, .course-desc { font-size: 13px; color: #666; margin-bottom: 15px; height: 40px; overflow: hidden; }
-        .video-duration { font-size: 12px; color: #999; margin-bottom: 15px; }
-        .course-meta { display: flex; justify-content: space-between; font-size: 12px; color: #999; margin-bottom: 15px; }
-
-    
-        /* 优质渐变配色与组件排版优化 */
-        .video-thumbnail {
-            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-            height: 200px; position: relative; display: flex; align-items: center; justify-content: center;
-            border-radius: 16px 16px 0 0;
-        }
-        .col-md-4:nth-child(2) .video-thumbnail { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
-        .col-md-4:nth-child(3) .video-thumbnail { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); }
-        
-        .course-cover {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            height: 200px; position: relative; display: flex; align-items: center; justify-content: center;
-            border-radius: 16px 16px 0 0;
-            overflow: hidden;
-        }
-        .col-md-4:nth-child(2) .course-cover { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-        .col-md-4:nth-child(3) .course-cover { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-
-        .course-cover::after {
-            content: '\f518'; /* fa-book-reader */
-            font-family: 'Font Awesome 5 Free'; font-weight: 900;
-            font-size: 54px; color: rgba(255,255,255,0.7);
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .play-button {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(8px);
-            border-radius: 50%;
-            width: 64px; height: 64px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10;
-        }
-        .play-button i {
-            display: none; /* Hide the fa-play-circle */
-        }
-        .play-button::before {
-            content: '\f04b'; /* solid play */
-            font-family: 'Font Awesome 5 Free'; font-weight: 900;
-            font-size: 24px; color: #fff;
-            margin-left: 4px; /* visually center play icon */
-        }
-        .play-button:hover { background: rgba(255, 255, 255, 0.4); transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-
-        .resource-card {
-            border: none !important;
-            background: linear-gradient(to bottom, #ffffff 0%, #f8faff 100%) !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04) !important;
-            border-radius: 16px !important;
-            position: relative;
-            overflow: hidden;
-            padding: 30px 20px !important;
-        }
-        .resource-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
-            background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
-        }
-        .col-md-3:nth-child(2) .resource-card::before { background: linear-gradient(90deg, #fccb90 0%, #d57eeb 100%); }
-        .col-md-3:nth-child(3) .resource-card::before { background: linear-gradient(90deg, #e0c3fc 0%, #8ec5fc 100%); }
-        .col-md-3:nth-child(4) .resource-card::before { background: linear-gradient(90deg, #fa709a 0%, #fee140 100%); }
-
-        .resource-icon {
-            font-size: 48px !important;
-            background: -webkit-linear-gradient(45deg, #00C9FF, #92FE9D);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 25px !important;
-            filter: drop-shadow(0px 4px 10px rgba(0,201,255,0.2));
-            display: inline-block;
-        }
-        .col-md-3:nth-child(2) .resource-icon {
-            background: -webkit-linear-gradient(45deg, #fccb90, #d57eeb); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 4px 10px rgba(213,126,235,0.2));
-        }
-        .col-md-3:nth-child(3) .resource-icon {
-            background: -webkit-linear-gradient(45deg, #e0c3fc, #8ec5fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 4px 10px rgba(142,197,252,0.2));
-        }
-        .col-md-3:nth-child(4) .resource-icon {
-            background: -webkit-linear-gradient(45deg, #fa709a, #fee140); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 4px 10px rgba(250,112,154,0.2));
-        }
-
-        .video-card, .course-card {
-            border: none !important;
-            box-shadow: 0 15px 35px rgba(50,50,93,0.06), 0 5px 15px rgba(0,0,0,0.03) !important;
-            border-radius: 16px !important;
-        }
-        .video-info, .course-info {
-            padding: 25px !important;
-        }
-
-    
-        /* 标签页按钮精美样式 */
-        .category-tabs {
-            background-color: #f1f3f5;
-            padding: 6px;
-            border-radius: 50px;
-            display: inline-flex;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .tab-btn {
-            background: transparent;
-            border: none;
-            padding: 8px 25px;
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: 500;
-            color: #6c757d;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            outline: none;
-        }
-        .tab-btn:hover {
-            color: #212529;
-            background-color: rgba(255,255,255,0.4);
-        }
-        .tab-btn.active {
-            background-color: white;
-            color: #007BFF;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            font-weight: 600;
-        }
-        .tab-btn:focus {
-            outline: none;
-        }
-
-    </style>
-    <footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
-                    <p>专注于早期癌症发现的人工智能系统，为您的健康保驾护航。</p>
-                    <div class="social-icons mt-4">
-                        <a href="#" class="text-white mr-3"><i class="fab fa-weixin"></i></a>
-                        <a href="#" class="text-white mr-3"><i class="fab fa-weibo"></i></a>
-                        <a href="#" class="text-white mr-3"><i class="fab fa-qq"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="mb-3">快速链接</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
-                        <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
-                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
-                        <li><a href="experts.html" class="text-white text-decoration-none">专家在线</a></li>
-                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
-                        <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="mb-3">联系我们</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区中关村科技园区</li>
-                        <li class="mb-2"><i class="fas fa-phone mr-2"></i> 400-123-4567</li>
-                        <li class="mb-2"><i class="fas fa-envelope mr-2"></i> contact@huianyanshiai.com</li>
-                        <li class="mb-2"><i class="fas fa-clock mr-2"></i> 周一至周五 9:00-18:00</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="bg-white opacity-25 mt-4">
-            <div class="text-center">
-                <p class="mb-0">© 2025 慧眼识癌. 保留所有权利.</p>
-                <p class="small mt-1">京ICP备12345678号 | 京公网安备11010802023456号</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Font Awesome -->

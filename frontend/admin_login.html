@@ -105,9 +105,13 @@
         .modal .nav-tabs {
             border-bottom: 1px solid #dee2e6;
             margin-bottom: 1rem;
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
         }
         .modal .nav-tabs .nav-item {
             margin-bottom: -1px;
+            flex: 1;
             width: 50%;
             text-align: center;
         }
@@ -119,6 +123,7 @@
             padding: 10px 15px !important;
             border-radius: 0 !important;
             background: transparent !important;
+            width: 100%;
         }
         .modal .nav-tabs .nav-link:hover {
             color: #007BFF !important;

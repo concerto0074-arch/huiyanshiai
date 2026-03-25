@@ -544,6 +544,40 @@
     </style>
     <!-- 全局环境配置 -->
     <script src="config.js"></script>
+
+    <style>
+        /* 优化登录/注册模态框及弹窗排版 */
+        .modal .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+        }
+        .modal .nav-tabs .nav-item {
+            margin-bottom: -1px;
+            width: 50%;
+            text-align: center;
+        }
+        .modal .nav-tabs .nav-link {
+            color: #6c757d !important;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            padding: 10px 15px !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+        }
+        .modal .nav-tabs .nav-link:hover {
+            color: #007BFF !important;
+            border-bottom: 2px solid #007BFF;
+            border-color: #007BFF;
+        }
+        .modal .nav-tabs .nav-link.active {
+            color: #007BFF !important;
+            border-color: #007BFF;
+            border-bottom: 2px solid #007BFF;
+            font-weight: bold !important;
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 <body>
     <!-- 页面加载动画 -->
@@ -912,91 +946,9 @@
             }
         }
 
-        // 登录功能
-        function login() {
-            // 获取当前激活的选项卡
-            const activeTab = document.querySelector('#loginTabs .nav-link.active');
-            
-            if (activeTab.id === 'user-login-tab') {
-                // 用户登录
-                const username = document.getElementById('userLoginUsername').value;
-                const password = document.getElementById('userLoginPassword').value;
-                const errorDiv = document.getElementById('loginError');
-                
-                errorDiv.textContent = '';
-                
-                // 使用localStorage模拟登录
-                if (username && password) {
-                    // 存储登录状态到localStorage
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('username', username);
-                    localStorage.setItem('email', username + '@example.com');
-                    
-                    $('#loginModal').modal('hide');
-                    checkLoginStatus();
-                    alert('登录成功！');
-                } else {
-                    errorDiv.textContent = '请输入用户名和密码';
-                }
-            } else if (activeTab.id === 'admin-login-tab') {
-                // 管理员登录 - 直接进行前端验证
-                const username = document.getElementById('adminLoginUsername').value;
-                const password = document.getElementById('adminLoginPassword').value;
-                const errorDiv = document.getElementById('adminLoginError');
-                
-                errorDiv.textContent = '';
-                
-                if (username && password) {
-                    // 简单的管理员账号验证，实际项目应连接后端API
-                    // 根据初始设计，管理员用户名为admin，密码为admin123
-                    if (username === 'admin' && password === 'admin123') {
-                        // 登录成功，存储状态
-                        localStorage.setItem('adminLoggedIn', 'true');
-                        
-                        $('#loginModal').modal('hide');
-                        alert('管理员登录成功！');
-                        
-                        // 跳转到管理员后台页面
-                        setTimeout(() => {
-                            window.location.href = 'admin_dashboard.html';
-                        }, 1000);
-                    } else {
-                        errorDiv.textContent = '管理员账号或密码错误';
-                    }
-                } else {
-                    errorDiv.textContent = '请输入管理员用户名和密码';
-                }
-            }
-        }
+        
 
-        // 注册功能
-        function register() {
-            const username = document.getElementById('registerUsername').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const errorDiv = document.getElementById('registerError');
-            
-            errorDiv.textContent = '';
-            
-            if (password !== confirmPassword) {
-                errorDiv.textContent = '两次输入的密码不一致';
-                return;
-            }
-            
-            // 使用localStorage模拟注册
-            if (username && password && email) {
-                // 存储注册信息到localStorage
-                localStorage.setItem('username', username);
-                localStorage.setItem('email', email);
-                
-                $('#registerModal').modal('hide');
-                alert('注册成功，请登录！');
-                showLoginModal();
-            } else {
-                errorDiv.textContent = '请填写完整的注册信息';
-            }
-        }
+        
 
         // 检查登录状态（使用localStorage模拟）
         function checkLoginStatus() {
@@ -1093,21 +1045,7 @@
             alert('密码修改功能待实现');
         }
         
-        // 退出登录
-        function logout() {
-            // 清除localStorage中的登录状态
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('username');
-            localStorage.removeItem('email');
-            
-            // 更新按钮状态
-            checkLoginStatus();
-            
-            // 关闭模态框
-            $('#userInfoModal').modal('hide');
-            
-            alert('已退出登录');
-        }
+        
 
         // 页面加载完成后检查登录状态
         document.addEventListener('DOMContentLoaded', function() {
@@ -1331,5 +1269,6 @@
             </div>
         </div>
     </div>
+    <script src="js/auth.js"></script>
 </body>
 </html>

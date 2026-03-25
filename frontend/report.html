@@ -259,6 +259,40 @@
     </style>
     <!-- 全局环境配置 -->
     <script src="config.js"></script>
+
+    <style>
+        /* 优化登录/注册模态框及弹窗排版 */
+        .modal .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+        }
+        .modal .nav-tabs .nav-item {
+            margin-bottom: -1px;
+            width: 50%;
+            text-align: center;
+        }
+        .modal .nav-tabs .nav-link {
+            color: #6c757d !important;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            padding: 10px 15px !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+        }
+        .modal .nav-tabs .nav-link:hover {
+            color: #007BFF !important;
+            border-bottom: 2px solid #007BFF;
+            border-color: #007BFF;
+        }
+        .modal .nav-tabs .nav-link.active {
+            color: #007BFF !important;
+            border-color: #007BFF;
+            border-bottom: 2px solid #007BFF;
+            font-weight: bold !important;
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 <body>
     <!-- 导航栏 -->
@@ -425,11 +459,17 @@
                 </div>
             </div>
 
-            <!-- 健康建议 -->
-            <div class="report-section">
-                <h2 class="section-title">5. 健康建议</h2>
-                <div class="recommendations" id="recommendations">
-                    <!-- 建议将通过JavaScript动态生成 -->
+            <!-- AI 深度分析与临床建议 -->
+            <div class="report-section" style="border-left: 4px solid #8b5cf6;">
+                <h2 class="section-title" style="color: #8b5cf6;"><i class="fas fa-robot mr-2"></i>5. AI 智能医学解析与指导 (DeepSeek 模型)</h2>
+                <div class="recommendations" id="recommendations" style="background: #faf5ff; border: 1px solid #ede9fe; padding: 25px;">
+                    <div id="ai-analysis-content" class="markdown-body">
+                        <div class="d-flex align-items-center" style="color: #6d28d9;">
+                            <div class="spinner-grow spinner-grow-sm mr-3" role="status"></div>
+                            <span style="font-weight: 600; font-size: 1.1rem;">正在呼叫 DeepSeek 医疗大模型进行深度病历统筹与推敲分析，请稍候...</span>
+                        </div>
+                        <p style="color: #8b5cf6; margin-top: 10px; font-size: 0.9rem;">(此过程可能需要 10-30 秒，我们将基于海量前沿医学知识库为您定制独家解读)</p>
+                    </div>
                 </div>
             </div>
 
@@ -469,6 +509,25 @@
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            color: #4c1d95;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .markdown-body p, .markdown-body li {
+            color: #334155;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        .markdown-body strong {
+            color: #1e293b;
+            font-weight: 700;
+        }
+    </style>
     <script>
         // 回到顶部功能
         let mybutton = document.getElementById("backToTop");
@@ -664,15 +723,61 @@
                 `).join('')}
             `;
             
-            // 填充建议
+            // 填充建议与触发 AI 分析
+            // 不再使用默认的假建议，而是通过 Fetch 请求后端的大模型接口
             const recommendations = document.getElementById('recommendations');
-            const recs = data.recommendations || [];
-            recommendations.innerHTML = recs.map(rec => `
-                <div class="recommendation-item">
-                    <div class="recommendation-title">${rec.title}</div>
-                    <div>${rec.content}</div>
-                </div>
-            `).join('');
+            fetchAIAnalysis(data);
+        }
+        
+        async function fetchAIAnalysis(data) {
+            const aiSection = document.getElementById('ai-analysis-content');
+            
+            try {
+                const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5001') + '/api/generate_ai_report';
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patient_data: {
+                            patientAge: data.patientAge,
+                            patientGender: data.patientGender,
+                            patientBmi: data.patientBmi,
+                            patientSmoke: data.patientSmoke
+                        },
+                        prediction_results: {
+                            algorithm: data.algorithm,
+                            riskLevel: data.riskLevel,
+                            confidence: data.confidence,
+                            probabilities: JSON.stringify(data.probabilities)
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('API 回应不正常，可能端口未启动或跨域');
+                }
+                
+                const result = await response.json();
+                if (result.success && result.report) {
+                    aiSection.innerHTML = marked.parse(result.report);
+                } else {
+                    throw new Error(result.error || '生成分析失败');
+                }
+                
+            } catch (error) {
+                console.error("AI 报告生成失败:", error);
+                aiSection.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle mr-2"></i> <strong>大模型服务暂不可用</strong>
+                        <p class="mt-2 mb-0">无法连接到 DeepSeek 分析引擎。错误详情：${error.message}</p>
+                        <p class="mb-0">解决方案：确保后端的 Flask 服务已启动 (5001端口)，并在 \`.env\` 根目录文件中配置了有效的 \`DEEPSEEK_API_KEY\`。</p>
+                    </div>
+                    <ul>
+                        <li>建议一：保持良好的生活习惯，并定期体验。</li>
+                        <li>建议二：请咨询专科医生进行深入评估。</li>
+                    </ul>`;
+            }
         }
         
         // 页面加载完成后填充报告内容
@@ -685,5 +790,6 @@
             window.print();
         }
     </script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

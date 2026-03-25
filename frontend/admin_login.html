@@ -99,6 +99,40 @@
     </style>
     <!-- 全局环境配置 -->
     <script src="config.js"></script>
+
+    <style>
+        /* 优化登录/注册模态框及弹窗排版 */
+        .modal .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+        }
+        .modal .nav-tabs .nav-item {
+            margin-bottom: -1px;
+            width: 50%;
+            text-align: center;
+        }
+        .modal .nav-tabs .nav-link {
+            color: #6c757d !important;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            padding: 10px 15px !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+        }
+        .modal .nav-tabs .nav-link:hover {
+            color: #007BFF !important;
+            border-bottom: 2px solid #007BFF;
+            border-color: #007BFF;
+        }
+        .modal .nav-tabs .nav-link.active {
+            color: #007BFF !important;
+            border-color: #007BFF;
+            border-bottom: 2px solid #007BFF;
+            font-weight: bold !important;
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
@@ -150,5 +184,6 @@
             }
         });
     </script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

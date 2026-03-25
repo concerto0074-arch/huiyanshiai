@@ -349,6 +349,40 @@
         }
     </style>
     <script src="config.js"></script>
+
+    <style>
+        /* 优化登录/注册模态框及弹窗排版 */
+        .modal .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+        }
+        .modal .nav-tabs .nav-item {
+            margin-bottom: -1px;
+            width: 50%;
+            text-align: center;
+        }
+        .modal .nav-tabs .nav-link {
+            color: #6c757d !important;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            padding: 10px 15px !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+        }
+        .modal .nav-tabs .nav-link:hover {
+            color: #007BFF !important;
+            border-bottom: 2px solid #007BFF;
+            border-color: #007BFF;
+        }
+        .modal .nav-tabs .nav-link.active {
+            color: #007BFF !important;
+            border-color: #007BFF;
+            border-bottom: 2px solid #007BFF;
+            font-weight: bold !important;
+            background-color: transparent !important;
+        }
+    </style>
 </head>
 <body>
     <!-- 页面加载动画 -->
@@ -481,8 +515,8 @@
                 <!-- 健康数据 -->
                 <div id="healthdata" class="nav-content">
                     <h3 class="section-title"><i class="fas fa-chart-line text-info"></i> 健康指标追踪</h3>
-                    <div class="mb-4 p-4 border rounded" style="background: white;">
-                        <h5 class="mb-4">健康趋势走势图</h5>
+                    <div class="mb-4 p-4 rounded shadow-sm border-0" style="background: white; transition: box-shadow 0.3s;" onmouseover="this.style.boxShadow='0 12px 30px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='0 0.125rem 0.25rem rgba(0,0,0,0.075)'">
+                        <h5 class="mb-4 font-weight-bold"><i class="fas fa-heartbeat text-primary mr-2"></i> 健康趋势走势图</h5>
                         <canvas id="healthChart" style="width: 100%; height: 300px;"></canvas>
                     </div>
                     <div id="healthDataList"></div>
@@ -846,6 +880,12 @@
         // 图表初始化
         function initCharts() {
             const ctx = document.getElementById('healthChart').getContext('2d');
+            
+            // 创建大厂风格渐变背景
+            const gradientFill = ctx.createLinearGradient(0, 0, 0, 300);
+            gradientFill.addColorStop(0, 'rgba(0, 82, 255, 0.5)'); // 顶部鲜艳蓝色
+            gradientFill.addColorStop(1, 'rgba(255, 255, 255, 0)'); // 底部全透明
+            
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -853,21 +893,68 @@
                     datasets: [{
                         label: '综合健康指数',
                         data: [78, 82, 80, 85, 84, 88],
-                        borderColor: '#007BFF',
-                        backgroundColor: 'rgba(0, 123, 255, 0.05)',
-                        borderWidth: 3,
-                        pointBackgroundColor: '#fff',
-                        pointBorderWidth: 2,
-                        tension: 0.4
+                        borderColor: '#0052FF',
+                        backgroundColor: gradientFill,
+                        borderWidth: 4,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#0052FF',
+                        pointBorderWidth: 3,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: '#0052FF',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2,
+                        tension: 0.45
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     legend: { display: false },
+                    tooltips: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleFontColor: '#333',
+                        bodyFontColor: '#222',
+                        borderColor: 'rgba(0,0,0,0.08)',
+                        borderWidth: 1,
+                        xPadding: 16,
+                        yPadding: 16,
+                        displayColors: false,
+                        caretPadding: 12,
+                        cornerRadius: 12,
+                        titleFontSize: 14,
+                        bodyFontSize: 16,
+                        bodyFontStyle: 'bold',
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                return '🩺 综合健康指数: ' + tooltipItem.yLabel + ' 分';
+                            }
+                        }
+                    },
                     scales: {
-                        yAxes: [{ gridLines: { display: false }, ticks: { beginAtZero: false, min: 60 } }],
-                        xAxes: [{ gridLines: { display: false } }]
+                        yAxes: [{ 
+                            gridLines: { 
+                                drawBorder: false,
+                                color: 'rgba(0,0,0,0.04)',
+                                zeroLineColor: 'transparent'
+                            }, 
+                            ticks: { 
+                                beginAtZero: false, 
+                                min: 60,
+                                fontColor: '#8c98a4',
+                                padding: 15
+                            } 
+                        }],
+                        xAxes: [{ 
+                            gridLines: { 
+                                display: false,
+                                drawBorder: false 
+                            },
+                            ticks: {
+                                fontColor: '#8c98a4',
+                                padding: 15
+                            }
+                        }]
                     }
                 }
             });
@@ -875,13 +962,64 @@
 
         // 其他功能占位
         function downloadReport() { alert('报告已转化为高清 PDF，背景正在生成下载链接...'); }
-        function editUserInfo() { $('#editUserInfoModal').modal('show'); }
+        // 编辑个人信息(模态框)
+        function editUserInfo() { 
+            $('#editUsername').val(document.getElementById('updateUsername').value);
+            $('#editEmail').val(document.getElementById('updateEmail').value);
+            $('#editPhone').val(document.getElementById('updatePhone').value);
+            $('#editUserInfoModal').modal('show'); 
+        }
+        
         function saveUserInfo() {
             localStorage.setItem('phone', document.getElementById('editPhone').value);
             localStorage.setItem('username', document.getElementById('editUsername').value);
+            localStorage.setItem('email', document.getElementById('editEmail').value);
             alert('个人信息同步成功');
             location.reload();
         }
+
+        // 账户资料与安全(页面内建)
+        document.getElementById('updateUserInfoBtn').addEventListener('click', function() {
+            const newUsername = document.getElementById('updateUsername').value;
+            const newEmail = document.getElementById('updateEmail').value;
+            const newPhone = document.getElementById('updatePhone').value;
+            
+            if(!newUsername || !newEmail) {
+                alert('用户名和邮箱不能为空！');
+                return;
+            }
+            
+            // 此处可以向后端发送 API 请求进行数据持久化
+            localStorage.setItem('username', newUsername);
+            localStorage.setItem('email', newEmail);
+            localStorage.setItem('phone', newPhone);
+            
+            alert('个人资料已更新');
+            document.getElementById('userName').textContent = newUsername;
+            document.getElementById('userEmail').textContent = newEmail;
+        });
+
+        document.getElementById('updatePasswordBtn').addEventListener('click', function() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+            
+            if(!newPassword || newPassword.length < 6) {
+                alert('新密码长度不能少于6位！');
+                return;
+            }
+            
+            if(newPassword !== confirmPassword) {
+                alert('两次输入的密码不一致！');
+                return;
+            }
+            
+            // TODO: 调用后端密码重置 API
+            alert('密码修改成功，为了您的账户安全，请重新登录！');
+            localStorage.removeItem('isLoggedIn');
+            window.location.href = 'index.html';
+        });
+
     </script>
+    <script src="js/auth.js"></script>
 </body>
 </html>

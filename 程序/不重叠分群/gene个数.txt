@@ -1,0 +1,9 @@
+ 原始
+
+blue     brown      grey turquoise    yellow 
+      177        61       397       469        53 
+
+干净
+
+   blue     brown     green      grey turquoise    yellow 
+      216       118        99       143       472       109 

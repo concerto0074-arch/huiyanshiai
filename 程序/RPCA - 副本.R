@@ -1,0 +1,26 @@
+###读取数据
+lungdata<-read.csv('1153gene.csv')
+dim(lungdata)
+lungdata1<-as.matrix(t(lungdata[,-1]))
+dim(lungdata1)
+geneid<-as.matrix(lungdata[,1])
+
+###进行RPCA,参数采用Candes建议默认值
+library(rpca)
+
+res<-rpca(lungdata1, lambda = 1/sqrt(max(dim(lungdata1))), mu = prod(dim(lungdata1))/(4*sum(abs(lungdata1))),
+          term.delta = 10^(-7), max.iter = 10000, trace = FALSE,
+          thresh.nuclear.fun = thresh.nuclear, thresh.l1.fun = thresh.l1,
+          F2norm.fun = F2norm)
+
+###提取结果并保存
+lunglow<-res$L
+dim(lunglow)
+#加上基因
+lunglow<-t(lunglow)
+lunglow<-cbind(geneid,lunglow)
+lungnoise<-res$S
+lungnoise<-t(lungnoise)
+lungnoise<-cbind(geneid,lungnoise)
+write.table(lunglow, file="cleandata.csv", sep=",", row.names=F) 
+write.table(lungnoise, file="noisedata.csv", sep=",", row.names=F) 

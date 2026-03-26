@@ -15,7 +15,7 @@
     const PRODUCTION_API_URL = "https://api.huiyanshiai.com";
     
     // 运行时确定最终的后端地址
-    const backendUrl = isLocal ? "http://localhost:5000" : PRODUCTION_API_URL;
+    const backendUrl = isLocal ? "http://localhost:5001" : PRODUCTION_API_URL;
     
     // 挂载到全局 window 对象上，供各个页面的 JS 使用
     window.APP_CONFIG = {

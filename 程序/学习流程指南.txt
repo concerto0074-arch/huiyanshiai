@@ -1,0 +1,119 @@
+# NSCLC基因表达数据分析学习流程
+
+## 一、基础预备知识
+
+### 1. 生物信息学基础
+- **学习内容**：基因表达数据、样本类型(ADC/SCC/COID/NL)、差异表达分析
+- **资源推荐**：《Bioinformatics Data Skills》书籍、Coursera生物信息学课程
+
+### 2. R语言基础
+- **学习内容**：R环境配置、数据结构(向量/矩阵/数据框)、基本函数
+- **核心知识点**：
+  - 数据读取：`read.csv()`
+  - 数据转换：`as.matrix()`、`t()`
+  - 文件路径：`file.path()`、`dirname()`
+  - 包管理：`library()`
+- **实践任务**：熟悉1157gene.csv数据结构，运行基本R命令查看数据
+
+## 二、核心算法学习
+
+### 1. RPCA (Robust Principal Component Analysis)
+- **学习内容**：
+  - RPCA原理：低秩矩阵分解、稀疏噪声分离
+  - 算法参数：lambda、mu、迭代条件
+  - R包应用：`rpca`包的使用
+- **代码实践**：
+  ```r
+  # 安装包
+  install.packages("rpca")
+  
+  # 基本使用
+  library(rpca)
+  res <- rpca(数据矩阵, lambda=..., mu=...)
+  ```
+- **关键步骤**：理解`lunglow`(低秩/干净数据)和`lungnoise`(稀疏/噪声数据)的含义
+
+### 2. WGCNA (Weighted Gene Co-expression Network Analysis)
+- **学习内容**：
+  - 共表达网络构建
+  - 模块识别与功能注释
+  - 样本分组分析
+- **代码实践**：使用`WGCNA`包处理RPCA后的clean data
+
+## 三、数据分析流程实践
+
+### 1. 数据预处理 (对应代码1-14行)
+- **步骤**：
+  - 动态路径获取：理解`commandArgs()`的作用
+  - 数据读取与转换：`lungdata`到`lungdata1`的处理
+  - 基因ID提取：`geneid`的获取与使用
+- **常见问题**：路径错误、数据格式转换问题
+
+### 2. RPCA分解 (对应代码15-21行)
+- **步骤**：
+  - 加载`rpca`包
+  - 设置参数并运行分解
+  - 查看分解结果
+- **调试技巧**：通过`dim()`检查数据维度变化
+
+### 3. 结果提取与输出 (对应代码22-36行)
+- **步骤**：
+  - 获取低秩和稀疏成分
+  - 数据转置与基因ID合并
+  - 结果保存：`write.table()`的使用
+- **实践任务**：运行完整RPCA.R脚本，检查生成的cleandata.csv和noisedata.csv
+
+## 四、高级分析与扩展
+
+### 1. 样本分组分析
+- **学习内容**：ADC、SCC、COID、NL样本的分组方法
+- **实践任务**：根据样本类型对clean data进行分组分析
+
+### 2. 模型构建
+- **学习内容**：
+  - 训练集/测试集划分
+  - 基因权重计算
+  - 模型验证方法
+- **关键概念**：Individual gene weights vs Gene group weights
+
+### 3. 外部验证
+- **学习内容**：使用独立数据集验证模型性能
+- **实践任务**：寻找公开NSCLC数据集进行模型验证
+
+## 五、学习资源推荐
+
+### 书籍
+- 《R统计分析实战》
+- 《Bioinformatics with R Cookbook》
+- 《WGCNA: An R package for weighted correlation network analysis》
+
+### 在线资源
+- Bioconductor官方教程
+- GitHub上的NSCLC数据分析项目
+- 学术论文：查找使用RPCA+WGCNA分析NSCLC的研究
+
+## 六、实践计划
+
+### 第1-2周：基础准备
+- 完成R语言基础学习
+- 理解1157gene.csv数据结构
+
+### 第3-4周：RPCA算法
+- 学习RPCA原理
+- 运行并修改RPCA.R脚本
+
+### 第5-6周：WGCNA分析
+- 学习WGCNA原理
+- 对clean data进行WGCNA分析
+
+### 第7-8周：完整流程
+- 实现从数据读取到模型构建的完整流程
+- 分析结果并撰写报告
+
+---
+
+**学习建议**：
+1. 边学边练：每学习一个知识点，立即在R中实践
+2. 逐步深入：先理解单个函数，再理解整个流程
+3. 问题导向：遇到错误时，通过调试命令(`dim()`、`str()`)分析问题
+4. 参考论文：阅读使用类似方法的学术论文，理解应用场景

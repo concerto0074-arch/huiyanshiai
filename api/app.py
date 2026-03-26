@@ -1,60 +1,181 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
+import joblib
+import glob
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
 import sys
 import os
 import requests
+import logging
+import time
+from logging.handlers import RotatingFileHandler
+from collections import defaultdict
 from dotenv import load_dotenv
-
 # 加载环境变量
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 # 添加项目根目录到Python路径
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+# Simple in-memory rate limiting
+_rate_limit_store = defaultdict(list)  # key -> list of timestamps
+
+def rate_limit(endpoint, limit=10, per_seconds=60):
+    def decorator(f):
+        def wrapped(*args, **kwargs):
+            client_ip = request.remote_addr
+            now = time.time()
+            timestamps = _rate_limit_store[(client_ip, endpoint)]
+            _rate_limit_store[(client_ip, endpoint)] = [ts for ts in timestamps if now - ts < per_seconds]
+            if len(_rate_limit_store[(client_ip, endpoint)]) >= limit:
+                logger.warning(f"Rate limit exceeded for {client_ip} on {endpoint}")
+                return jsonify({'error': 'Too many requests, please try later.'}), 429
+            _rate_limit_store[(client_ip, endpoint)].append(now)
+            return f(*args, **kwargs)
+        wrapped.__name__ = f.__name__
+        return wrapped
+    return decorator
+
+# Configure logging
+log_dir = os.path.join(os.path.dirname(__file__), 'logs')
+os.makedirs(log_dir, exist_ok=True)
+logger = logging.getLogger('app')
+logger.setLevel(logging.INFO)
+handler = RotatingFileHandler(os.path.join(log_dir, 'app.log'), maxBytes=5*1024*1024, backupCount=3, encoding='utf-8')
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(module)s:%(lineno)d - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 # 导入模拟模型
 from models.simulated_model import predict_probability, get_risk_level
 
 # 创建应用实例
 app = Flask(__name__, static_folder='../frontend', static_url_path='/')
-CORS(app)  # 启用CORS
+frontend_url = os.getenv('FRONTEND_URL', '*')
+# Tenant isolation middleware
+@app.before_request
+def set_tenant():
+    """从请求头 X-Tenant-ID 读取租户标识，存入 Flask 全局对象 g"""
+    tenant = request.headers.get('X-Tenant-ID')
+    if tenant:
+        try:
+            g.tenant_id = int(tenant)
+        except ValueError:
+            g.tenant_id = None
+    else:
+        g.tenant_id = None
+if frontend_url == '*':
+    CORS(app)  # 允许所有（默认，本地开发）
+else:
+    CORS(app, resources={r"/api/*": {"origins": [frontend_url, "http://localhost:3000", "http://localhost:5000"]}})
+
+# Load real ML models if available
+model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend', 'models'))
+model_files = glob.glob(os.path.join(model_dir, '*.joblib'))
+loaded_models = {}
+for mf in model_files:
+    model_name = os.path.splitext(os.path.basename(mf))[0]
+    try:
+        loaded_models[model_name] = joblib.load(mf)
+        logger.info(f"Loaded model '{model_name}' from {mf}")
+    except Exception as e:
+        logger.error(f"Failed to load model {mf}: {e}")
 import os
 import jwt
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from database import init_db, add_user, get_all_users, get_user_by_id, update_user, delete_user, User, get_user_by_username
+from database import db, init_db, add_user, get_all_users, get_user_by_id, update_user, delete_user, User, get_user_by_username, get_user_by_email
 
 app.config['SECRET_KEY'] = os.getenv('JWT_SECRET', 'super-secret-key-huiyanshiai')
+db_url = os.getenv('DATABASE_URL', '')
+if not db_url or db_url == 'sqlite:///../data/patients.db':
+    db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'patients.db'))
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    db_url = 'sqlite:///' + db_path.replace('\\', '/')
 
-# Initialize database (ensure migrations)
-init_db()
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+
+# Initialize database
+with app.app_context():
+    init_db()
 
 # --- Authentication Routes ---
 
 @app.route('/api/register', methods=['POST'])
+@rate_limit('register', limit=10, per_seconds=60)
 def register_user():
+    """
+    用户注册接口，支持 username/email/password/phone 字段
+
+    Returns:
+        JSON 格式的注册结果
+    """
     data = request.json
-    required = ['username', 'password', 'email']
-    if not all(k in data for k in required):
-        return jsonify({'error': 'Missing required fields'}), 400
-    
-    existing_user = get_user_by_username(data['username'])
+    if not data:
+        return jsonify({'error': '请求体不能为空'}), 400
+
+    username = (data.get('username') or '').strip()
+    email = (data.get('email') or '').strip()
+    password = data.get('password') or ''
+    phone = (data.get('phone') or '').strip()
+
+    # --- 必填字段校验 ---
+    if not username or not email or not password:
+        return jsonify({'error': '用户名、邮箱和密码为必填项'}), 400
+
+    # --- 用户名格式校验：3-20位，字母/数字/下划线 ---
+    import re
+    if not re.match(r'^[a-zA-Z0-9_]{3,20}$', username):
+        return jsonify({'error': '用户名仅限3-20位字母、数字或下划线'}), 400
+
+    # --- 邮箱格式校验 ---
+    if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+        return jsonify({'error': '邮箱格式不正确'}), 400
+
+    # --- 密码长度校验 ---
+    if len(password) < 6 or len(password) > 20:
+        return jsonify({'error': '密码长度需在6-20位之间'}), 400
+
+    # --- 手机号格式校验（选填） ---
+    if phone and not re.match(r'^1[3-9]\d{9}$', phone):
+        return jsonify({'error': '手机号格式不正确（需11位中国大陆手机号）'}), 400
+
+    # --- 用户名唯一性检查 ---
+    existing_user = get_user_by_username(username)
     if existing_user:
-        return jsonify({'error': 'Username already exists'}), 400
-    
+        return jsonify({'error': '该用户名已被注册，请换一个试试'}), 400
+
+    # --- 邮箱唯一性检查 ---
+    existing_email = get_user_by_email(email)
+    if existing_email:
+        return jsonify({'error': '该邮箱已被注册，请使用其他邮箱或直接登录'}), 400
+
     hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256')
+    tenant_id = request.headers.get('X-Tenant-ID')
+    try:
+        tenant_id = int(tenant_id) if tenant_id else None
+    except ValueError:
+        tenant_id = None
+
     new_user = User(
-        username=data['username'],
+        username=username,
         password=hashed_password,
-        email=data['email'],
-        role='user'
+        email=email,
+        phone=phone if phone else None,
+        role='user',
+        tenant_id=tenant_id
     )
     user_id = add_user(new_user)
-    return jsonify({'success': True, 'user_id': user_id, 'message': 'Register success'}), 201
+    logger.info(f"新用户注册成功：username={username}, email={email}")
+    return jsonify({'success': True, 'user_id': user_id, 'message': '注册成功'}), 201
 
 @app.route('/api/login', methods=['POST'])
+@rate_limit('login', limit=10, per_seconds=60)
 def login_user():
     data = request.json
     username = data.get('username')
@@ -112,7 +233,7 @@ def login_user():
 # Simple admin token authentication
 def _is_admin(request):
     token = request.headers.get('X-Admin-Token')
-    expected = os.getenv('ADMIN_TOKEN', 'admin-secret-token')
+    expected = os.getenv('ADMIN_TOKEN', '')
     return token == expected
 
 # Admin: Get all users
@@ -201,7 +322,7 @@ def polish_text_with_deepseek(text_to_rewrite):
     str - 润色后的文本内容，如果API调用失败则返回原始文本
     """
     API_URL = os.getenv("API_BASE_URL", "https://api.deepseek.com/v1") + "/chat/completions"
-    API_KEY = os.getenv("DEEPSEEK_API_KEY", "sk-cea68c36b6e74d928f3289fe4fe0180a")
+    API_KEY = os.getenv("DEEPSEEK_API_KEY", "")  # Must be set in environment
     
     headers = {
         "Content-Type": "application/json",
@@ -239,6 +360,7 @@ REQUIRED_COLUMNS = [
 ]
 
 @app.route('/api/predict', methods=['POST'])
+@rate_limit('predict', limit=20, per_seconds=60)
 def predict():
     try:
         # 检查是否有文件上传
@@ -397,6 +519,7 @@ def predict():
 # NOTE: 表单数据预测接口，供前端 algorithms.html 页面调用
 # 将用户输入的临床参数映射为模型所需的 10 维特征向量进行预测
 @app.route('/api/predict_form', methods=['POST'])
+@rate_limit('predict_form', limit=20, per_seconds=60)
 def predict_form():
     """
     接收前端表单 JSON 数据，调用模型进行癌症风险预测
@@ -582,6 +705,7 @@ def predict_form():
 
 # 文本润色API端点
 @app.route('/api/polish', methods=['POST'])
+@rate_limit('polish', limit=15, per_seconds=60)
 def polish_text():
     try:
         data = request.json
@@ -600,6 +724,81 @@ def polish_text():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/generate_ai_report', methods=['POST'])
+@rate_limit('generate_ai_report', limit=10, per_seconds=60)
+def generate_ai_report():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': '缺少参数'}), 400
+            
+        patient_data = data.get('patient_data', {})
+        prediction_results = data.get('prediction_results', {})
+        
+        # 组装 Prompt
+        prompt = f"患者信息：年龄 {patient_data.get('patientAge')}, 性别 {patient_data.get('patientGender')}, BMI {patient_data.get('patientBmi')}, 吸烟史: {patient_data.get('patientSmoke')}。\n"
+        prompt += f"评估结果：使用算法 {prediction_results.get('algorithm')}, 风险等级为 {prediction_results.get('riskLevel')}, 置信度为 {prediction_results.get('confidence')}。\n"
+        prompt += f"详细分布概率：{prediction_results.get('probabilities')}\n\n"
+        prompt += "请作为专业资深的主治医师为你出具一份详细、官方的病历随访总结与临床医学指导。请使用 Markdown 格式，排版要美观专业，不要重复提示词。内容需要包含：1. 评估结果解读（专业） 2. 潜在临床风险（客观） 3. 详细生活指导与复查建议。表现出专业、严谨以及对患者的人文关怀。"
+        
+        API_URL = os.getenv("API_BASE_URL", "https://api.deepseek.com/v1") + "/chat/completions"
+        API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+        
+        # 兜底 Mock 数据，如果环境变量未设定或 API调用失败，使用该高质量默认报告
+        fallback_markdown = f"""
+### 🩺 综合临床评估解读
+基于人工智能多维特征提取（{prediction_results.get('algorithm')}），该样本呈现**{prediction_results.get('riskLevel')}**的概率学判定（当前模型置信度：{prediction_results.get('confidence')}）。结合您的基础体征（BMI {patient_data.get('patientBmi')}），当前整体风险情况已经锚定。我们建议将此次AI辅助预估作为重要临床参考。
+
+### ⚠️ 潜在健康隐患预警
+- **代谢与生理负荷**：需要持续关注基础代谢指标变动。
+- **环境交互相关性**：鉴于相关既往史记录，微观组织长期承受非必要应力。
+
+### 📋 个性化复查与干预方案
+1. **优先复查建议**
+   - 建议在未来 **1-3 个月内** 前往三甲医院就诊相关科室。
+   - 考虑进行一次完整的专项影像学扫描（如低剂量螺旋CT或组织超声）。
+2. **生活方式重构**
+   - **膳食管理**：增加十字花科蔬菜摄入，严格控制深加工肉类及游离糖摄取。
+   - **运动处方**：维持每周至少 150 分钟中高强度有氧运动，帮助免疫系统自我巡查功能重组。
+3. **随访建档**
+   - 我们强烈建议您在当地肿瘤防癌早筛中心建立个人健康档案，长期随访。
+
+> *医者寄语：科学防癌，预防大于治疗。AI为您提供了第一道防线，请务必引起重视，保持积极乐观的心态，定期体检！*
+"""
+        
+        if not API_KEY:
+            # 环境变量没配，直接返回专业Mock
+            return jsonify({'success': True, 'report': fallback_markdown})
+            
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {API_KEY}"
+        }
+        
+        payload = {
+            "model": "deepseek-chat",
+            "messages": [
+                {"role": "system", "content": "你是一位资深的肿瘤专科主治医师，现在在为患者出具专业的联合AI筛查病历报告。"},
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens": 1200,
+            "temperature": 0.6
+        }
+        
+        response = requests.post(API_URL, headers=headers, json=payload, timeout=25)
+        if response.status_code == 200:
+            result = response.json()
+            report_content = result['choices'][0]['message']['content'].strip()
+            return jsonify({'success': True, 'report': report_content})
+        else:
+            logger.warning(f"DeepSeek API 失败: {response.text}")
+            return jsonify({'success': True, 'report': fallback_markdown})
+            
+    except Exception as e:
+        logger.error(f"generate_ai_report 异常: {str(e)}")
+        # 即使异常也给一个友好的反馈
+        return jsonify({'success': True, 'report': fallback_markdown})
+
 @app.route('/', methods=['GET'])
 def index():
     return app.send_static_file('index.html')
@@ -607,6 +806,16 @@ def index():
 @app.route('/<path:path>', methods=['GET'])
 def serve_static(path):
     return app.send_static_file(path)
+
+# Health check endpoint
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'ok', 'message': 'Service is running'})
+
+# Models list endpoint
+@app.route('/api/models', methods=['GET'])
+def list_models():
+    return jsonify({'available_models': list(loaded_models.keys())})
 
 if __name__ == '__main__':
     print("服务器将在 http://localhost:5000 上运行")

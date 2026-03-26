@@ -1168,44 +1168,317 @@
     </div>
 
     <!-- 注册模态框 -->
+    <style>
+        /* 注册模态框增强样式 */
+        #registerModal .modal-content {
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        #registerModal .modal-header {
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            color: white;
+            border-bottom: none;
+            padding: 1.5rem 1.5rem 1rem;
+        }
+        #registerModal .modal-header .close {
+            color: white;
+            opacity: 0.8;
+            text-shadow: none;
+        }
+        #registerModal .modal-header .close:hover {
+            opacity: 1;
+        }
+        #registerModal .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        #registerModal .modal-body {
+            padding: 1.5rem;
+        }
+        #registerModal .form-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #495057;
+            margin-bottom: 0.3rem;
+        }
+        #registerModal .form-control {
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            border: 1.5px solid #dee2e6;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 0.95rem;
+        }
+        #registerModal .form-control:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        }
+        #registerModal .form-control.is-valid {
+            border-color: #28a745;
+        }
+        #registerModal .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        .input-hint {
+            font-size: 0.78rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        .input-hint.error {
+            color: #dc3545;
+        }
+        .input-hint.success {
+            color: #28a745;
+        }
+
+        /* 密码强度指示器 */
+        .password-strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: #e9ecef;
+            margin-top: 0.4rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .password-strength-bar .strength-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.4s ease, background-color 0.4s ease;
+            width: 0%;
+        }
+        .password-strength-bar .strength-fill.weak {
+            width: 33%;
+            background: linear-gradient(90deg, #dc3545, #e74c3c);
+        }
+        .password-strength-bar .strength-fill.medium {
+            width: 66%;
+            background: linear-gradient(90deg, #ffc107, #f39c12);
+        }
+        .password-strength-bar .strength-fill.strong {
+            width: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+        .password-strength-text {
+            font-size: 0.75rem;
+            margin-top: 0.2rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .password-strength-text.weak { color: #dc3545; }
+        .password-strength-text.medium { color: #ffc107; }
+        .password-strength-text.strong { color: #28a745; }
+
+        /* 密码可见性切换按钮 */
+        .password-toggle-wrap {
+            position: relative;
+        }
+        .password-toggle-wrap .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+            font-size: 0.95rem;
+            z-index: 5;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .password-toggle-wrap .toggle-password:hover {
+            color: #007BFF;
+        }
+
+        /* 注册按钮样式 */
+        #registerSubmitBtn {
+            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.65rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+        #registerSubmitBtn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+        }
+        #registerSubmitBtn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        #registerSubmitBtn .spinner-border {
+            width: 1rem;
+            height: 1rem;
+            border-width: 2px;
+        }
+
+        /* 服务条款勾选 */
+        .agree-terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .agree-terms input[type="checkbox"] {
+            margin-top: 3px;
+            width: 16px;
+            height: 16px;
+            accent-color: #007BFF;
+            cursor: pointer;
+        }
+        .agree-terms label {
+            font-size: 0.82rem;
+            color: #6c757d;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        .agree-terms label a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .agree-terms label a:hover {
+            text-decoration: underline;
+        }
+
+        /* Toast 通知 */
+        .custom-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
+            min-width: 320px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .custom-toast.show {
+            transform: translateX(0);
+        }
+        .custom-toast.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        .custom-toast.error {
+            background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+        }
+        .custom-toast.info {
+            background: linear-gradient(135deg, #007BFF 0%, #17a2b8 100%);
+        }
+        .custom-toast .toast-icon {
+            font-size: 1.3rem;
+        }
+        .custom-toast .toast-msg {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+        .custom-toast .toast-close {
+            cursor: pointer;
+            opacity: 0.7;
+            font-size: 1.2rem;
+            padding: 0 4px;
+        }
+        .custom-toast .toast-close:hover {
+            opacity: 1;
+        }
+
+        /* 注册模态框 footer */
+        #registerModal .modal-footer {
+            border-top: 1px solid #f0f0f0;
+            padding: 1rem 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #registerModal .modal-footer .btn-link {
+            font-size: 0.88rem;
+            padding: 0;
+        }
+    </style>
+
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <h5 class="modal-title" id="registerModalLabel"><i class="fas fa-user-plus mr-2"></i>创建账号</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="registerForm">
+                    <form id="registerForm" novalidate>
+                        <!-- 用户名 -->
                         <div class="form-group">
-                            <label for="registerUsername">用户名</label>
-                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                            <label for="registerUsername"><i class="fas fa-user mr-1"></i>用户名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="3-20位字母、数字或下划线" required minlength="3" maxlength="20" autocomplete="username">
+                            <div class="input-hint" id="usernameHint"></div>
                         </div>
+                        <!-- 邮箱 -->
                         <div class="form-group">
-                            <label for="registerEmail">邮箱</label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                            <label for="registerEmail"><i class="fas fa-envelope mr-1"></i>邮箱 <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="example@email.com" required autocomplete="email">
+                            <div class="input-hint" id="emailHint"></div>
                         </div>
+                        <!-- 手机号（可选） -->
                         <div class="form-group">
-                            <label for="registerPassword">密码</label>
-                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                            <label for="registerPhone"><i class="fas fa-mobile-alt mr-1"></i>手机号 <small class="text-muted">（选填）</small></label>
+                            <input type="tel" class="form-control" id="registerPhone" placeholder="11位手机号码" maxlength="11" autocomplete="tel">
+                            <div class="input-hint" id="phoneHint"></div>
                         </div>
+                        <!-- 密码 -->
                         <div class="form-group">
-                            <label for="confirmPassword">确认密码</label>
-                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                            <label for="registerPassword"><i class="fas fa-lock mr-1"></i>密码 <span class="text-danger">*</span></label>
+                            <div class="password-toggle-wrap">
+                                <input type="password" class="form-control" id="registerPassword" placeholder="至少6位，含字母和数字" required minlength="6" maxlength="20" autocomplete="new-password">
+                                <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" onclick="togglePasswordVisibility('registerPassword', 'toggleRegPassword')"></i>
+                            </div>
+                            <div class="password-strength-bar" id="passwordStrengthBar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="password-strength-text" id="passwordStrengthText"></div>
                         </div>
-                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                        <!-- 确认密码 -->
+                        <div class="form-group">
+                            <label for="confirmPassword"><i class="fas fa-lock mr-1"></i>确认密码 <span class="text-danger">*</span></label>
+                            <div class="password-toggle-wrap">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required autocomplete="new-password">
+                                <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"></i>
+                            </div>
+                            <div class="input-hint" id="confirmHint"></div>
+                        </div>
+                        <!-- 服务条款 -->
+                        <div class="agree-terms">
+                            <input type="checkbox" id="agreeTerms">
+                            <label for="agreeTerms">我已阅读并同意 <a href="#" onclick="event.preventDefault(); showToast('info', '服务条款页面建设中，敬请期待');">《用户服务条款》</a> 和 <a href="#" onclick="event.preventDefault(); showToast('info', '隐私政策页面建设中，敬请期待');">《隐私政策》</a></label>
+                        </div>
+                        <!-- 错误信息 -->
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px; font-size: 0.9rem;"></div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
-                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
+                    <button type="button" class="btn btn-link text-muted" onclick="showLoginModal()"><i class="fas fa-sign-in-alt mr-1"></i>已有账号？点击登录</button>
+                    <button type="button" class="btn btn-primary" id="registerSubmitBtn" onclick="register()">
+                        <span id="registerBtnText">立即注册</span>
+                        <span id="registerBtnSpinner" style="display:none;">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            注册中...
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 全局 Toast 通知容器 -->
+    <div id="toastContainer"></div>
 
     <!-- 用户信息模态框 -->
     <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">

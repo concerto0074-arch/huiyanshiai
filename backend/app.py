@@ -5,6 +5,12 @@ import numpy as np
 import os
 from flask_cors import CORS
 import logging
+import requests
+from dotenv import load_dotenv
+
+# 加载 .env 环境变量
+env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
+load_dotenv(env_path)
 
 from config import (
     MODELS_DIR, MODEL_SUFFIX, RESULTS_FILE, 
@@ -14,6 +20,8 @@ from utils import (
     load_model, load_results, ensure_dir, setup_logging,
     map_smoking_status, map_gender, map_mutation
 )
+from r_integration_service import process_gene_file
+
 
 # 设置日志
 logger = setup_logging()
@@ -64,14 +72,14 @@ def load_models():
     except Exception as e:
         logger.error(f"加载训练结果失败: {str(e)}")
     
-    logger.info(f"共加载{len(models)}个模型")
+    logger.info(f"共加载{len(models)}个模型: {list(models.keys())}")
 
-# 初始化加载模型
-load_models()
+# NOTE: 不在模块级别调用 load_models()，避免 Flask/Werkzeug 双重导入时覆盖全局变量
 
 @app.route('/api/models', methods=['GET'])
 def get_models():
     """获取所有可用模型"""
+    logger.info(f"[API] 查询可用模型，当前字典大小: {len(models)}, keys: {list(models.keys())}")
     return jsonify({
         'models': list(model_info.values()),
         'total': len(models)
@@ -234,6 +242,85 @@ def predict_internal(data):
     
     except Exception as e:
         logger.error(f"内部预测失败: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/generate_ai_report', methods=['POST'])
+def generate_ai_report():
+    """使用 DeepSeek 大模型生成定制化医学评估报告"""
+    try:
+        data = request.json
+        patient_data = data.get('patient_data', {})
+        prediction_results = data.get('prediction_results', {})
+        
+        api_key = os.getenv("DEEPSEEK_API_KEY")
+        base_url = os.getenv("API_BASE_URL", "https://api.deepseek.com/v1").rstrip('/')
+        
+        if not api_key:
+            return jsonify({"error": "DeepSeek API Key 未配置，无法生成智能报告。"}), 500
+            
+        prompt = f"""
+请你作为一名资深三甲医院肿瘤科主任医师，根据以下患者的基础体征与最新的机器学习模型预测分析结果，直接撰写一份格式化、排版精美的临床医学建议。
+切忌输出任何多余的客套话或废话。请全部使用Markdown格式，必须包含且清晰分为：【病情与风险深度剖析】、【病理指标解读】、【专业随访与生活指导】三个核心板块。
+
+患者基础体征：
+- 年龄：{patient_data.get('patientAge')}
+- 性别：{patient_data.get('patientGender')}
+- BMI：{patient_data.get('patientBmi')}
+- 吸烟史：{patient_data.get('patientSmoke')}
+
+AI模型算法评估系统（{prediction_results.get('algorithm')}）输出结果：
+- 评定风险级别：{prediction_results.get('riskLevel')} (评估置信度：{prediction_results.get('confidence')}%)
+- 量化抛物概率分布：{prediction_results.get('probabilities')}
+"""
+
+        response = requests.post(
+            f"{base_url}/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": os.getenv("MODEL_NAME", "deepseek-chat"),
+                "messages": [
+                    {"role": "system", "content": "你是一位极其专业的肿瘤医学权威专家，说话逻辑清晰且具备极高的临床科研素养与同理心。"},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.4
+            },
+            timeout=60
+        )
+        response.raise_for_status()
+        report_markdown = response.json().get("choices", [{}])[0].get("message", {}).get("content", "生成失败")
+        
+        return jsonify({"success": True, "report": report_markdown})
+        
+    except Exception as e:
+        logger.error(f"生成 AI 报告失败: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e), "details": "AI 请求拥挤或配置错误"}), 500
+
+@app.route('/api/predict/gene', methods=['POST'])
+def predict_gene():
+    """接收高维基因表达数据文件并使用 R 算法进行预测"""
+    try:
+        logger.info("收到高维基因数据预测请求 /api/predict/gene")
+        if 'file' not in request.files:
+            return jsonify({'error': '未找到上传的文件 (file)'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': '未选择文件'}), 400
+            
+        algorithm = request.form.get('algorithm', 'AI 智能匹配 (推荐)')
+        logger.info(f"指定的基因分群算法: {algorithm}")
+        
+        # 将文件交给 R 集成服务处理
+        result = process_gene_file(file, algorithm)
+        
+        logger.info(f"R 算法返回预测结果: {result['riskLevel']}")
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"基因预测失败: {str(e)}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/health', methods=['GET'])

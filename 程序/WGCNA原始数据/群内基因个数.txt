@@ -1,0 +1,19 @@
+ADC(8)
+
+ blue      grey turquoise 
+       57       485       615 
+
+SCC（9）
+
+ black      blue     brown     green      grey       red turquoise    yellow 
+       55       172       135       126       285        58       199       127 
+
+COID（12）
+
+ blue     brown      grey turquoise 
+       54        42       245       816 
+
+NL(12)
+
+ blue     brown      grey turquoise 
+      108        57       339       653 

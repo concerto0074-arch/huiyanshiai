@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: huiyanshiai-api
+    plan: starter # 建议使用 starter 计划，free 计划可能内存不足
+    env: docker
+    dockerContext: .
+    dockerfilePath: Dockerfile
+    healthCheckPath: /api/health
+    region: singapore # 如果是国内用户，新加坡速度较快
+    envVars:
+      - key: FLASK_APP
+        value: api/app.py
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DEEPSEEK_API_KEY
+        sync: false # 请在 Render 后台手动填入
+      - key: DATABASE_URL
+        value: sqlite:///patients.db # 默认使用 SQLite
+      - key: FRONTEND_URL
+        sync: false # 部署 Vercel 后手动填入
+    autoDeploy: true # 每次推送至 GitHub 时自动重新部署

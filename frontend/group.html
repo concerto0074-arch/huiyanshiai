@@ -483,7 +483,7 @@
                 </div>
             </a>
             
-            <!-- 响应式汉堡菜单按钮 -->
+            <!-- 响应式菜单按钮 -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -494,13 +494,13 @@
                     <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="algorithms.html">AI风险预测</a></li>
                     <li class="nav-item"><a class="nav-link" href="products.html">产品服务</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="group.html">团体方案</a></li>
+                    <li class="nav-item"><a class="nav-link" href="group.html">团体方案</a></li>
                     <li class="nav-item"><a class="nav-link" href="experts.html">专家在线</a></li>
                     <li class="nav-item"><a class="nav-link" href="knowledge.html">知识科普</a></li>
                     <li class="nav-item"><a class="nav-link" href="cases.html">客户案例</a></li>
                 </ul>
                 
-                <!-- 右侧功能区（在移动设备上显示在菜单内） -->
+                <!-- 右侧登录按钮 -->
                 <div class="navbar-right mt-3 mt-lg-0">
                     <div class="notification-icon">
                         <i class="fas fa-bell"></i>
@@ -901,7 +901,7 @@
                     <!-- 登录选项卡 -->
                     <ul class="nav nav-tabs" id="loginTabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user" role="tab" aria-controls="user" aria-selected="true">用户登录</a>
+                            <a class="nav-link" id="user-tab" data-toggle="tab" href="#user" role="tab" aria-controls="user" aria-selected="true">用户登录</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin" aria-selected="false">管理员登录</a>
@@ -1180,13 +1180,9 @@
     
     <script>
         // 登录/注册相关函数
-        function showLoginModal() {
-            $('#loginModal').modal('show');
-        }
+        
 
-        function showRegisterModal() {
-            $('#registerModal').modal('show');
-        }
+        
 
         function showUserInfoModal() {
             // 模拟获取用户信息
@@ -1230,15 +1226,7 @@
 
         
 
-        function checkLoginStatus() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const loginBtn = $('.login-btn');
-            const userBtn = $('.user-info-btn');
-
-            if (isLoggedIn) {
-                loginBtn.hide();
-                userBtn.show();
-            } else {
+         else {
                 loginBtn.show();
                 userBtn.hide();
             }
@@ -1430,60 +1418,7 @@
     </style>
 
     <!-- 登录模态框 -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- 登录选项卡 -->
-                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content mt-3" id="loginTabsContent">
-                        <!-- 用户登录表单 -->
-                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
-                            <form id="userLoginForm">
-                                <div class="form-group">
-                                    <label for="userLoginUsername">用户名</label>
-                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="userLoginPassword">密码</label>
-                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
-                                </div>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label" for="rememberMe">记住我</label>
-                                </div>
-                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
-                            </form>
-                        </div>
-                        <!-- 管理员登录表单 -->
-                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
-                            <form id="adminLoginForm">
-                                <div class="form-group">
-                                    <label for="adminLoginUsername">管理员用户名</label>
-                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="adminLoginPassword">管理员密码</label>
-                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
-                                </div>
-                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+    
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" onclick="login()">登录</button>
@@ -1494,93 +1429,11 @@
     </div>
 
     <!-- 注册模态框 -->
-    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="registerForm">
-                        <div class="form-group">
-                            <label for="registerUsername">用户名</label>
-                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registerEmail">邮箱</label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registerPassword">密码</label>
-                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">确认密码</label>
-                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
-                        </div>
-                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
-                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
-                </div>
-            </div>
-        </div>
+    
     </div>
 
     <!-- 用户信息模态框 -->
-    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="user-profile">
-                                <div class="avatar">
-                                    <i class="fas fa-user-circle fa-5x"></i>
-                                </div>
-                                <h4 id="userName">用户</h4>
-                                <p id="userEmail">用户邮箱</p>
-                            </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="nav nav-tabs" id="userTabs" role="tablist">
-                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
-                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
-                            </div>
-                            <div class="tab-content mt-3" id="userTabsContent">
-                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
-                                    <h5>历史报告</h5>
-                                    <div id="reportsList" class="mt-3">
-                                        <!-- 报告列表将通过JavaScript动态生成 -->
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-                                    <h5>账户设置</h5>
-                                    <div class="form-group">
-                                        <label for="newPassword">新密码</label>
-                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="confirmNewPassword">确认新密码</label>
-                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
-                                    </div>
-                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
-                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
-                                </div>
-                            </div>
-                        </div>
+    
                     </div>
                 </div>
             </div>
@@ -1612,16 +1465,10 @@
         });
         
         // 显示登录模态框
-        function showLoginModal() {
-            $('#loginModal').modal('show');
-            $('#registerModal').modal('hide');
-        }
+        
 
         // 显示注册模态框
-        function showRegisterModal() {
-            $('#registerModal').modal('show');
-            $('#loginModal').modal('hide');
-        }
+        
 
         // 显示用户信息模态框
         function showUserInfoModal() {
@@ -1645,29 +1492,7 @@
         }
         
         // 登录功能
-        function login() {
-            // 检查当前激活的选项卡
-            const activeTab = document.querySelector('#loginTabs .nav-link.active');
-            
-            if (activeTab.id === 'user-login-tab') {
-                // 用户登录
-                const username = document.getElementById('userLoginUsername').value;
-                const password = document.getElementById('userLoginPassword').value;
-                const errorDiv = document.getElementById('loginError');
-                
-                errorDiv.textContent = '';
-                
-                // 使用localStorage模拟登录
-                if (username && password) {
-                    // 存储登录状态到localStorage
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('username', username);
-                    localStorage.setItem('email', username + '@example.com');
-                    
-                    $('#loginModal').modal('hide');
-                    checkLoginStatus();
-                    alert('登录成功！');
-                } else {
+         else {
                     errorDiv.textContent = '请输入用户名和密码';
                 }
             } else if (activeTab.id === 'admin-login-tab') {
@@ -1702,20 +1527,7 @@
         }
 
         // 注册功能
-        function register() {
-            const username = document.getElementById('registerUsername').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const errorDiv = document.getElementById('registerError');
-            
-            errorDiv.textContent = '';
-            
-            // 验证输入完整性
-            if (!username || !email || !password) {
-                errorDiv.textContent = '请填写完整的注册信息';
-                return;
-            }
+        
             
             if (password !== confirmPassword) {
                 errorDiv.textContent = '两次输入的密码不一致';
@@ -1734,20 +1546,7 @@
         }
 
         // 检查登录状态（使用localStorage模拟）
-        function checkLoginStatus() {
-            console.log('开始检查登录状态...');
-            // 从localStorage获取登录状态
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const username = localStorage.getItem('username') || '用户';
-            const email = localStorage.getItem('email') || '';
-            
-            console.log('登录状态检查结果:', isLoggedIn);
-            
-            if (isLoggedIn) {
-                // 已登录，显示导航栏用户中心按钮，隐藏登录按钮
-                if (document.getElementById('navbarUserCenterBtn')) {
-                    document.getElementById('navbarUserCenterBtn').style.display = 'block';
-                }
+        
                 if (document.getElementById('navbarLoginBtn')) {
                     document.getElementById('navbarLoginBtn').style.display = 'none';
                 }
@@ -2104,7 +1903,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
-                    <p>专注于早期癌症发现的人工智能系统，为您的健康保驾护航。</p>
+                    <p>专注于癌症风险评估的智能平台，为您的健康保驾护航。</p>
                     <div class="social-icons mt-4">
                         <a href="#" class="text-white mr-3"><i class="fab fa-weixin"></i></a>
                         <a href="#" class="text-white mr-3"><i class="fab fa-weibo"></i></a>
@@ -2118,7 +1917,7 @@
                         <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
                         <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
                         <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
-                        <li><a href="experts.html" class="text-white text-decoration-none">专家在线</a></li>
+                        <li><a href="experts.html" class="text-white text-decoration-none">专家团队</a></li>
                         <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
                         <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
                     </ul>
@@ -2126,7 +1925,7 @@
                 <div class="col-md-4">
                     <h5 class="mb-3">联系我们</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区中关村科技园区</li>
+                        <li class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区科技园区</li>
                         <li class="mb-2"><i class="fas fa-phone mr-2"></i> 400-123-4567</li>
                         <li class="mb-2"><i class="fas fa-envelope mr-2"></i> contact@huianyanshiai.com</li>
                         <li class="mb-2"><i class="fas fa-clock mr-2"></i> 周一至周五 9:00-18:00</li>
@@ -2136,7 +1935,7 @@
             <hr class="bg-white opacity-25 mt-4">
             <div class="text-center">
                 <p class="mb-0">© 2025 慧眼识癌. 保留所有权利.</p>
-                <p class="small mt-1">京ICP备12345678号 | 京公网安备11010802023456号</p>
+                <p class="small mt-1">京ICP备12345678号 | 医疗机构执业许可证11010802023456号</p>
             </div>
         </div>
     </footer>
@@ -2147,6 +1946,180 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
-    <script src="js/auth.js"></script>
+    
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="loginTabsContent">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel"><i class="fas fa-user-plus mr-2"></i>创建账号</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm" novalidate>
+                        <!-- 用户名 -->
+                        <div class="form-group">
+                            <label for="registerUsername"><i class="fas fa-user mr-1"></i>用户名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="3-20位字母、数字或下划线" required minlength="3" maxlength="20" autocomplete="username">
+                            <div class="input-hint" id="usernameHint"></div>
+                        </div>
+                        <!-- 邮箱 -->
+                        <div class="form-group">
+                            <label for="registerEmail"><i class="fas fa-envelope mr-1"></i>邮箱 <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="example@email.com" required autocomplete="email">
+                            <div class="input-hint" id="emailHint"></div>
+                        </div>
+                        <!-- 手机号（可选） -->
+                        <div class="form-group">
+                            <label for="registerPhone"><i class="fas fa-mobile-alt mr-1"></i>手机号 <small class="text-muted">（选填）</small></label>
+                            <input type="tel" class="form-control" id="registerPhone" placeholder="11位手机号码" maxlength="11" autocomplete="tel">
+                            <div class="input-hint" id="phoneHint"></div>
+                        </div>
+                        <!-- 密码 -->
+                        <div class="form-group">
+                            <label for="registerPassword"><i class="fas fa-lock mr-1"></i>密码 <span class="text-danger">*</span></label>
+                            <div class="password-toggle-wrap">
+                                <input type="password" class="form-control" id="registerPassword" placeholder="至少6位，含字母和数字" required minlength="6" maxlength="20" autocomplete="new-password">
+                                <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" onclick="togglePasswordVisibility('registerPassword', 'toggleRegPassword')"></i>
+                            </div>
+                            <div class="password-strength-bar" id="passwordStrengthBar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="password-strength-text" id="passwordStrengthText"></div>
+                        </div>
+                        <!-- 确认密码 -->
+                        <div class="form-group">
+                            <label for="confirmPassword"><i class="fas fa-lock mr-1"></i>确认密码 <span class="text-danger">*</span></label>
+                            <div class="password-toggle-wrap">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required autocomplete="new-password">
+                                <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"></i>
+                            </div>
+                            <div class="input-hint" id="confirmHint"></div>
+                        </div>
+                        <!-- 服务条款 -->
+                        <div class="agree-terms">
+                            <input type="checkbox" id="agreeTerms">
+                            <label for="agreeTerms">我已阅读并同意 <a href="#" onclick="event.preventDefault(); showToast('info', '服务条款页面建设中，敬请期待');">《用户服务条款》</a> 和 <a href="#" onclick="event.preventDefault(); showToast('info', '隐私政策页面建设中，敬请期待');">《隐私政策》</a></label>
+                        </div>
+                        <!-- 错误信息 -->
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px; font-size: 0.9rem;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link text-muted" onclick="showLoginModal()"><i class="fas fa-sign-in-alt mr-1"></i>已有账号？点击登录</button>
+                    <button type="button" class="btn btn-primary" id="registerSubmitBtn" onclick="register()">
+                        <span id="registerBtnText">立即注册</span>
+                        <span id="registerBtnSpinner" style="display:none;">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            注册中...
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+<div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="user-profile">
+                                <div class="avatar">
+                                    <i class="fas fa-user-circle fa-5x"></i>
+                                </div>
+                                <h4 id="userName">用户</h4>
+                                <p id="userEmail">用户邮箱</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="nav nav-tabs" id="userTabs" role="tablist">
+                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
+                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
+                            </div>
+                            <div class="tab-content mt-3" id="userTabsContent">
+                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                                    <h5>历史报告</h5>
+                                    <div id="reportsList" class="mt-3">
+                                        <!-- 报告列表将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                    <h5>账户设置</h5>
+                                    <div class="form-group">
+                                        <label for="newPassword">新密码</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmNewPassword">确认新密码</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
+                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
+                                </div>
+                            </div>
+                        </div>
+<div id="toastContainer"></div>
+<script src="js/auth.js"></script>
 </body>
 </html>

@@ -35,8 +35,8 @@ COPY . /app/
 
 # 设置启动环境变量与端口
 ENV PYTHONUNBUFFERED=1
-ENV FLASK_APP=backend/app.py
-EXPOSE 5001
+ENV FLASK_APP=api/app.py
+EXPOSE 5000
 
-# 指定启动命令 (用 gunicorn 部署更好，或直接内建 python)
-CMD ["python3", "backend/app.py"]
+# 指定启动命令 (最终生产环境建议使用 gunicorn -w 4 -b 0.0.0.0:5000 api.app:app)
+CMD ["python3", "api/app.py"]

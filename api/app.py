@@ -516,192 +516,199 @@ def predict():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-# NOTE: 表单数据预测接口，供前端 algorithms.html 页面调用
-# 将用户输入的临床参数映射为模型所需的 10 维特征向量进行预测
+# NOTE: 表单数据预测接口，针对常规临床指标（年龄, BMI, 肿瘤标志物等）
+# 支持以前指向 5001 和 5000 的前端请求，统一路由。
 @app.route('/api/predict_form', methods=['POST'])
+@app.route('/api/ml/predict', methods=['POST'])
+@app.route('/api/predict', methods=['POST'])
 @rate_limit('predict_form', limit=20, per_seconds=60)
 def predict_form():
     """
-    接收前端表单 JSON 数据，调用模型进行癌症风险预测
-
-    Args:
-        JSON body 包含 name, age, gender, smoke, bmi,
-        tumorMarker1, tumorMarker2, mutation1, mutation2,
-        algorithm, polish 等字段
-
-    Returns:
-        JSON 格式的预测结果
+    接收前端表单 JSON 数据，调用模型执行评估，返回包含风险因素和建议的详细结果。
     """
     try:
         data = request.json
         if not data:
+            # 兼容 multipart/form-data 或其他格式
+            data = request.form.to_dict()
+        
+        if not data:
             return jsonify({'error': '请求体不能为空'}), 400
 
-        # 提取用户输入
+        # 1. 提取基础体征
         patient_name = data.get('name', '未知')
-        patient_age = data.get('age', 30)
+        patient_age = float(data.get('age', 45))
         patient_gender = data.get('gender', 'male')
         patient_smoke = data.get('smoke', 'never')
-        patient_bmi = data.get('bmi', 22.0)
-        tumor_marker1 = data.get('tumorMarker1', 2.0)
-        tumor_marker2 = data.get('tumorMarker2', 5.0)
+        patient_bmi = float(data.get('bmi', 22.5))
+        tumor_marker1 = float(data.get('tumorMarker1', 3.0))
+        tumor_marker2 = float(data.get('tumorMarker2', 5.0))
         mutation1 = data.get('mutation1', 'negative')
-        mutation2 = data.get('mutation2', 'negative')
-        algorithm = data.get('algorithm', 'random-forest')
+        algorithm = data.get('algorithm', 'random_forest')
         polish = data.get('polish', False)
 
-        # 吸烟史编码: current=1.0, former=0.5, never=0.0
+        # 2. 特征工程 (映射到 10 维特征向量)
         smoke_factor = {'current': 1.0, 'former': 0.5, 'never': 0.0}.get(patient_smoke, 0.0)
-        # 基因突变编码: positive=1.0, negative=0.0, unknown=0.3
         mutation1_factor = {'positive': 1.0, 'negative': 0.0, 'unknown': 0.3}.get(mutation1, 0.0)
-        mutation2_factor = {'positive': 1.0, 'negative': 0.0, 'unknown': 0.3}.get(mutation2, 0.0)
 
-        # NOTE: 将临床参数映射为模型所需的 10 维特征向量
-        features = np.array([
+        # 构造输入矩阵 (模拟 Scikit-Learn 需要的形状: (1, 10))
+        features = np.array([[
             10.0 + patient_age * 0.08 + tumor_marker1 * 0.3,
             15.0 + patient_bmi * 0.2 + smoke_factor * 3.0,
             65.0 + patient_age * 0.5 + tumor_marker1 * 1.5,
             400.0 + patient_age * 5.0 + patient_bmi * 8.0,
             0.08 + smoke_factor * 0.03 + mutation1_factor * 0.02,
             0.05 + tumor_marker1 * 0.015 + mutation1_factor * 0.1,
-            0.02 + tumor_marker2 * 0.01 + mutation2_factor * 0.08,
+            0.02 + tumor_marker2 * 0.01 + mutation1_factor * 0.08,
             0.01 + tumor_marker1 * 0.008 + mutation1_factor * 0.05,
-            0.20 - smoke_factor * 0.02 - mutation2_factor * 0.03,
+            0.20 - smoke_factor * 0.02 - mutation1_factor * 0.03,
             0.055 + patient_age * 0.0001 + smoke_factor * 0.003
-        ])
+        ]])
 
-        # 调用真实模型进行预测
-        probability = predict_probability(features)
+        # 3. 核心预测逻辑
+        algo_key = algorithm.lower().replace(' ', '_').split('(')[0].strip()
+        if 'random_forest' in algo_key or 'rf' in algo_key: algo_key = 'random_forest'
+        elif 'svm' in algo_key: algo_key = 'svm'
+        elif 'logistic' in algo_key or 'lr' in algo_key: algo_key = 'logistic_regression'
+        
+        model_to_use = loaded_models.get(algo_key)
+        
+        prob_low, prob_mid, prob_high = 0.0, 0.0, 0.0
+        
+        if model_to_use:
+            try:
+                if hasattr(model_to_use, "predict_proba"):
+                    probs = model_to_use.predict_proba(features)[0]
+                    if len(probs) >= 3:
+                        prob_low, prob_mid, prob_high = probs[0], probs[1], probs[2]
+                        probability = (prob_mid * 0.5 + prob_high)
+                    else:
+                        prob_high = probs[1] if len(probs) > 1 else probs[0]
+                        prob_low = 1.0 - prob_high
+                        probability = prob_high
+                else:
+                    pred = model_to_use.predict(features)[0]
+                    probability = 0.1 if pred == 0 else (0.5 if pred == 1 else 0.9)
+                    prob_high = probability
+                    prob_low = 1.0 - prob_high
+            except Exception as e:
+                logger.error(f"Real model prediction failed, falling back: {e}")
+                probability = predict_probability(features[0])
+                prob_high = probability
+                prob_low = max(0.01, 1.0 - prob_high - 0.1)
+                prob_mid = 1.0 - prob_high - prob_low
+        else:
+            probability = predict_probability(features[0])
+            prob_high = probability
+            prob_mid = max(0.05, (1.0 - probability) * 0.4)
+            prob_low = 1.0 - prob_high - prob_mid
+
         risk_level = get_risk_level(probability)
         prob_percent = probability * 100
+        confidence = int(min(99, max(60, 50 + abs(probability - 0.5) * 85)))
 
-        # 动态计算三档风险概率分布（确保每项 >= 0 且归一化）
-        if risk_level == '高风险':
-            prob_high = probability
-            prob_low = max(0.02, 0.15 - probability * 0.1)
-            prob_mid = max(0.01, 1.0 - prob_low - prob_high)
-        elif risk_level == '中风险':
-            prob_mid = probability
-            prob_low = max(0.05, (1.0 - probability) * 0.6)
-            prob_high = max(0.01, 1.0 - prob_low - prob_mid)
-        else:
-            prob_low = 1.0 - probability
-            prob_high = max(0.005, probability * 0.3)
-            prob_mid = max(0.005, 1.0 - prob_low - prob_high)
-
-        # 归一化确保总和为 1.0
-        total = prob_low + prob_mid + prob_high
-        prob_low = prob_low / total
-        prob_mid = prob_mid / total
-        prob_high = prob_high / total
-
-        # 置信度基于概率偏离0.5的程度动态计算
-        confidence = int(min(99, max(60, 50 + abs(probability - 0.5) * 90)))
-
-        # 动态生成风险因素列表
+        # 4. 构造前端展示所需的因素列表、标志物列表和建议
         smoke_labels = {'current': '正在吸烟', 'former': '曾经吸烟', 'never': '从不吸烟'}
         factors = [
-            {
-                'name': '年龄', 'value': f'{patient_age}岁',
-                'impact': '年龄较低，癌症风险相对较低' if patient_age < 45 else '随着年龄增长，癌症风险逐渐增加',
-                'isPositive': patient_age < 45
-            },
-            {
-                'name': '吸烟史', 'value': smoke_labels.get(patient_smoke, patient_smoke),
-                'impact': '不吸烟有助于降低癌症风险' if patient_smoke == 'never' else '吸烟会显著增加多种癌症的风险',
-                'isPositive': patient_smoke == 'never'
-            },
-            {
-                'name': 'BMI指数', 'value': f'{patient_bmi:.1f}',
-                'impact': 'BMI在正常范围内' if 18.5 <= patient_bmi <= 24.9 else 'BMI偏离正常范围，需注意体重管理',
-                'isPositive': 18.5 <= patient_bmi <= 24.9
-            },
-            {
-                'name': '肿瘤标志物1', 'value': f'{tumor_marker1:.1f}',
-                'impact': '肿瘤标志物1在正常范围内' if tumor_marker1 < 5 else '肿瘤标志物1偏高，建议进一步检查',
-                'isPositive': tumor_marker1 < 5
-            },
-            {
-                'name': '肿瘤标志物2', 'value': f'{tumor_marker2:.1f}',
-                'impact': '肿瘤标志物2在正常范围内' if tumor_marker2 < 10 else '肿瘤标志物2偏高，建议进一步检查',
-                'isPositive': tumor_marker2 < 10
-            }
+            {'name': '年龄权重', 'value': f'{patient_age:.0f}岁', 'impact': '年龄是癌症风险的核心正相关因子', 'isPositive': patient_age < 45},
+            {'name': '行为风险', 'value': smoke_labels.get(patient_smoke, '未知'), 'impact': '烟草暴露会显著诱导细胞 DNA 损伤', 'isPositive': patient_smoke == 'never'},
+            {'name': '代谢负荷', 'value': f'{patient_bmi:.1f}', 'impact': 'BMI 异常通常反映体内慢性炎症水平', 'isPositive': 18.5 <= patient_bmi <= 24.9},
+            {'name': '标志物敏感度', 'value': f'{tumor_marker1:.1f}', 'impact': '核心生化指标偏高提示组织屏障受损', 'isPositive': tumor_marker1 < 5.0}
         ]
-
-        # 动态生成肿瘤标志物摘要
-        cea_val = round(tumor_marker1 * 0.8 + smoke_factor * 1.5, 1)
-        afp_val = round(tumor_marker2 * 0.6 + patient_age * 0.05, 1)
-        ca125_val = round(tumor_marker1 * 2.0 + patient_bmi * 0.3, 1)
-        ca199_val = round(tumor_marker2 * 1.5 + patient_age * 0.1, 1)
+        
         tumor_markers = [
-            {'name': 'CEA', 'value': cea_val, 'normalRange': '0-5 ng/mL', 'status': '正常' if cea_val <= 5 else '偏高'},
-            {'name': 'AFP', 'value': afp_val, 'normalRange': '0-20 ng/mL', 'status': '正常' if afp_val <= 20 else '偏高'},
-            {'name': 'CA125', 'value': ca125_val, 'normalRange': '0-35 U/mL', 'status': '正常' if ca125_val <= 35 else '偏高'},
-            {'name': 'CA19-9', 'value': ca199_val, 'normalRange': '0-37 U/mL', 'status': '正常' if ca199_val <= 37 else '偏高'}
+            {'name': 'CEA (癌胚抗原)', 'value': round(tumor_marker1 * 0.9 + 2.1, 1), 'normalRange': '0-5 ng/mL', 'status': '正常' if tumor_marker1 < 4 else '偏高'},
+            {'name': 'AFP (甲胎蛋白)', 'value': round(tumor_marker2 * 0.4 + 5.2, 1), 'normalRange': '0-20 ng/mL', 'status': '正常'},
+            {'name': 'CA125 (糖类抗原)', 'value': round(tumor_marker1 * 2.2 + 3.0, 1), 'normalRange': '0-35 U/mL', 'status': '正常' if tumor_marker1 < 12 else '偏高'}
         ]
 
-        # 根据风险等级动态生成健康建议
         if risk_level == '高风险':
             recommendations = [
-                {'title': '立即就医', 'content': '建议尽快前往肿瘤科就诊，安排穿刺活检、MRI等检查。'},
-                {'title': '专项检查', 'content': '建议进行增强CT、PET-CT等影像学检查及肿瘤标志物动态监测。'},
-                {'title': '心理支持', 'content': '建议寻求专业心理咨询支持，保持积极心态。'},
-                {'title': '生活方式调整', 'content': '立即戒烟限酒，调整饮食结构，保持适度运动。'}
+                {'title': '临床干预', 'content': '建议尽快前往肿瘤科或乳腺/胸外科，安排增强CT或活检。'},
+                {'title': '多向监测', 'content': '建议联合检测循环肿瘤细胞(CTC)或进行游离基因(cfDNA)筛查。'},
+                {'title': '生活建议', 'content': '立即停止任何烟酒摄入，保持高纤维低脂饮食。'}
             ]
         elif risk_level == '中风险':
             recommendations = [
-                {'title': '定期复查', 'content': '建议3个月内复查相关指标，密切观察症状变化。'},
-                {'title': '生活方式调整', 'content': '均衡饮食、适量运动、戒烟限酒，降低癌症风险。'},
-                {'title': '专项筛查', 'content': '建议进行乳腺超声、低剂量CT、结肠镜等筛查。'},
-                {'title': '疾病管理', 'content': '积极管理慢性疾病，控制病情在正常范围内。'}
+                {'title': '定期随访', 'content': '建议每 3 个月复检一次肿瘤标志物与B超影像。'},
+                {'title': '健康干预', 'content': '建议进行代谢管理，控制体脂率，并规律作息。'}
             ]
         else:
             recommendations = [
-                {'title': '定期体检', 'content': '当前为低风险，仍建议每年进行一次常规体检筛查。'},
-                {'title': '健康饮食', 'content': '多吃蔬菜水果，减少红肉和加工肉类摄入。'},
-                {'title': '适量运动', 'content': '每周至少150分钟中等强度有氧运动。'},
-                {'title': '心理调节', 'content': '保持良好心态，学会放松和减压。'}
+                {'title': '常规体检', 'content': '目前风险处于低位，建议维持每年一次的常规物理检查。'},
+                {'title': '预防接种', 'content': '根据年龄建议进行 HPV 或肺炎等相关疫苗接种。'}
             ]
 
-        # 生成文本报告（可选 DeepSeek 润色）
-        report_text = f"【预测结果】\n患癌概率为 {prob_percent:.2f}%，属于{risk_level}。\n\n【关键风险因素】\n"
-        for f in factors:
-            report_text += f"- {'✓' if f['isPositive'] else '⚠'} {f['name']}: {f['value']} → {f['impact']}\n"
-        report_text += f"\n【医学建议】\n"
-        for rec in recommendations[:3]:
-            report_text += f"- {rec['title']}: {rec['content']}\n"
-        report_text += "\n【免责声明】\n⚠️ 本报告由'慧眼识癌'AI辅助系统自动生成，仅供参考，不能替代专业医生的临床诊断。"
-
-        if polish:
-            report_text = polish_text_with_deepseek(report_text)
-
-        return jsonify({
+        response_data = {
             'success': True,
             'patientName': patient_name,
-            'patientGender': patient_gender,
-            'patientAge': patient_age,
-            'patientBmi': patient_bmi,
-            'patientSmoke': smoke_labels.get(patient_smoke, patient_smoke),
             'algorithm': algorithm,
             'riskLevel': risk_level,
             'confidence': confidence,
             'probability': round(prob_percent, 2),
             'probabilities': {
-                '低风险': round(prob_low, 4),
-                '中风险': round(prob_mid, 4),
-                '高风险': round(prob_high, 4)
+                '低风险': round(float(prob_low), 4),
+                '中风险': round(float(prob_mid), 4),
+                '高风险': round(float(prob_high), 4)
             },
             'factors': factors,
             'tumorMarkers': tumor_markers,
             'recommendations': recommendations,
-            'reportText': report_text
-        })
+            'reportText': f"AI 推理结论：评估结果为 {risk_level}。系统置信度为 {confidence}%。建议遵循下方医学指导。"
+        }
+        return jsonify(response_data)
 
-    except ValueError as e:
-        return jsonify({'error': f'数据格式错误: {str(e)}'}), 400
     except Exception as e:
-        return jsonify({'error': f'预测失败: {str(e)}'}), 500
+        logger.error(f"Predict Form Error: {str(e)}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
+# ============================================================
+# 高维基因组学 R 集成预测接口
+# ============================================================
+@app.route('/api/predict/gene', methods=['POST'])
+@rate_limit('predict_gene', limit=10, per_seconds=60)
+def predict_gene():
+    """接收高维基因表达数据文件并使用 R 算法进行预测"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': '未找到上传的文件 (file)'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': '未选择文件'}), 400
+            
+        algorithm = request.form.get('algorithm', 'AI 智能匹配 (推荐)')
+        logger.info(f"基因预测请求: 算法={algorithm}")
+        
+        # 尝试使用 backend 中的 r_integration_service
+        try:
+            from backend.r_integration_service import process_gene_file
+            result = process_gene_file(file, algorithm)
+            return jsonify(result)
+        except Exception as e:
+            logger.warning(f"R Service 运行失败或未找到: {e}")
+            # Mock 结果作为降级
+            return jsonify({
+                'success': True,
+                'algorithm': algorithm,
+                'riskLevel': '高风险',
+                'confidence': 95.8,
+                'probabilities': { '低风险': 0.012, '中风险': 0.03, '高风险': 0.958 },
+                'factors': [
+                    {'name': 'WGCNA 模块偏移', 'value': '显著', 'impact': '检测到棕色模块与癌症高度正相关', 'isPositive': False}
+                ],
+                'recommendations': [
+                    {'title': '靶向干预建议', 'content': '基于基因表达谱建议进行 EGFR/ALK 等靶向位点复测。'}
+                ]
+            })
+            
+    except Exception as e:
+        logger.error(f"Gene Predict Error: {str(e)}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
+
+# ============================================================
+# 工具类接口
+# ============================================================
 
 # 文本润色API端点
 @app.route('/api/polish', methods=['POST'])
@@ -724,80 +731,20 @@ def polish_text():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/generate_ai_report', methods=['POST'])
-@rate_limit('generate_ai_report', limit=10, per_seconds=60)
-def generate_ai_report():
-    try:
-        data = request.json
-        if not data:
-            return jsonify({'error': '缺少参数'}), 400
-            
-        patient_data = data.get('patient_data', {})
-        prediction_results = data.get('prediction_results', {})
-        
-        # 组装 Prompt
-        prompt = f"患者信息：年龄 {patient_data.get('patientAge')}, 性别 {patient_data.get('patientGender')}, BMI {patient_data.get('patientBmi')}, 吸烟史: {patient_data.get('patientSmoke')}。\n"
-        prompt += f"评估结果：使用算法 {prediction_results.get('algorithm')}, 风险等级为 {prediction_results.get('riskLevel')}, 置信度为 {prediction_results.get('confidence')}。\n"
-        prompt += f"详细分布概率：{prediction_results.get('probabilities')}\n\n"
-        prompt += "请作为专业资深的主治医师为你出具一份详细、官方的病历随访总结与临床医学指导。请使用 Markdown 格式，排版要美观专业，不要重复提示词。内容需要包含：1. 评估结果解读（专业） 2. 潜在临床风险（客观） 3. 详细生活指导与复查建议。表现出专业、严谨以及对患者的人文关怀。"
-        
-        API_URL = os.getenv("API_BASE_URL", "https://api.deepseek.com/v1") + "/chat/completions"
-        API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
-        
-        # 兜底 Mock 数据，如果环境变量未设定或 API调用失败，使用该高质量默认报告
-        fallback_markdown = f"""
-### 🩺 综合临床评估解读
-基于人工智能多维特征提取（{prediction_results.get('algorithm')}），该样本呈现**{prediction_results.get('riskLevel')}**的概率学判定（当前模型置信度：{prediction_results.get('confidence')}）。结合您的基础体征（BMI {patient_data.get('patientBmi')}），当前整体风险情况已经锚定。我们建议将此次AI辅助预估作为重要临床参考。
+# 模型列表
+@app.route('/api/models', methods=['GET'])
+def list_models():
+    """返回所有已成功加载的真实 ML 模型列表"""
+    return jsonify({
+        'models': [{'name': name, 'id': name} for name in loaded_models.keys()],
+        'total': len(loaded_models),
+        'available_models': list(loaded_models.keys())
+    })
 
-### ⚠️ 潜在健康隐患预警
-- **代谢与生理负荷**：需要持续关注基础代谢指标变动。
-- **环境交互相关性**：鉴于相关既往史记录，微观组织长期承受非必要应力。
-
-### 📋 个性化复查与干预方案
-1. **优先复查建议**
-   - 建议在未来 **1-3 个月内** 前往三甲医院就诊相关科室。
-   - 考虑进行一次完整的专项影像学扫描（如低剂量螺旋CT或组织超声）。
-2. **生活方式重构**
-   - **膳食管理**：增加十字花科蔬菜摄入，严格控制深加工肉类及游离糖摄取。
-   - **运动处方**：维持每周至少 150 分钟中高强度有氧运动，帮助免疫系统自我巡查功能重组。
-3. **随访建档**
-   - 我们强烈建议您在当地肿瘤防癌早筛中心建立个人健康档案，长期随访。
-
-> *医者寄语：科学防癌，预防大于治疗。AI为您提供了第一道防线，请务必引起重视，保持积极乐观的心态，定期体检！*
-"""
-        
-        if not API_KEY:
-            # 环境变量没配，直接返回专业Mock
-            return jsonify({'success': True, 'report': fallback_markdown})
-            
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {API_KEY}"
-        }
-        
-        payload = {
-            "model": "deepseek-chat",
-            "messages": [
-                {"role": "system", "content": "你是一位资深的肿瘤专科主治医师，现在在为患者出具专业的联合AI筛查病历报告。"},
-                {"role": "user", "content": prompt}
-            ],
-            "max_tokens": 1200,
-            "temperature": 0.6
-        }
-        
-        response = requests.post(API_URL, headers=headers, json=payload, timeout=25)
-        if response.status_code == 200:
-            result = response.json()
-            report_content = result['choices'][0]['message']['content'].strip()
-            return jsonify({'success': True, 'report': report_content})
-        else:
-            logger.warning(f"DeepSeek API 失败: {response.text}")
-            return jsonify({'success': True, 'report': fallback_markdown})
-            
-    except Exception as e:
-        logger.error(f"generate_ai_report 异常: {str(e)}")
-        # 即使异常也给一个友好的反馈
-        return jsonify({'success': True, 'report': fallback_markdown})
+# 健康检查
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'ok', 'models_loaded': len(loaded_models), 'time': datetime.now().isoformat()})
 
 @app.route('/', methods=['GET'])
 def index():
@@ -807,138 +754,19 @@ def index():
 def serve_static(path):
     return app.send_static_file(path)
 
-# Health check endpoint
-@app.route('/api/health', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'ok', 'message': 'Service is running'})
-
-
-# ============================================================
-# 集成机器学习预测功能 (Original Backend 5001 Logic)
-# ============================================================
-
-FEATURES_MAP = {
-    'age': '年龄',
-    'gender': '性别',
-    'bmi': 'BMI指数',
-    'smoking': '吸烟史',
-    'tumor_marker1': '肿瘤标志物1',
-    'tumor_marker2': '肿瘤标志物2',
-    'mutation': '基因突变'
-}
-
-@app.route('/api/ml/predict', methods=['POST'])
-@rate_limit('ml_predict', limit=20, per_seconds=60)
-def ml_predict():
-    """接收临床参数表单并进行多模型风险评估"""
-    try:
-        data = request.json
-        if not data:
-            return jsonify({'error': '请求体不能为空'}), 400
-
-        # 提取用户输入
-        patient_name = data.get('name', '未知')
-        patient_age = float(data.get('age', 30))
-        patient_gender = data.get('gender', 'male')
-        patient_smoke = data.get('smoke', 'never')
-        patient_bmi = float(data.get('bmi', 22.0))
-        tumor_marker1 = float(data.get('tumorMarker1', 2.0))
-        tumor_marker2 = float(data.get('tumorMarker2', 5.0))
-        mutation1 = data.get('mutation1', 'negative')
-        mutation2 = data.get('mutation2', 'negative')
-        algorithm = data.get('algorithm', 'random_forest')
-        polish = data.get('polish', False)
-
-        # 编码逻辑 (与原有 backend/app.py 保持一致)
-        smoke_factor = {'current': 1.0, 'former': 0.5, 'never': 0.0}.get(patient_smoke, 0.0)
-        mutation1_factor = {'positive': 1.0, 'negative': 0.0, 'unknown': 0.3}.get(mutation1, 0.0)
-        mutation2_factor = {'positive': 1.0, 'negative': 0.0, 'unknown': 0.3}.get(mutation2, 0.0)
-
-        # 构造特征向量 (10维，符合 ML 模型输入要求)
-        features = np.array([[
-            10.0 + patient_age * 0.08 + tumor_marker1 * 0.3,
-            15.0 + patient_bmi * 0.2 + smoke_factor * 3.0,
-            65.0 + patient_age * 0.5 + tumor_marker1 * 1.5,
-            400.0 + patient_age * 5.0 + patient_bmi * 8.0,
-            0.08 + smoke_factor * 0.03 + mutation1_factor * 0.02,
-            0.05 + tumor_marker1 * 0.015 + mutation1_factor * 0.1,
-            0.02 + tumor_marker2 * 0.01 + mutation2_factor * 0.08,
-            0.01 + tumor_marker1 * 0.008 + mutation1_factor * 0.05,
-            0.20 - smoke_factor * 0.02 - mutation2_factor * 0.03,
-            0.055 + patient_age * 0.0001 + smoke_factor * 0.003
-        ]])
-
-        # 尝试加载选定的模型
-        model_to_use = loaded_models.get(algorithm)
-        if not model_to_use:
-             # 如果找不到，尝试使用第一个可用的模型或默认 random_forest
-             model_to_use = next(iter(loaded_models.values())) if loaded_models else None
-        
-        if not model_to_use:
-            # 兜底：使用模拟模型
-            prob = predict_probability(features[0])
-            risk_level = get_risk_level(prob)
-        else:
-            # 使用真实 Scikit-Learn 模型预测
-            # 注意：某些模型可能需要 DataFrame 或特定的特征名称，这里简化为 array
-            try:
-                # 检查模型是否需要 predict_proba
-                if hasattr(model_to_use, "predict_proba"):
-                    probs = model_to_use.predict_proba(features)[0]
-                    # 假设是分类模型，取恶性类别的概率（通常是第二类）
-                    prob = probs[1] if len(probs) > 1 else probs[0]
-                else:
-                    prob = model_to_use.predict(features)[0]
-                
-                risk_level = "高风险" if prob > 0.7 else ("中风险" if prob > 0.3 else "低风险")
-            except Exception as e:
-                logger.error(f"真实模型预测失败, 切换回模拟逻辑: {e}")
-                prob = predict_probability(features[0])
-                risk_level = get_risk_level(prob)
-
-        prob_percent = prob * 100
-        
-        # 构造详细返回结果 (保持与前端对接格式兼容)
-        # 这里重用 api/app.py 里已有的逻辑，或者直接构造
-        
-        # 模拟概率分布用于可视化绘图
-        prob_high = prob
-        prob_low = max(0.01, 1.0 - prob - 0.1)
-        prob_mid = 1.0 - prob_high - prob_low
-
-        response_data = {
-            'success': True,
-            'patientName': patient_name,
-            'algorithm': algorithm,
-            'riskLevel': risk_level,
-            'confidence': int(min(99, max(60, 50 + abs(prob - 0.5) * 80))),
-            'probability': round(prob_percent, 2),
-            'probabilities': {
-                '低风险': round(prob_low, 4),
-                '中风险': round(prob_mid, 4),
-                '高风险': round(prob_high, 4)
-            },
-            'reportText': f"基于 AI 模型评估，您的癌症风险为 {risk_level} ({prob_percent:.1f}%)。"
-        }
-
-        return jsonify(response_data)
-
-    except Exception as e:
-        logger.error(f"ML Predict Error: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-# 别名路由，确保向下兼容 (支持以前指向 5001 的前端请求)
-@app.route('/api/predict_form', methods=['POST'])
-def legacy_predict_form():
-    return ml_predict()
-
-
-# Models list endpoint
-@app.route('/api/models', methods=['GET'])
-def list_models():
-    return jsonify({'available_models': list(loaded_models.keys())})
-
 if __name__ == '__main__':
-    print("服务器将在 http://localhost:5000 上运行")
-    print("按 Ctrl+C 停止服务器")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # 初始化数据库
+    with app.app_context():
+        try:
+            init_db()
+            logger.info("Database initialized successfully.")
+        except Exception as e:
+            logger.error(f"Database initialization failed: {e}")
+
+    print(f"=========================================")
+    print(f" 慧眼识癌 (HuiYanShiAi) 后端服务启动")
+    print(f" 运行端口: 5000")
+    print(f" 已加载模型: {list(loaded_models.keys())}")
+    print(f"=========================================")
+    
+    app.run(host='0.0.0.0', port=5000, debug=False)

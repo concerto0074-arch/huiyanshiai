@@ -4,479 +4,547 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>化疗期间的副作用管理：实用指南 - 慧眼识癌</title>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        /* 全局样式 */
         body {
-            background-color: #f8f9fa;
-            font-family: 'Helvetica Neue', 'Microsoft YaHei', Arial, sans-serif;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-        }
-        
-        
-        
-        /* 主内容区样式 */
-        .main-content {
-            padding: 40px 0;
-            min-height: calc(100vh - 200px);
-        }
-        
-        /* 文章详情页面样式 */
-        .article-detail {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin: 0 auto;
-            max-width: 1200px;
-        }
-        
-        /* 返回按钮样式 */
-        .back-btn {
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin-bottom: 30px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.95rem;
-        }
-        
-        .back-btn:hover {
-            background-color: #c0392b;
-            color: #fff;
-            transform: translateX(-3px);
-        }
-        
-        /* 文章标题 */
-        #article-title {
-            font-size: 2.5rem;
-            font-weight: bold;
             color: #333;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-        
-        /* 文章元数据 */
-        .article-meta {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: center;
-        }
-        
-        .article-meta span {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* 文章内容 */
-        .article-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #333;
-        }
-        
-        .article-content h2 {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-top: 40px;
-            margin-bottom: 20px;
-        }
-        
-        .article-content h3 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #34495e;
-            margin-top: 30px;
-            margin-bottom: 15px;
-        }
-        
-        .article-content p {
-            margin-bottom: 25px;
-            text-align: justify;
-        }
-        
-        .article-content img {
-            max-width: 100%;
-            height: auto;
-            margin: 30px 0;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* 引用样式 */
-        .article-content blockquote {
-            border-left: 4px solid #e74c3c;
-            padding: 20px 30px;
-            margin: 25px 0;
             background-color: #f8f9fa;
-            border-radius: 0 4px 4px 0;
-            font-style: italic;
-            color: #555;
+            overflow-x: hidden;
         }
         
-        /* 列表样式 */
-        .article-content ul, .article-content ol {
-            margin-bottom: 25px;
-            padding-left: 30px;
-        }
-        
-        .article-content li {
-            margin-bottom: 10px;
-        }
-        
-        /* 相关文章样式 */
-        .related-articles {
-            margin-top: 50px;
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin: 50px auto 0;
-            max-width: 1200px;
-        }
-        
-        .related-articles h3 {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        
-        /* 相关文章卡片样式 */
-        .related-article-card {
-            border: none;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-        }
-        
-        .related-article-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-            transform: translateY(-3px);
-        }
-        
-        .related-article-card .card-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-        
-        .related-article-card .card-text {
-            color: #666;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-        
-        /* 相关文章缩略图 */
-        .article-thumbnail {
-            height: 150px;
-            overflow: hidden;
-            background-color: #f8f9fa;
-        }
-        
-        .article-thumbnail img {
-            height: 100%;
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-        
-        .related-article-card:hover .article-thumbnail img {
-            transform: scale(1.05);
-        }
-        
-        /* 页脚样式 */
-        footer {
-            background-color: #343a40;
-            color: #fff;
-            padding: 60px 0;
-            margin-top: 60px;
-        }
-        
-        footer h4 {
-            color: #fff;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        
-        footer p, footer a {
-            color: #ccc;
-            text-decoration: none;
-        }
-        
-        footer a:hover {
-            color: #fff;
-            text-decoration: none;
-        }
-        
-        .footer-links {
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
         
-        .social-links {
-            display: flex;
-            gap: 15px;
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
         
-        .social-links a {
-            font-size: 1.5rem;
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
         
-        /* 移动端优化 */
-        @media (max-width: 768px) {
-            .article-detail {
-                padding: 25px;
-            }
-            
-            #article-title {
-                font-size: 1.8rem;
-            }
-            
-            .article-content {
-                font-size: 1.05rem;
-                line-height: 1.8;
-            }
-            
-            .article-content h2 {
-                font-size: 1.5rem;
-            }
-            
-            .article-content h3 {
-                font-size: 1.3rem;
-            }
-            
-            .article-meta {
-                flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
-            }
-            
-            .related-articles h3 {
-                font-size: 1.5rem;
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        /* 页脚样式 */
-        footer {
-            background-color: #343a40;
-            color: #fff;
-            padding: 30px 0;
-            margin-top: 50px;
-        }
-
-        .footer-links a {
-            color: #fff;
-            margin-right: 20px;
-            text-decoration: none;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* 返回按钮样式 */
-        .back-btn {
-            background-color: #e74c3c;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-weight: 500;
-            transition: background-color 0.3s ease;
-            margin-bottom: 30px;
-        }
-
-        .back-btn:hover {
-            background-color: #c0392b;
-            color: #fff;
-        }
-    
         
+        /* 区块渐入动画 */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
         
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 平滑滚动效果 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 按钮点击反馈效果 */
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* 导航栏滚动效果 */
+        .navbar {
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 0.25rem 1rem;
+        }
+        
+        /* 表单提交反馈 */
+        .form-control:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* 模态框动画增强 */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(-25px);
+        }
+        
+        .modal.show .modal-dialog {
+            transform: translateY(0);
+        }
+
         /* 导航栏样式 */
         .navbar {
-            background-color: white !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-            padding: 0.5rem 1rem !important;
-            position: sticky !important;
-            top: 0 !important;
-            z-index: 1000 !important;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
         }
-        .navbar .container {
-            max-width: 1200px !important;
-            padding: 0 15px !important;
-            margin: 0 auto !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            background: transparent !important;
-            box-shadow: none !important;
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
+        
         .navbar-brand {
-            display: flex !important;
-            align-items: center !important;
+            display: flex;
+            align-items: center;
             color: #007BFF !important;
-            text-decoration: none !important;
-            margin-right: 30px !important;
-            padding: 0 !important;
         }
+        
         .navbar-brand .logo-icon {
-            font-size: 24px !important;
-            margin-right: 10px !important;
-            color: #007BFF !important;
+            font-size: 24px;
+            margin-right: 10px;
         }
+        
         .brand-text {
-            display: flex !important;
-            flex-direction: column !important;
-            line-height: 1.2 !important;
+            display: flex;
+            flex-direction: column;
         }
+        
         .brand-main {
-            font-weight: bold !important;
-            font-size: 18px !important;
-            color: #007BFF !important;
+            font-weight: bold;
+            font-size: 18px;
         }
+        
         .brand-sub {
-            font-size: 12px !important;
-            color: #6c757d !important;
+            font-size: 12px;
+            color: #6c757d;
         }
-        .navbar-nav {
-            display: flex !important;
-            align-items: center !important;
-            gap: 5px !important;
-            list-style: none !important;
-            margin: 0 auto !important;
-            padding: 0 !important;
-        }
+        
         .nav-item {
-            margin: 0 !important;
+            margin: 0 15px;
         }
+        
         .nav-link {
             color: #495057 !important;
-            font-weight: 500 !important;
-            padding: 8px 16px !important;
-            font-size: 16px !important;
-            transition: all 0.3s ease !important;
-            text-decoration: none !important;
+            font-weight: 500;
+            padding: 8px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
+        
         .nav-link:hover {
             color: #007BFF !important;
         }
+        
         .nav-link.active {
-            background-color: #007BFF !important;
+            background-color: #007BFF;
             color: white !important;
-            border-radius: 4px !important;
+            border-radius: 4px;
+            padding: 8px 16px;
         }
+        
+        /* 确保导航栏背景色透明 */
+        .navbar .container {
+            max-width: 1200px;
+            padding: 0 1rem;
+            margin: 0 auto;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
         .navbar-right {
-            display: flex !important;
-            align-items: center !important;
-            gap: 15px !important;
+            display: flex;
+            align-items: center;
         }
+        
         .notification-icon {
-            font-size: 20px !important;
-            color: #495057 !important;
-            position: relative !important;
-            cursor: pointer !important;
-            text-decoration: none !important;
-        }
-        .notification-badge {
-            position: absolute !important;
-            top: -5px !important;
-            right: -5px !important;
-            background-color: #dc3545 !important;
-            color: white !important;
-            border-radius: 50% !important;
-            width: 18px !important;
-            height: 18px !important;
-            font-size: 11px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+            font-size: 20px;
+            color: #495057;
+            margin-right: 20px;
+            cursor: pointer;
+            position: relative;
         }
         .login-btn {
-            background-color: #007BFF !important;
-            color: white !important;
-            border: none !important;
-            padding: 8px 20px !important;
-            border-radius: 20px !important;
-            font-weight: 500 !important;
-            font-size: 14px !important;
-            transition: all 0.3s ease !important;
-            cursor: pointer !important;
-            box-shadow: 0 4px 10px rgba(0,123,255,0.2) !important;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
         .login-btn:hover {
-            background-color: #0056b3 !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 15px rgba(0,123,255,0.3) !important;
+            background-color: #0056b3;
         }
 
-        /* 页脚样式 */
-        footer {
-            background-color: #0056b3 !important;
-            color: #ffffff !important;
-            padding: 40px 0 !important;
-            margin-top: 60px !important;
-        }
-        footer h4, footer h5 {
-            color: #ffffff !important;
-            font-weight: bold !important;
-            margin-bottom: 20px !important;
-        }
-        footer p, footer li {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-size: 14px !important;
-        }
-        footer a {
-            color: #ffffff !important;
-            text-decoration: none !important;
-            transition: all 0.3s ease !important;
-        }
-        footer a:hover {
-            color: #cce7ff !important;
-            text-decoration: underline !important;
-        }
-        .footer-links, .list-unstyled {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 10px !important;
-            padding: 0 !important;
-            list-style: none !important;
-        }
-        .social-links, .social-icons {
-            display: flex !important;
-            gap: 15px !important;
-            margin-top: 15px !important;
-        }
-        .social-links a, .social-icons a {
-            font-size: 20px !important;
-            color: #ffffff !important;
-        }
-        footer hr {
-            border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
-            margin: 30px 0 !important;
+        /* 水波纹背景效果 */
+        .ripple-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
         }
 
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(220, 53, 69, 0.1);
+            animation: ripple-animation 20s infinite;
+        }
+
+        @keyframes ripple-animation {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* 英雄区 */
+        .hero-section {
+            position: relative;
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 核心功能卡片 */
+        .core-features {
+            background-color: white;
+            padding: 4rem 0;
+        }
+
+        .feature-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        /* 文章卡片 */
+        .articles-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+        }
+
+        .article-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .article-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .article-card:hover img {
+            transform: scale(1.05);
+        }
+
+        /* 图片容器，用于实现图片hover效果 */
+        .article-image-container {
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* 图片加载中效果 */
+        .article-image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDUwdjUwSDB6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTAuMDQ2NEwyNSA0LjAzMjAzQTIgMiAwIDAgMCAyNCAySDE2QTEyIDEyIDAgMCAwIDE2IDEyVjM4QTEyIDEyIDAgMCAwIDI4IDMwVjE1Ljk2NzJDMjcuOTY5NiAxNS45ODA5IDI4IDE1Ljk5NDcgMjggMTZWMzBDMjggMzYuNjI3NCAyMy42Mjc0IDQxIDIwIDQxQTE5Ljk2NzIgNDEgMCAwIDEgMjAgMjEuNTMzNkwxNSAxNC41MTc3TDIwIDEwLjA0NjRaIiBmaWxsPSIjMzMzMzMzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTUuODMzM0MxOC4zNzI2IDE1LjgzMzMgMTMuODMzMyAyMC4zNzI2IDEzLjgzMzMgMjcgMTMuODMzMyAzMy42Mjc0IDE4LjMyNzYgMzggMjUgMzggMjUgMzggMzAuMzcyNCAzMy42Mjc0IDM1IDI1IDM1IDIwLjM3MjYgMzAuMzcyNCAxNS44MzMzIDM1IDI1IDE1LjgzMzMgMjUgMTUuODMzMyAyMC4zNzI2IDE1LjgzMzMgMTUuODMzM1oiIGZpbGw9IiMzMzMzMzMiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PC9wYXRoPjwvc3ZnPg==') center center no-repeat;
+            background-size: 50px;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        /* 图片加载成功后隐藏加载动画 */
+        .article-card img.loaded + .article-image-container::before {
+            display: none;
+        }
+
+        .article-content {
+            padding: 1.5rem;
+        }
+
+        .article-content h3 {
+            margin-bottom: 0.8rem;
+            color: #333;
+            font-size: 1.3rem;
+            transition: color 0.3s ease;
+        }
+
+        .article-card:hover .article-content h3 {
+            color: #007BFF;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .article-excerpt {
+            color: #555;
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* 专家卡片 */
+        .experts-section {
+            background-color: white;
+            padding: 4rem 0;
+        }
+
+        .expert-card {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            background: linear-gradient(180deg, white 0%, #f8f9fa 100%);
+        }
+
+        .expert-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(180deg, white 0%, #e9ecef 100%);
+        }
+
+        /* 专家头像容器 */
+        .expert-avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .expert-avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            object-fit: cover;
+            border: 5px solid #007BFF;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .expert-card:hover .expert-avatar {
+            transform: scale(1.1);
+            border-color: #dc3545;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        /* 专家头像加载动画 */
+        .expert-avatar-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 130px;
+            height: 130px;
+            margin: -65px 0 0 -65px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDUwdjUwSDB6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTAuMDQ2NEwyNSA0LjAzMjAzQTIgMiAwIDAgMCAyNCAySDE2QTEyIDEyIDAgMCAwIDE2IDEyVjM4QTEyIDEyIDAgMCAwIDI4IDMwVjE1Ljk2NzJDMjcuOTY5NiAxNS45ODA5IDI4IDE1Ljk5NDcgMjggMTZWMzBDMjggMzYuNjI3NCAyMy42Mjc0IDQxIDIwIDQxQTE5Ljk2NzIgNDEgMCAwIDEgMjAgMjEuNTMzNkwxNSAxNC41MTc3TDIwIDEwLjA0NjRaIiBmaWxsPSIjMzMzMzMzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTUuODMzM0MxOC4zNzI2IDE1LjgzMzMgMTMuODMzMyAyMC4zNzI2IDEzLjgzMzMgMjcgMTMuODMzMyAzMy42Mjc0IDE4LjMyNzYgMzggMjUgMzggMjUgMzggMzAuMzcyNCAzMy42Mjc0IDM1IDI1IDM1IDIwLjM3MjYgMzAuMzcyNCAxNS44MzMzIDM1IDI1IDE1LjgzMzMgMjUgMTUuODMzMyAyMC4zNzI2IDE1LjgzMzMgMTUuODMzM1oiIGZpbGw9IiMzMzMzMzMiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PC9wYXRoPjwvc3ZnPg==') center center no-repeat;
+            background-size: 40px;
+            opacity: 0.5;
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        /* 图片加载成功后隐藏加载动画 */
+        .expert-avatar.loaded + .expert-avatar-container::before {
+            display: none;
+        }
+
+        .expert-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .expert-title {
+            color: #007BFF;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .expert-card:hover .expert-title {
+            color: #dc3545;
+        }
+
+        /* 通知徽章 */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .nav-link {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            .feature-card, .article-card, .expert-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section {
+                padding: 4rem 0;
+            }
+
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
     <!-- 全局环境配置 -->
     <script src="config.js"></script>
@@ -519,44 +587,59 @@
             background-color: transparent !important;
         }
     </style>
+
+    <style>
+        /* 文章详情页专用补丁样式 */
+        .main-content { padding: 40px 0; min-height: calc(100vh - 400px); background-color: #f8f9fa; }
+        .article-detail { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #007BFF; color: #fff; border-radius: 5px; text-decoration: none; margin-bottom: 30px; transition: all 0.3s; }
+        .back-btn:hover { background: #0056b3; color: #fff; transform: translateX(-5px); }
+        .article-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
+        .related-articles { background: #fff; padding: 30px; border-radius: 12px; margin-top: 40px; }
+    </style>
 </head>
 <body>
-    <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
+            <!-- Logo -->
             <a class="navbar-brand" href="index.html">
                 <i class="fas fa-heartbeat logo-icon"></i>
                 <div class="brand-text">
-                    <div class="brand-main">慧眼识癌</div>
-                    <div class="brand-sub">基层早筛的AI普惠型平台</div>
+                    <span class="brand-main">慧眼识癌</span>
+                    <span class="brand-sub">基层早筛的AI普惠型平台</span>
                 </div>
             </a>
+            
+            <!-- 响应式菜单按钮 -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
+            <!-- 导航菜单 -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="index.html">首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="algorithms.html">AI风险预测</a></li>
                     <li class="nav-item"><a class="nav-link" href="products.html">产品服务</a></li>
                     <li class="nav-item"><a class="nav-link" href="group.html">团体方案</a></li>
                     <li class="nav-item"><a class="nav-link" href="experts.html">专家在线</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="knowledge.html">知识科普</a></li>
+                    <li class="nav-item"><a class="nav-link" href="knowledge.html">知识科普</a></li>
                     <li class="nav-item"><a class="nav-link" href="cases.html">客户案例</a></li>
                 </ul>
-                <div class="navbar-right">
-                    <a href="#" class="notification-icon">
+                
+                <!-- 右侧登录按钮 -->
+                <div class="navbar-right mt-3 mt-lg-0">
+                    <div class="notification-icon">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge" style="display:none;">0</span>
-                    </a>
-                    <button id="navbarLoginBtn" class="login-btn" onclick="showLoginModal()">登录/注册</button>
-                    <button id="navbarUserCenterBtn" class="login-btn" onclick="window.location.href='user_center.html'" style="background-color: #2196F3; display: none;">用户中心</button>
+                    </div>
+                    <button id="navbarLoginBtn" class="login-btn" onclick="showLoginModal()" style="background-color: #007BFF; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; margin-left: 10px;">登录/注册</button>
+                    <button id="navbarUserCenterBtn" class="login-btn" onclick="window.location.href='user_center.html'" style="background-color: #007BFF; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; margin-left: 10px; display: none;">用户中心</button>
                 </div>
             </div>
         </div>
     </nav>
-
-    <!-- 主内容区 -->
+    
     <div class="main-content">
         <div class="container">
             <!-- 返回按钮 -->
@@ -678,78 +761,56 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card related-article-card">
-                            <div class="article-thumbnail">
-                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20fill%3D%22%236B7280%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3E%E5%85%8D%E7%96%AB%E6%B2%BB%E7%96%97%3C/text%3E%3C/svg%3E" alt="免疫治疗" class="img-fluid">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">免疫治疗的原理与应用</h5>
-                                <p class="card-text">了解免疫治疗的工作原理和适用范围。</p>
-                                <a href="article-detail-11.html" class="btn btn-link text-danger">阅读更多</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card related-article-card">
-                            <div class="article-thumbnail">
-                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20fill%3D%22%236B7280%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3E%E8%90%A5%E5%85%BB%E6%94%AF%E6%8C%81%3C/text%3E%3C/svg%3E" alt="营养支持" class="img-fluid">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">癌症患者的营养支持：实用指南</h5>
-                                <p class="card-text">了解癌症患者的营养需求和管理方法。</p>
-                                <a href="article-detail-7.html" class="btn btn-link text-danger">阅读更多</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- 页脚 -->
-    <footer>
+    <footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
                     <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
-                    <p>慧眼识癌是一个致力于为癌症患者和家属提供支持、信息和资源的平台。</p>
+                    <p>专注于癌症风险评估的智能平台，为您的健康保驾护航。</p>
+                    <div class="social-icons mt-4">
+                        <a href="#" class="text-white mr-3"><i class="fab fa-weixin"></i></a>
+                        <a href="#" class="text-white mr-3"><i class="fab fa-weibo"></i></a>
+                        <a href="#" class="text-white mr-3"><i class="fab fa-qq"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <h5 class="mb-3">快速链接</h5>
                     <ul class="list-unstyled">
-                        <a href="index.html">首页</a>
-                        <a href="knowledge.html">知识科普</a>
-                        <a href="support.html">互助支持</a>
-                        <a href="expert.html">专家咨询</a>
-                        <a href="about.html">关于我们</a>
+                        <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
+                        <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
+                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
+                        <li><a href="experts.html" class="text-white text-decoration-none">专家团队</a></li>
+                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
+                        <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h5 class="mb-3">联系我们</h5>
-                    <p>邮箱：contact@huiyanshiai.com</p>
-                    <p>电话：400-123-4567</p>
-                    <div class="social-links">
-                        <a href="#" class="mr-2"><i class="fab fa-weixin"></i></a>
-                        <a href="#" class="mr-2"><i class="fab fa-weibo"></i></a>
-                        <a href="#"><i class="fab fa-qq"></i></a>
-                    </div>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区科技园区</li>
+                        <li class="mb-2"><i class="fas fa-phone mr-2"></i> 400-123-4567</li>
+                        <li class="mb-2"><i class="fas fa-envelope mr-2"></i> contact@huianyanshiai.com</li>
+                        <li class="mb-2"><i class="fas fa-clock mr-2"></i> 周一至周五 9:00-18:00</li>
+                    </ul>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-12 text-center">
-                    <p>&copy; 2025 慧眼识癌. 保留所有权利.</p>
-                </div>
+            <hr class="bg-white opacity-25 mt-4">
+            <div class="text-center">
+                <p class="mb-0">© 2025 慧眼识癌. 保留所有权利.</p>
+                <p class="small mt-1">京ICP备12345678号 | 医疗机构执业许可证11010802023456号</p>
             </div>
         </div>
     </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- 登录模态框 -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    
+
+
+    
+
+    
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -803,57 +864,78 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
-                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？点击注册</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 注册模态框 -->
-    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <h5 class="modal-title" id="registerModalLabel"><i class="fas fa-user-plus mr-2"></i>创建账号</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="registerForm">
+                    <form id="registerForm" novalidate>
+                        <!-- 用户名 -->
                         <div class="form-group">
-                            <label for="registerUsername">用户名</label>
-                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                            <label for="registerUsername"><i class="fas fa-user mr-1"></i>用户名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="3-20位字母、数字或下划线" required minlength="3" maxlength="20" autocomplete="username">
+                            <div class="input-hint" id="usernameHint"></div>
                         </div>
+                        <!-- 邮箱 -->
                         <div class="form-group">
-                            <label for="registerEmail">邮箱</label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                            <label for="registerEmail"><i class="fas fa-envelope mr-1"></i>邮箱 <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="example@email.com" required autocomplete="email">
+                            <div class="input-hint" id="emailHint"></div>
                         </div>
+                        <!-- 手机号（可选） -->
                         <div class="form-group">
-                            <label for="registerPassword">密码</label>
-                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                            <label for="registerPhone"><i class="fas fa-mobile-alt mr-1"></i>手机号 <small class="text-muted">（选填）</small></label>
+                            <input type="tel" class="form-control" id="registerPhone" placeholder="11位手机号码" maxlength="11" autocomplete="tel">
+                            <div class="input-hint" id="phoneHint"></div>
                         </div>
+                        <!-- 密码 -->
                         <div class="form-group">
-                            <label for="confirmPassword">确认密码</label>
-                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                            <label for="registerPassword"><i class="fas fa-lock mr-1"></i>密码 <span class="text-danger">*</span></label>
+                            <div class="password-toggle-wrap">
+                                <input type="password" class="form-control" id="registerPassword" placeholder="至少6位，含字母和数字" required minlength="6" maxlength="20" autocomplete="new-password">
+                                <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" onclick="togglePasswordVisibility('registerPassword', 'toggleRegPassword')"></i>
+                            </div>
+                            <div class="password-strength-bar" id="passwordStrengthBar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="password-strength-text" id="passwordStrengthText"></div>
                         </div>
-                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                        <!-- 确认密码 -->
+                        <div class="form-group">
+                            <label for="confirmPassword"><i class="fas fa-lock mr-1"></i>确认密码 <span class="text-danger">*</span></label>
+                            <div class="password-toggle-wrap">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required autocomplete="new-password">
+                                <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"></i>
+                            </div>
+                            <div class="input-hint" id="confirmHint"></div>
+                        </div>
+                        <!-- 服务条款 -->
+                        <div class="agree-terms">
+                            <input type="checkbox" id="agreeTerms">
+                            <label for="agreeTerms">我已阅读并同意 <a href="#" onclick="event.preventDefault(); showToast('info', '服务条款页面建设中，敬请期待');">《用户服务条款》</a> 和 <a href="#" onclick="event.preventDefault(); showToast('info', '隐私政策页面建设中，敬请期待');">《隐私政策》</a></label>
+                        </div>
+                        <!-- 错误信息 -->
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px; font-size: 0.9rem;"></div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
-                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
+                    <button type="button" class="btn btn-link text-muted" onclick="showLoginModal()"><i class="fas fa-sign-in-alt mr-1"></i>已有账号？点击登录</button>
+                    <button type="button" class="btn btn-primary" id="registerSubmitBtn" onclick="register()">
+                        <span id="registerBtnText">立即注册</span>
+                        <span id="registerBtnSpinner" style="display:none;">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            注册中...
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- 用户信息模态框 -->
-    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+<div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -900,101 +982,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // 导航栏滚动效果
-        $(window).scroll(function() {
-            if ($(window).scrollTop() > 50) {
-                $('.navbar').addClass('scrolled');
-            } else {
-                $('.navbar').removeClass('scrolled');
-            }
-        });
-        
-        // 导航链接点击事件
-        $('.nav-link').click(function() {
-            // 关闭移动端菜单
-            if ($('.navbar-toggler').attr('aria-expanded') === 'true') {
-                $('.navbar-toggler').click();
-            }
-        });
-        
-        // 登录/注册相关函数
-        function showLoginModal() {
-            $('#loginModal').modal('show');
-            $('#registerModal').modal('hide');
-        }
-
-        function showRegisterModal() {
-            $('#registerModal').modal('show');
-            $('#loginModal').modal('hide');
-        }
-
-        function showUserInfoModal() {
-            $('#userInfoModal').modal('show');
-        }
-        
-        
-
-        
-        
-        // 检查登录状态（使用localStorage模拟）
-        function checkLoginStatus() {
-            // 从localStorage获取登录状态
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const username = localStorage.getItem('username') || '用户';
-            const email = localStorage.getItem('email') || '';
-            
-            if (isLoggedIn) {
-                // 已登录，显示导航栏用户中心按钮，隐藏登录按钮
-                if (document.getElementById('navbarUserCenterBtn')) {
-                    document.getElementById('navbarUserCenterBtn').style.display = 'block';
-                }
-                if (document.getElementById('navbarLoginBtn')) {
-                    document.getElementById('navbarLoginBtn').style.display = 'none';
-                }
-            } else {
-                // 未登录，隐藏导航栏用户中心按钮，显示登录按钮
-                if (document.getElementById('navbarUserCenterBtn')) {
-                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
-                }
-                if (document.getElementById('navbarLoginBtn')) {
-                    document.getElementById('navbarLoginBtn').style.display = 'block';
-                }
-            }
-        }
-        
-        // 修改密码
-        function updatePassword() {
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-            
-            if (newPassword !== confirmNewPassword) {
-                alert('两次输入的密码不一致');
-                return;
-            }
-            
-            if (!newPassword) {
-                alert('请输入新密码');
-                return;
-            }
-            
-            // 这里应该调用API修改密码
-            alert('密码修改功能待实现');
-        }
-        
-        
-        
-        // 页面加载完成后执行
-        $(document).ready(function() {
-            checkLoginStatus();
-        });
-    </script>
-    <script src="js/auth.js"></script>
+<div id="toastContainer"></div>
+<script src="js/auth.js"></script>
 </body>
 </html>

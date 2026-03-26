@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
 
         try {
-            const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5001') + '/api/predict/gene';
+            const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/predict/gene';
             
             const response = await fetch(API_URL, {
                 method: 'POST',
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
 
         try {
-            const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5001') + '/api/predict';
+            const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/predict';
             
             const response = await fetch(API_URL, {
                 method: 'POST',
@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Prediction failed. Ensure Flask Backend is running:', error);
             
             clearInterval(interval);
-            alert('连接算法服务器(Python)失败，无法生成预测。\n请确保 Python Flask 服务运行在端口 5001。');
+            alert('连接算法服务器(Python)失败，无法生成预测。\n请确保 Python Flask 服务运行在端口 5000。');
             
             computingView.style.display = 'none';
             modelSelectionView.style.display = 'block';

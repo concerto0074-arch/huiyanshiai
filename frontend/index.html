@@ -513,6 +513,56 @@
         }
 
         /* 响应式设计 */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: white;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                border-radius: 12px;
+                padding: 20px;
+                margin-top: 10px;
+            }
+            
+            .navbar-nav {
+                list-style: none !important;
+                padding-left: 0 !important;
+            }
+            
+            .nav-item {
+                margin: 5px 0 !important;
+                text-align: center;
+            }
+            
+            .nav-link {
+                display: block;
+                padding: 12px !important;
+                border-radius: 8px;
+            }
+            
+            .nav-link.active {
+                background-color: #007BFF;
+                color: white !important;
+            }
+
+            .navbar-right {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+                margin-top: 15px;
+                align-items: center;
+            }
+            
+            .notification-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .login-btn {
+                width: 80% !important;
+                margin-left: 0 !important;
+                text-align: center;
+            }
+        }
+
         @media (max-width: 768px) {
             .hero-section h1 {
                 font-size: 2rem;
@@ -522,11 +572,6 @@
                 font-size: 1rem;
             }
 
-            .nav-link {
-                margin-right: 0;
-                margin-bottom: 0.5rem;
-            }
-
             .feature-card, .article-card, .expert-card {
                 margin-bottom: 1.5rem;
             }
@@ -534,12 +579,26 @@
 
         @media (max-width: 576px) {
             .hero-section {
-                padding: 4rem 0;
+                padding: 4rem 1rem;
             }
 
             .hero-section h1 {
                 font-size: 1.8rem;
             }
+            
+            .navbar-brand .brand-main {
+                font-size: 16px;
+            }
+            
+            .navbar-brand .brand-sub {
+                font-size: 10px;
+            }
+        }
+
+        /* 移除任何可能导致导航出现点点的样式 */
+        .navbar-nav, .navbar-nav li {
+            list-style: none !important;
+            list-style-type: none !important;
         }
     </style>
     <!-- 全局环境配置 -->

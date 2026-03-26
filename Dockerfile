@@ -9,9 +9,10 @@ WORKDIR /app
 
 # 安装系统依赖（给 Python 和一些 R 编译包）
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.10 \
+    python3 \
     python3-pip \
     python3-dev \
+    libpq-dev \
     libcurl4-openssl-dev \
     libxml2-dev \
     libssl-dev \

@@ -1,9 +1,14 @@
 flask
 flask-cors
+flask-sqlalchemy
+psycopg2-binary
 scikit-learn
 pandas
 numpy
 joblib
 xgboost
 lightgbm
-matplotlib
+pyjwt
+python-dotenv
+requests
+werkzeug

@@ -8,8 +8,7 @@ WORKDIR /app
 
 # ---------- 1️⃣ 切换为 Ubuntu 官方源 ----------
 #（如果您坚持使用 Debian 源，可删除下面两行并保留后面的公钥导入步骤）
-RUN sed -i 's|http://deb.debian.org|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list && \
-    sed -i 's|http://security.debian.org|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list
+RUN echo "deb http://archive.ubuntu.com/ubuntu jammy main restricted universe multiverse\ndeb http://archive.ubuntu.com/ubuntu jammy-updates main restricted universe multiverse\ndeb http://archive.ubuntu.com/ubuntu jammy-security main restricted universe multiverse" > /etc/apt/sources.list
 
 # ---------- 2️⃣（可选）导入缺失的 Debian 公钥 ----------
 # RUN apt-get update && apt-get install -y --no-install-recommends gnupg ca-certificates && \

@@ -1418,7 +1418,60 @@
     </style>
 
     <!-- 登录模态框 -->
-    
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- 登录选项卡 -->
+                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="loginTabsContent">
+                        <!-- 用户登录表单 -->
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                            <form id="userLoginForm">
+                                <div class="form-group">
+                                    <label for="userLoginUsername">用户名</label>
+                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="userLoginPassword">密码</label>
+                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                                    <label class="form-check-label" for="rememberMe">记住我</label>
+                                </div>
+                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                        <!-- 管理员登录表单 -->
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
+                            <form id="adminLoginForm">
+                                <div class="form-group">
+                                    <label for="adminLoginUsername">管理员用户名</label>
+                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminLoginPassword">管理员密码</label>
+                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                </div>
+                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
                     <button type="button" class="btn btn-primary" onclick="login()">登录</button>
@@ -1429,519 +1482,99 @@
     </div>
 
     <!-- 注册模态框 -->
-    
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">用户名</label>
+                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">邮箱</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">密码</label>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
+                        </div>
+                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
+                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- 用户信息模态框 -->
-    
+    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="user-profile">
+                                <div class="avatar">
+                                    <i class="fas fa-user-circle fa-5x"></i>
+                                </div>
+                                <h4 id="userName">用户</h4>
+                                <p id="userEmail">用户邮箱</p>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="nav nav-tabs" id="userTabs" role="tablist">
+                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
+                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
+                            </div>
+                            <div class="tab-content mt-3" id="userTabsContent">
+                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                                    <h5>历史报告</h5>
+                                    <div id="reportsList" class="mt-3">
+                                        <!-- 报告列表将通过JavaScript动态生成 -->
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                                    <h5>账户设置</h5>
+                                    <div class="form-group">
+                                        <label for="newPassword">新密码</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmNewPassword">确认新密码</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
+                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        // 页面加载完成后执行
-        $(document).ready(function() {
-            // 滚动时的导航栏样式变化
-            $(window).scroll(function() {
-                if ($(this).scrollTop() > 50) {
-                    $('.navbar').addClass('scrolled');
-                } else {
-                    $('.navbar').removeClass('scrolled');
-                }
-            });
-            
-            // 导航链接点击事件
-            $('.nav-link').click(function() {
-                // 关闭移动设备上的导航菜单
-                if ($('.navbar-toggler').attr('aria-expanded') === 'true') {
-                    $('.navbar-toggler').click();
-                }
-            });
-            
-            // 页面加载完成后检查登录状态
-            checkLoginStatus();
-        });
-        
-        // 显示登录模态框
-        
-
-        // 显示注册模态框
-        
-
-        // 显示用户信息模态框
-        function showUserInfoModal() {
-            $('#userInfoModal').modal('show');
-            loadUserReports();
-        }
-        
-        // 检查登录状态并显示用户中心
-        function checkLoginAndShowCenter() {
-            // 使用localStorage检查登录状态
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            
-            if (isLoggedIn) {
-                // 已登录，显示用户信息模态框
-                showUserInfoModal();
-            } else {
-                // 未登录，显示登录模态框
-                $('#loginModal').modal('show');
-                alert('请先登录后查看用户中心');
-            }
-        }
-        
-        // 登录功能
-         else {
-                    errorDiv.textContent = '请输入用户名和密码';
-                }
-            } else if (activeTab.id === 'admin-login-tab') {
-                // 管理员登录 - 直接在前端验证
-                const username = document.getElementById('adminLoginUsername').value;
-                const password = document.getElementById('adminLoginPassword').value;
-                const errorDiv = document.getElementById('adminLoginError');
-                
-                errorDiv.textContent = '';
-                
-                if (username && password) {
-                    // 简单的管理员账号验证（实际项目中应连接后端API）
-                    // 根据初始化脚本，管理员用户名是admin，密码是admin123
-                    if (username === 'admin' && password === 'admin123') {
-                        // 登录成功，设置本地存储
-                        localStorage.setItem('adminLoggedIn', 'true');
-                        
-                        $('#loginModal').modal('hide');
-                        alert('管理员登录成功！');
-                        
-                        // 跳转到管理员后台页面
-                        setTimeout(() => {
-                            window.location.href = 'admin_dashboard.html';
-                        }, 1000);
-                    } else {
-                        errorDiv.textContent = '管理员账号或密码错误';
-                    }
-                } else {
-                    errorDiv.textContent = '请输入管理员用户名和密码';
-                }
-            }
-        }
-
-        // 注册功能
-        
-            
-            if (password !== confirmPassword) {
-                errorDiv.textContent = '两次输入的密码不一致';
-                return;
-            }
-            
-            // 使用localStorage模拟注册
-            // 存储用户信息（实际项目中应使用安全的存储方式）
-            localStorage.setItem('username', username);
-            localStorage.setItem('email', email);
-            
-            // 关闭注册模态框，提示用户注册成功并跳转到登录界面
-            $('#registerModal').modal('hide');
-            alert('注册成功！请登录。');
-            showLoginModal();
-        }
-
-        // 检查登录状态（使用localStorage模拟）
-        
-                if (document.getElementById('navbarLoginBtn')) {
-                    document.getElementById('navbarLoginBtn').style.display = 'none';
-                }
-                
-                // 更新用户信息
-                if (document.getElementById('userName')) {
-                    document.getElementById('userName').textContent = username;
-                }
-                if (document.getElementById('userEmail')) {
-                    document.getElementById('userEmail').textContent = email;
-                }
-            } else {
-                // 未登录，显示导航栏登录按钮，隐藏用户中心按钮
-                if (document.getElementById('navbarLoginBtn')) {
-                    document.getElementById('navbarLoginBtn').style.display = 'block';
-                }
-                if (document.getElementById('navbarUserCenterBtn')) {
-                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
-                }
-            }
-        }
-
-        // 加载用户报告
-        function loadUserReports() {
-            const reportsList = document.getElementById('reportsList');
-            
-            // 使用前端模拟数据替代API调用
-            setTimeout(() => {
-                // 模拟API响应数据
-                const data = {
-                    success: true,
-                    data: [
-                        {
-                            id: 1,
-                            name: '张三',
-                            age: 45,
-                            gender: 'F',
-                            diagnosis: '乳腺增生',
-                            created_at: new Date().toISOString()
-                        },
-                        {
-                            id: 2,
-                            name: '李四',
-                            age: 52,
-                            gender: 'F',
-                            diagnosis: '乳腺结节',
-                            created_at: new Date(Date.now() - 86400000).toISOString()
-                        },
-                        {
-                            id: 3,
-                            name: '王五',
-                            age: 38,
-                            gender: 'F',
-                            diagnosis: '乳腺纤维瘤',
-                            created_at: new Date(Date.now() - 172800000).toISOString()
-                        }
-                    ]
-                };
-                if (data.success) {
-                    // 渲染报告列表
-                    reportsList.innerHTML = '';
-                    if (data.data.length === 0) {
-                        reportsList.innerHTML = '<div class="alert alert-info" role="alert">暂无报告</div>';
-                        return;
-                    }
-                    
-                    data.data.forEach(patient => {
-                        const reportCard = document.createElement('div');
-                        reportCard.className = 'card mb-3';
-                        reportCard.innerHTML = `
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h6 class="card-title">${patient.name} - ${patient.age}岁 ${patient.gender === 'M' ? '男' : '女'}</h6>
-                                    <span class="badge badge-primary">${patient.diagnosis}</span>
-                                </div>
-                                <p class="card-text text-muted">报告日期：${new Date(patient.created_at).toLocaleString()}</p>
-                                <button class="btn btn-sm btn-primary" onclick="viewReport(${patient.id})">查看详情</button>
-                            </div>
-                        `;
-                        reportsList.appendChild(reportCard);
-                    });
-                }
-            }, 800); // 模拟800毫秒的网络延迟
-        }
-        
-        // 查看报告详情
-        function viewReport(patientId) {
-            window.location.href = `report.html?id=${patientId}`;
-        }
-        
-        // 修改密码
-        function updatePassword() {
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-            
-            if (newPassword !== confirmNewPassword) {
-                alert('两次输入的密码不一致');
-                return;
-            }
-            
-            if (!newPassword) {
-                alert('请输入新密码');
-                return;
-            }
-            
-            // 这里应该调用API修改密码
-            alert('密码修改功能待实现');
-        }
-        
-        
-        
-        // 显示方案详情
-        function showPlanDetail(planId) {
-            // 这里可以根据planId获取方案详情
-            // 为了演示，我们使用一些示例数据
-            const planDetails = {
-                1: {
-                    name: '基础版',
-                    price: '免费',
-                    description: '适合小型企业的基础团检方案，覆盖核心体检项目',
-                    items: [
-                        '一般检查（身高、体重、血压）',
-                        '血常规（24项）',
-                        '尿常规（11项）',
-                        '肝功能（5项）',
-                        '肾功能（2项）',
-                        '血糖检查',
-                        '血脂检查（4项）',
-                        '心电图',
-                        '胸部X光片'
-                    ],
-                    advantages: [
-                        '10人即可成团',
-                        '提供基础健康评估报告',
-                        '在线预约和报告查询',
-                        '免费上门体检安排'
-                    ]
-                },
-                2: {
-                    name: '标准版',
-                    price: '¥399/人',
-                    description: '适合中型企业的综合团检方案，全面评估员工健康状况',
-                    items: [
-                        '一般检查（身高、体重、血压、BMI）',
-                        '血常规（24项）',
-                        '尿常规（11项）',
-                        '肝功能（12项）',
-                        '肾功能（3项）',
-                        '血糖检查',
-                        '血脂检查（7项）',
-                        '心电图',
-                        '胸部CT平扫',
-                        '腹部B超（肝、胆、脾、胰、肾）',
-                        '甲状腺B超',
-                        '肿瘤标志物（2项）'
-                    ],
-                    advantages: [
-                        '20人即可成团',
-                        '提供详细健康评估报告',
-                        '在线预约和报告查询',
-                        '免费上门体检安排',
-                        '企业健康数据分析报告',
-                        '健康讲座（1次/年）'
-                    ]
-                },
-                3: {
-                    name: '高级版',
-                    price: '¥699/人',
-                    description: '适合大型企业的高端团检方案，深度评估员工健康状况',
-                    items: [
-                        '一般检查（身高、体重、血压、BMI）',
-                        '血常规（24项）',
-                        '尿常规（11项）',
-                        '肝功能（12项）',
-                        '肾功能（3项）',
-                        '血糖检查（空腹+餐后）',
-                        '血脂检查（7项）',
-                        '心电图（常规+24小时动态心电图）',
-                        '胸部CT平扫',
-                        '腹部B超（肝、胆、脾、胰、肾）',
-                        '甲状腺B超',
-                        '心脏彩超',
-                        '肿瘤标志物（5项）',
-                        '颈椎正侧位片',
-                        '骨密度检查',
-                        '眼底检查',
-                        '口腔检查'
-                    ],
-                    advantages: [
-                        '30人即可成团',
-                        '提供全面健康评估报告',
-                        '在线预约和报告查询',
-                        '免费上门体检安排',
-                        '企业健康数据分析报告',
-                        '健康讲座（2次/年）',
-                        '员工健康管理咨询',
-                        '绿色就医通道'
-                    ]
-                }
-            };
-
-            const plan = planDetails[planId];
-            if (!plan) return;
-
-            // 填充方案详情
-            document.getElementById('planDetailName').textContent = plan.name;
-            document.getElementById('planDetailPrice').textContent = plan.price;
-            document.getElementById('planDetailDescription').textContent = plan.description;
-
-            // 填充项目列表
-            const itemsList = document.getElementById('planDetailItems');
-            itemsList.innerHTML = '';
-            plan.items.forEach(item => {
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="fas fa-check"></i> ${item}`;
-                itemsList.appendChild(li);
-            });
-
-            // 填充优势列表
-            const advantagesList = document.getElementById('planDetailAdvantages');
-            advantagesList.innerHTML = '';
-            plan.advantages.forEach(advantage => {
-                const li = document.createElement('li');
-                li.innerHTML = `<i class="fas fa-star"></i> ${advantage}`;
-                advantagesList.appendChild(li);
-            });
-
-            // 显示模态框
-            $('#planDetailModal').modal('show');
-        }
-        
-        // 提交联系表单
-        function submitContactForm() {
-            // 获取表单数据
-            const companyName = document.getElementById('companyName')?.value;
-            const contactPerson = document.getElementById('contactPerson')?.value;
-            const contactPhone = document.getElementById('contactPhone')?.value;
-            const contactEmail = document.getElementById('contactEmail')?.value;
-            const employeeCount = document.getElementById('employeeCount')?.value;
-            const message = document.getElementById('message')?.value;
-            
-            // 简单的表单验证
-            if (!companyName || !contactPerson || !contactPhone || !contactEmail || !employeeCount) {
-                alert('请填写所有必填字段');
-                return;
-            }
-            
-            // 模拟提交成功
-            alert('咨询信息已提交，我们将尽快与您联系！');
-            
-            // 重置表单
-            document.getElementById('contactForm')?.reset();
-        }
-        
-        // 页面初始化
-        window.addEventListener('load', function() {
-            // 为方案卡片添加点击事件
-            const planCards = document.querySelectorAll('.plan-card');
-            planCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const planId = this.dataset.planId;
-                    showPlanDetail(planId);
-                });
-            });
-
-            // FAQ折叠面板动画
-            const faqButtons = document.querySelectorAll('.faq-section .btn-link');
-            faqButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const icon = this.querySelector('i');
-                    if (icon.classList.contains('fa-plus')) {
-                        icon.classList.remove('fa-plus');
-                        icon.classList.add('fa-minus');
-                    } else {
-                        icon.classList.remove('fa-minus');
-                        icon.classList.add('fa-plus');
-                    }
-                });
-            });
-        });
-    </script>
-
-    <!-- 页脚 -->
-    <style>
-        /* 页脚样式优化 - 确保背景和文字颜色清晰可见 */
-        footer {
-            background-color: #0056b3 !important;
-            background: #0056b3 !important;
-            color: #ffffff !important;
-            padding: 30px 0 !important;
-        }
-        footer .container {
-            background-color: #0056b3 !important;
-        }
-        footer .row {
-            background-color: #0056b3 !important;
-        }
-        footer .col-md-4 {
-            background-color: #0056b3 !important;
-        }
-        footer p, footer li {
-            font-size: 16px;
-            line-height: 1.8;
-            color: #ffffff !important;
-            background-color: #0056b3 !important;
-        }
-        footer h5 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #ffffff !important;
-            background-color: #0056b3 !important;
-        }
-        footer a {
-            color: #ffffff !important;
-            transition: all 0.3s ease;
-            background-color: #0056b3 !important;
-        }
-        footer a:hover {
-            color: #cce7ff !important;
-            text-decoration: underline !important;
-            background-color: #0056b3 !important;
-        }
-        footer .social-icons {
-            background-color: #0056b3 !important;
-        }
-        footer .social-icons a {
-            font-size: 20px;
-            width: 40px;
-            height: 40px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2) !important;
-            color: #ffffff !important;
-            transition: all 0.3s ease;
-        }
-        footer .social-icons a:hover {
-            background-color: rgba(255, 255, 255, 0.3) !important;
-            color: #cce7ff !important;
-            transform: translateY(-3px);
-        }
-        footer hr {
-            border-color: rgba(255, 255, 255, 0.3) !important;
-            background-color: #0056b3 !important;
-        }
-        footer .text-center {
-            background-color: #0056b3 !important;
-        }
-    </style>
-    <footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5 class="mb-3"><i class="fas fa-heartbeat"></i> 慧眼识癌</h5>
-                    <p>专注于癌症风险评估的智能平台，为您的健康保驾护航。</p>
-                    <div class="social-icons mt-4">
-                        <a href="#" class="text-white mr-3"><i class="fab fa-weixin"></i></a>
-                        <a href="#" class="text-white mr-3"><i class="fab fa-weibo"></i></a>
-                        <a href="#" class="text-white mr-3"><i class="fab fa-qq"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="mb-3">快速链接</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
-                        <li><a href="algorithms.html" class="text-white text-decoration-none">AI风险预测</a></li>
-                        <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
-                        <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
-                        <li><a href="experts.html" class="text-white text-decoration-none">专家在线</a></li>
-                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
-                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="mb-3">联系我们</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 北京市海淀区科技园区</li>
-                        <li class="mb-2"><i class="fas fa-phone mr-2"></i> 400-123-4567</li>
-                        <li class="mb-2"><i class="fas fa-envelope mr-2"></i> contact@huianyanshiai.com</li>
-                        <li class="mb-2"><i class="fas fa-clock mr-2"></i> 周一至周五 9:00-18:00</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="bg-white opacity-25 mt-4">
-            <div class="text-center">
-                <p class="mb-0">© 2025 慧眼识癌. 保留所有权利.</p>
-                <p class="small mt-1">京ICP备12345678号 | 医疗机构执业许可证11010802023456号</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
+    
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Font Awesome -->

@@ -48,17 +48,17 @@ def unify_ui():
         content = content.replace('nav-link active', 'nav-link')
         # 根据文件名设置 active
         if filename == 'algorithms.html':
-            content = content.replace('href="algorithms.html" class="nav-link"', 'href="algorithms.html" class="nav-link active"')
+            content = content.replace('class="nav-link" href="algorithms.html"', 'class="nav-link active" href="algorithms.html"')
         elif filename == 'products.html':
-            content = content.replace('href="products.html" class="nav-link"', 'href="products.html" class="nav-link active"')
+            content = content.replace('class="nav-link" href="products.html"', 'class="nav-link active" href="products.html"')
         elif filename == 'group.html':
-            content = content.replace('href="group.html" class="nav-link"', 'href="group.html" class="nav-link active"')
+            content = content.replace('class="nav-link" href="group.html"', 'class="nav-link active" href="group.html"')
         elif filename == 'experts.html':
-            content = content.replace('href="experts.html" class="nav-link"', 'href="experts.html" class="nav-link active"')
+            content = content.replace('class="nav-link" href="experts.html"', 'class="nav-link active" href="experts.html"')
         elif filename == 'knowledge.html':
-            content = content.replace('href="knowledge.html" class="nav-link"', 'href="knowledge.html" class="nav-link active"')
+            content = content.replace('class="nav-link" href="knowledge.html"', 'class="nav-link active" href="knowledge.html"')
         elif filename == 'cases.html':
-            content = content.replace('href="cases.html" class="nav-link"', 'href="cases.html" class="nav-link active"')
+            content = content.replace('class="nav-link" href="cases.html"', 'class="nav-link active" href="cases.html"')
 
         # B. 替换页脚
         content = re.sub(r'<footer.*?>.*?</footer>', master_footer, content, flags=re.DOTALL)

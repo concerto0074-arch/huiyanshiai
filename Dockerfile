@@ -1,13 +1,23 @@
-# 使用 rocker 官方更稳定的 4.3.1 镜像 (基于 Ubuntu，避免 Debian Sid 的编译器 Bug)
+# -------------------------------------------------
+#  基础镜像：Rocker 官方的 Ubuntu 22.04 + R 4.3.1
+# -------------------------------------------------
 FROM rocker/r-base:4.3.1
 
-# 设置非交互环境变量
 ENV DEBIAN_FRONTEND=noninteractive
-
 WORKDIR /app
 
-# 1. 直接安装预编译好的 R 系统包 (r-cran-*)，避开 C 源代码编译过程
-# 2. 同时安装 Python 和 数据库依赖
+# ---------- 1️⃣ 切换为 Ubuntu 官方源 ----------
+#（如果您坚持使用 Debian 源，可删除下面两行并保留后面的公钥导入步骤）
+RUN sed -i 's|http://deb.debian.org|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list && \
+    sed -i 's|http://security.debian.org|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list
+
+# ---------- 2️⃣（可选）导入缺失的 Debian 公钥 ----------
+# RUN apt-get update && apt-get install -y --no-install-recommends gnupg ca-certificates && \
+#     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys \
+#         6ED0E7B82643E131 78DBA3BC47EF2265 BDE6D2B9216EC7A8 8E9F831205B4BA95 && \
+#     rm -rf /var/lib/apt/lists/*
+
+# ---------- 3️⃣ 安装系统依赖 ----------
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
@@ -36,23 +46,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     r-cran-biocmanager \
     && rm -rf /var/lib/apt/lists/*
 
-# 复制配置文件
+# ---------- 4️⃣ 复制项目文件 ----------
 COPY backend/requirements.txt /app/backend/
 COPY install_r_packages.R /app/
 
-# 安装剩余的 R 包（大部分已经通过 apt 预装好了，这里只会快速检测补充）
+# ---------- 5️⃣ 安装 R 包 ----------
 RUN Rscript /app/install_r_packages.R
 
-# 安装后端 Python 库
+# ---------- 6️⃣ 安装 Python 依赖 ----------
 RUN pip3 install --no-cache-dir -r /app/backend/requirements.txt
 
-# 复制项目代码
+# ---------- 7️⃣ 复制源码 ----------
 COPY . /app/
 
-# 环境变量设置
+# ---------- 8️⃣ 环境变量 & 暴露端口 ----------
 ENV PYTHONUNBUFFERED=1
 ENV FLASK_APP=api/app.py
 EXPOSE 5000
 
-# 启动命令
+# ---------- 9️⃣ 启动命令 ----------
 CMD ["python3", "api/app.py"]

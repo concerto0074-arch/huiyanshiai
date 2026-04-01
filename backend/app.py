@@ -29,12 +29,15 @@ logger = setup_logging()
 app = Flask(__name__)
 CORS(app)  # 允许跨域请求
 
-# 加载所有模型
+# 初始化全局变量
 models = {}
 model_info = {}
-
-# 模型性能结果
 model_results = {}
+
+# 移除 init_models，改为直接在文件级别加载（或仅在 __main__ 及需要时加载）
+# 这里我们直接调用 load_models() 以确保所有 worker 都能加载它，或者交给 WSGI 容器加载
+with app.app_context():
+    pass # 如果需要的话
 
 def load_models():
     """加载所有模型"""
@@ -73,6 +76,9 @@ def load_models():
         logger.error(f"加载训练结果失败: {str(e)}")
     
     logger.info(f"共加载{len(models)}个模型: {list(models.keys())}")
+
+# 初始化加载模型，这样不论是被 gunicorn 导入还是 python 直接运行都能加载到
+load_models()
 
 # NOTE: 不在模块级别调用 load_models()，避免 Flask/Werkzeug 双重导入时覆盖全局变量
 
@@ -263,10 +269,10 @@ def generate_ai_report():
 切忌输出任何多余的客套话或废话。请全部使用Markdown格式，必须包含且清晰分为：【病情与风险深度剖析】、【病理指标解读】、【专业随访与生活指导】三个核心板块。
 
 患者基础体征：
-- 年龄：{patient_data.get('patientAge')}
-- 性别：{patient_data.get('patientGender')}
-- BMI：{patient_data.get('patientBmi')}
-- 吸烟史：{patient_data.get('patientSmoke')}
+- 年龄：{patient_data.get('age')}
+- 性别：{patient_data.get('gender')}
+- BMI：{patient_data.get('bmi')}
+- 吸烟史：{patient_data.get('smoke')}
 
 AI模型算法评估系统（{prediction_results.get('algorithm')}）输出结果：
 - 评定风险级别：{prediction_results.get('riskLevel')} (评估置信度：{prediction_results.get('confidence')}%)
@@ -307,10 +313,10 @@ def predict_gene():
             return jsonify({'error': '未找到上传的文件 (file)'}), 400
         
         file = request.files['file']
-        if file.filename == '':
+        if not file or file.filename == '':
             return jsonify({'error': '未选择文件'}), 400
             
-        algorithm = request.form.get('algorithm', 'AI 智能匹配 (推荐)')
+        algorithm = request.form.get('algorithm') or request.args.get('algorithm') or 'AI 智能匹配 (推荐)'
         logger.info(f"指定的基因分群算法: {algorithm}")
         
         # 将文件交给 R 集成服务处理
@@ -334,5 +340,5 @@ def health_check():
     })
 
 if __name__ == '__main__':
-    load_models()
-    app.run(debug=API_DEBUG, host=API_HOST, port=API_PORT)
+    port = int(os.getenv("PORT", API_PORT))
+    app.run(debug=API_DEBUG, host=API_HOST, port=port)

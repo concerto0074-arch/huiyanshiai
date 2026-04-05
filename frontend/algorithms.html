@@ -1289,8 +1289,7 @@
                 </div>
                 <!-- 右侧内容 -->
                 <div class="col-md-9">
-                    <style>
-
+                    <div class="tab-content" id="v-pills-tabContent" style="max-height: 600px; overflow-y: auto;">
                         <!-- RF 内容 -->
                         <div class="tab-pane fade show active" id="v-pills-rf" role="tabpanel">
                             <h4 style="color: #1e3a8a; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;"><i class="fas fa-tree text-primary mr-2"></i> 随机森林模型 (Random Forest)</h4>
@@ -1444,47 +1443,46 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr><td><code>n_neighbors</code></td><td>[3, 5, 10, 20]</td><td>选取的最近邻病历数，决定预测对极个别离群患者的平滑过滤程度</td></tr>
-                                            <tr><td><code>weights</code></td><td>['uniform', 'distance']</td><td>邻居权重计算方式，按距离衰减可增加高相似度病患的话语权</td></tr>
-                                            <tr><td><code>metric</code></td><td>['euclidean', 'manhattan']</td><td>多维空间的距离度量函数，适应非连续型体征差异的拓扑结构</td></tr>
+                                            <tr><td><code>n_neighbors</code></td><td>[3, 5, 7, 10]</td><td>参与投票的近邻样本数量，决定局部决策敏感度与平滑度</td></tr>
+                                            <tr><td><code>weights</code></td><td>['uniform', 'distance']</td><td>投票权重计算方式，距离加权对边界样本更敏感</td></tr>
+                                            <tr><td><code>metric</code></td><td>['euclidean', 'manhattan']</td><td>距离度量函数，选择适合数据分布的距离计算方式</td></tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 决策树 内容 -->
-                        <div class="tab-pane fade" id="v-pills-tree" role="tabpanel">
-                            <h4 style="color: #1e3a8a; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;"><i class="fas fa-sitemap text-primary mr-2"></i> 规则结构医学决策树 (Decision Tree)</h4>
+                        <!-- R算法 内容 -->
+                        <div class="tab-pane fade" id="v-pills-rgene" role="tabpanel">
+                            <h4 style="color: #1e3a8a; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;"><i class="fas fa-dna text-primary mr-2"></i> WGCNA-MSGL高维组学联合集群 (R)</h4>
                             <div class="mb-4">
-                                <h6 style="color: #2563eb; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px;">微积分驱动下的剔除排雷艺术流</h6>
-                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">医学排查在严谨的系统学中从来不是一次梭哈蒙猜的简单粗暴动作；它被决策树拆解抽象成无数个极为冷酷绝情但环环相套的信息分离提纯审讯机制分支。</p>
-                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">通过 GINI 基尼杂质系数指数下压公式，或交叉信息熵的信息增益率对病人的各种数据进行严苛的隔离分离计算。平台算法将在繁闹冗长的体检百项数据表中，永远只在那一个能够以“最高纯净度切分开罹患阳性与健康阴性群集”的一把极其锐利的信息节点处下刀询问隔离判断，如此通过逐一分岔排除提问，绘制出能够让任何实习医生一眼看懂从主干脉络到底端叶结点归宿判定宿命的经典大树推导系统结构图。</p>
+                                <h6 style="color: #2563eb; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px;">高维组学分析链路</h6>
+                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">该模块采用 R 语言构建完整的高维组学分析链路，先通过 WGCNA 提取基因共表达模块，再融合互信息权重、模块隶属度与多项式稀疏群 Lasso 联合分类。</p>
+                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">与常规结构化表单算法不同，这条链路面向的是"样本少、特征多、变量分组明确"的科研场景，重点解决高维小样本条件下的特征筛选、模块聚类与鲁棒分类问题。</p>
                             </div>
-                            <div style="background: #fef2f2; padding: 25px; border-radius: 12px; border-left: 5px solid #f43f5e; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); margin-top: 30px;">
-                                <h6 style="color: #be123c; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px;">与标准人类医学治疗工作流接驳的极佳落地性</h6>
-                                <ul style="color: #9f1239; margin: 0; padding-left: 20px; line-height: 1.9; font-size: 1.05rem;">
-                                    <li><strong>向医疗诊断金标准文献无限看齐的高度贴附性</strong>：因其本身推演拓扑极其接近当今世界 NCCN 最权威抗癌综合指南这类“由左至右、如果是那么去这、如果原则去那的流向流程管控要求”机制的完美再现缩影；医院临床审批团队能毫不费力地以肉眼查证它的分支合理性并即刻给予定点批准上线。</li>
-                                    <li><strong>主治医生形态学切片人工复核纠偏调校器</strong>：它常被灵活外挂插入应用在肺部及特殊微弱腺体CT与磁共振 MRI 等非标准化黑白灰度结节定性“软形态学研判过程后期环节（如对形态学边缘是否有明确毛玻璃星芒状结缔向外扩展进行树形终端判定）”，这比任何机器单纯直接给百分比结果显得更有据可依。</li>
+                            <div style="background: #ecfeff; padding: 25px; border-radius: 12px; border-left: 5px solid #0891b2; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); margin-top: 30px;">
+                                <h6 style="color: #0f766e; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px;">相对常规机器学习模型的优势</h6>
+                                <ul style="color: #155e75; margin: 0; padding-left: 20px; line-height: 1.9; font-size: 1.05rem;">
+                                    <li><strong>先做模块，再做分类</strong>：先通过 WGCNA 在表达谱中提取共表达模块，再进入分类阶段，能减少直接在全量基因空间中硬分类带来的噪声干扰。</li>
+                                    <li><strong>兼顾组信息与单基因权重</strong>：MSGL/AMRSOGL 一类方法既利用特征分组结构，也引入互信息和模块隶属度权重，更适合真实多组学科研数据。</li>
+                                    <li><strong>适配高维小样本</strong>：当样本量远小于特征维度时，联合惩罚与特征筛选机制比通用表单模型更稳定。</li>
                                 </ul>
                             </div>
-
-                            <!-- 部署级模型参数 -->
                             <div style="background: white; border-radius: 12px; padding: 25px; margin-top: 30px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-                                <h6 style="color: #1e3a8a; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center;"><i class="fas fa-microchip text-secondary mr-2"></i>本平台网络构架超参数 (Hyperparameters)</h6>
+                                <h6 style="color: #1e3a8a; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center;"><i class="fas fa-microchip text-secondary mr-2"></i>科研流程关键组件</h6>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped" style="font-size: 0.95rem; margin-bottom: 0;">
                                         <thead class="bg-light">
                                             <tr>
-                                                <th>参数名 (Parameter)</th>
-                                                <th>调优范围 (Search Space)</th>
-                                                <th>临床及工程影响</th>
+                                                <th>组成模块</th>
+                                                <th>作用</th>
+                                                <th>在本项目中的实现</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr><td><code>criterion</code></td><td>['gini', 'entropy']</td><td>决定特征分裂优劣的纯度计算手段，精准隔离阳性病特征点</td></tr>
-                                            <tr><td><code>max_depth</code></td><td>[5, 10, 15]</td><td>树的极致推演深度，浅层易理解且防止过拟合，深层拟合度极高</td></tr>
-                                            <tr><td><code>min_samples_leaf</code></td><td>[1, 5, 10]</td><td>叶结点的最小患者底线量，保证最终判定节点的统计学稳定</td></tr>
+                                            <tr><td><code>WGCNA</code></td><td>提取基因共表达模块，构建分组结构</td><td>用于高维表达谱的模块聚类与网络关系分析</td></tr>
+                                            <tr><td><code>Mutual Information</code></td><td>衡量特征与分类目标的相关权重</td><td>通过互信息结果生成参数权重文件</td></tr>
+                                            <tr><td><code>MSGL / AMRSOGL</code></td><td>进行分组稀疏约束下的多分类建模</td><td>承担最终分类推理与关键特征筛选</td></tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -1561,6 +1559,44 @@
                                             <tr><td><code>C</code></td><td>[0.1, 1, 10, 100]</td><td>容错约束系数，定义大样本边界的泛化能力和鲁棒性</td></tr>
                                             <tr><td><code>kernel</code></td><td>['poly', 'rbf', 'sigmoid']</td><td>内核工程映射选项，针对非线性基因剪切多维特征特化分析</td></tr>
                                             <tr><td><code>degree</code></td><td>[2, 3, 4]</td><td>当选取多项式核时的超空间最高维度映射指数，暴力提取高阶交叉项</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 决策树 内容 -->
+                        <div class="tab-pane fade" id="v-pills-tree" role="tabpanel">
+                            <h4 style="color: #1e3a8a; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;"><i class="fas fa-sitemap text-primary mr-2"></i> 规则结构医学决策树 (Decision Tree)</h4>
+                            <div class="mb-4">
+                                <h6 style="color: #2563eb; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px;">微积分驱动下的剔除排雷艺术流</h6>
+                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">医学排查在严谨的系统学中从来不是一次梭哈蒙猜的简单粗暴动作；它被决策树拆解抽象成无数个极为冷酷绝情但环环相套的信息分离提纯审讯机制分支。</p>
+                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">通过 GINI 基尼杂质系数指数下压公式，或交叉信息熵的信息增益率对病人的各种数据进行严苛的隔离分离计算。平台算法将在繁闹冗长的体检百项数据表中，永远只在那一个能够以"最高纯净度切分开罹患阳性与健康阴性群集"的一把极其锐利的信息节点处下刀询问隔离判断，如此通过逐一分岔排除提问，绘制出能够让任何实习医生一眼看懂从主干脉络到底端叶结点归宿判定宿命的经典大树推导系统结构图。</p>
+                            </div>
+                            <div style="background: #fef2f2; padding: 25px; border-radius: 12px; border-left: 5px solid #f43f5e; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); margin-top: 30px;">
+                                <h6 style="color: #be123c; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px;">与标准人类医学治疗工作流接驳的极佳落地性</h6>
+                                <ul style="color: #9f1239; margin: 0; padding-left: 20px; line-height: 1.9; font-size: 1.05rem;">
+                                    <li><strong>向医疗诊断金标准文献无限看齐的高度贴附性</strong>：因其本身推演拓扑极其接近当今世界 NCCN 最权威抗癌综合指南这类"由左至右、如果是那么去这、如果原则去那的流向流程管控要求"机制的完美再现缩影；医院临床审批团队能毫不费力地以肉眼查证它的分支合理性并即刻给予定点批准上线。</li>
+                                    <li><strong>主治医生形态学切片人工复核纠偏调校器</strong>：它常被灵活外挂插入应用在肺部及特殊微弱腺体CT与磁共振 MRI 等非标准化黑白灰度结节定性"软形态学研判过程后期环节（如对形态学边缘是否有明确毛玻璃星芒状结缔向外扩展进行树形终端判定）"，这比任何机器单纯直接给百分比结果显得更有据可依。</li>
+                                </ul>
+                            </div>
+
+                            <!-- 部署级模型参数 -->
+                            <div style="background: white; border-radius: 12px; padding: 25px; margin-top: 30px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                                <h6 style="color: #1e3a8a; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center;"><i class="fas fa-microchip text-secondary mr-2"></i>本平台网络构架超参数 (Hyperparameters)</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped" style="font-size: 0.95rem; margin-bottom: 0;">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th>参数名 (Parameter)</th>
+                                                <th>调优范围 (Search Space)</th>
+                                                <th>临床及工程影响</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td><code>criterion</code></td><td>['gini', 'entropy']</td><td>决定特征分裂优劣的纯度计算手段，精准隔离阳性病特征点</td></tr>
+                                            <tr><td><code>max_depth</code></td><td>[5, 10, 15]</td><td>树的极致推演深度，浅层易理解且防止过拟合，深层拟合度极高</td></tr>
+                                            <tr><td><code>min_samples_leaf</code></td><td>[1, 5, 10]</td><td>叶结点的最小患者底线量，保证最终判定节点的统计学稳定</td></tr>
                                         </tbody>
                                     </table>
                                 </div>

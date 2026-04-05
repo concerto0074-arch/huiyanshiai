@@ -539,6 +539,19 @@
                 </div>
             </div>
 
+            <!-- 导出操作按钮 -->
+            <div class="text-center my-4 no-print">
+                <button onclick="downloadReportPDF()" class="btn btn-primary btn-lg mr-2" style="border-radius:8px;padding:12px 28px;font-weight:600;">
+                    <i class="fas fa-file-pdf mr-2"></i>导出 PDF
+                </button>
+                <button onclick="window.print()" class="btn btn-outline-primary btn-lg mr-2" style="border-radius:8px;padding:12px 28px;font-weight:600;">
+                    <i class="fas fa-print mr-2"></i>打印报告
+                </button>
+                <button onclick="downloadReportHTML()" class="btn btn-outline-secondary btn-lg" style="border-radius:8px;padding:12px 28px;font-weight:600;">
+                    <i class="fas fa-download mr-2"></i>下载 HTML
+                </button>
+            </div>
+
             <!-- 报告页脚 -->
             <div class="report-footer">
                 <p><strong>重要声明:</strong> 本报告仅作为医学参考，不能替代医生的诊断和治疗建议。如有不适，请及时就医。</p>
@@ -557,6 +570,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- html2pdf.js for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         .markdown-body h1, .markdown-body h2, .markdown-body h3 {
             color: #4c1d95;
@@ -600,6 +615,17 @@
             font-weight: 500;
         }
     </style>
+    <style>
+        .no-print { display: block; }
+        /* 打印样式 */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; }
+            .report-container { box-shadow: none; border: none; max-width: 100%; padding: 0; margin: 0; }
+            .report-section { break-inside: avoid; border: 1px solid #e2e8f0; margin-bottom: 2rem; }
+            .navbar, #backToTop { display: none !important; }
+        }
+    </style>
     <script>
         // 回到顶部功能
         let mybutton = document.getElementById("backToTop");
@@ -616,8 +642,14 @@
             document.documentElement.scrollTop = 0;
         }
         
-        // 从URL获取报告数据
+        // 从 localStorage 或 URL 获取报告数据
         function getReportData() {
+            // 优先从 localStorage 读取（prediction_flow.js 存储于此）
+            const stored = localStorage.getItem('predictionResult');
+            if (stored) {
+                try { return JSON.parse(stored); } catch(e) { console.warn('localStorage 数据解析失败', e); }
+            }
+            // 兼容旧的 URL 参数方式
             const urlParams = new URLSearchParams(window.location.search);
             const reportData = urlParams.get('data');
             if (reportData) {
@@ -805,7 +837,7 @@
             const aiSection = document.getElementById('ai-analysis-content');
             
             try {
-                const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5001') + '/api/generate_ai_report';
+                const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/generate_ai_report';
                 
                 const response = await fetch(API_URL, {
                     method: 'POST',
@@ -843,7 +875,7 @@
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle mr-2"></i> <strong>大模型服务暂不可用</strong>
                         <p class="mt-2 mb-0">无法连接到 DeepSeek 分析引擎。错误详情：${error.message}</p>
-                        <p class="mb-0">解决方案：确保后端的 Flask 服务已启动 (5001端口)，并在 \`.env\` 根目录文件中配置了有效的 \`DEEPSEEK_API_KEY\`。</p>
+                        <p class="mb-0">解决方案：确保后端的 Flask 服务已启动 (5000端口)，并在 \`.env\` 根目录文件中配置了有效的 \`DEEPSEEK_API_KEY\`。</p>
                     </div>
                     <ul>
                         <li>建议一：保持良好的生活习惯，并定期体验。</li>
@@ -857,9 +889,44 @@
             populateReport();
         });
         
-        // 打印报告功能不需要，因为已由上层下载 html 替代
         function printReport() {
-            console.log('Disabled: Use download functionality instead.');
+            window.print();
+        }
+
+        function downloadReportHTML() {
+            const html = document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '慧眼识癌_预测报告_' + new Date().toISOString().slice(0, 10) + '.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // PDF导出功能
+        function downloadReportPDF() {
+            const element = document.querySelector('.report-container');
+            const reportId = document.getElementById('reportId').textContent;
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: '慧眼识癌_预测报告_' + reportId + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            
+            // 隐藏不需要导出的元素
+            const noPrintElements = document.querySelectorAll('.no-print');
+            noPrintElements.forEach(el => el.style.display = 'none');
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                // 恢复隐藏的元素
+                noPrintElements.forEach(el => el.style.display = '');
+            });
         }
     </script>
     <script src="js/auth.js"></script>

@@ -15,7 +15,8 @@ services:
       - key: DEEPSEEK_API_KEY
         sync: false # 请在 Render 后台手动填入
       - key: DATABASE_URL
-        value: sqlite:///patients.db # 默认使用 SQLite
+        sync: false # ⚠️ 必须在 Render 后台填入 Supabase PostgreSQL 连接串
+        # 格式: postgresql://postgres.[项目ID]:[密码]@aws-0-[区域].pooler.supabase.com:6543/postgres
       - key: FRONTEND_URL
-        sync: false # 部署 Vercel 后手动填入
+        value: https://huiyanshiai.vercel.app # ⚠️ 请替换为您实际的 Vercel 前端域名
     autoDeploy: true # 每次推送至 GitHub 时自动重新部署

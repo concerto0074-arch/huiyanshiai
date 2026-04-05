@@ -892,83 +892,109 @@
                                     <th class="text-center" style="border: none; padding: 18px; width: 140px;">算法模型</th>
                                     <th style="border: none; padding: 18px;">逻辑深度</th>
                                     <th style="border: none; padding: 18px;">核心优势</th>
-                                    <th style="border: none; padding: 18px;">性能局限</th>
-                                    <th class="text-center" style="border: none; padding: 18px; width: 100px;">准确率</th>
-                                    <th class="text-center" style="border: none; padding: 18px; width: 100px;">AUC</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td rowspan="4" class="text-center" style="background: #f0f7ff; vertical-align: middle; border-right: 1px solid #e2e8f0; font-weight: 700; color: #1e40af;">
-                                        <i class="fas fa-dna d-block mb-1" style="font-size: 1.2rem;"></i>
-                                        基因组学
-                                    </td>
-                                    <td class="text-center" style="vertical-align: middle; font-weight: 600; border-top: none;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-rf-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">随机森林</a></td>
-                                    <td style="color: #4b5563; font-size: 0.9rem; border-top: none; padding: 15px;">通过集成多棵并行决策树，利用随机子空间特征选取来缓解模型过拟合。</td>
-                                    <td style="border-top: none; padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">高维鲁棒性、抗过拟合</span></td>
-                                    <td style="border-top: none; padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">内存消耗高度依赖树量</span></td>
-                                    <td class="text-center" style="vertical-align: middle; border-top: none;"><strong style="color: #059669; font-size: 1.1rem;">92%</strong></td>
-                                    <td class="text-center" style="vertical-align: middle; border-top: none;"><span style="color: #2563eb; font-weight: 600;">0.96</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-svm-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">支持向量机</a></td>
-                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">构建最优分隔超平面，结合核技巧将低维不可分数据映射至高维线性可分。</td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">泛化性极佳、核心稳定</span></td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">大规模数据预测速度减慢</span></td>
-                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">90%</strong></td>
-                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.95</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-lr-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">逻辑回归</a></td>
-                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">经典的回归概率分类，通过梯度下降优化损失函数。</td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">极致解释性、计算极快</span></td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">线性边界限制复杂识别</span></td>
-                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">81.5%</strong></td>
-                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.88</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-knn-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">K-近邻</a></td>
-                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">基于闵可夫斯基距离的实例分析，捕捉局部数据拓扑特征。</td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">算法直观且动态适应</span></td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">易受异常离群点干扰</span></td>
-                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">85%</strong></td>
-                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.90</span></td>
-                                </tr>
-                                <tr style="border-top: 2px solid #f3f4f6;">
-                                    <td rowspan="3" class="text-center" style="background: #fffafa; vertical-align: middle; border-right: 1px solid #e2e8f0; font-weight: 700; color: #b91c1c;">
-                                        <i class="fas fa-microscope d-block mb-1" style="font-size: 1.2rem;"></i>
-                                        医学影像
-                                    </td>
-                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-ensemble-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">集成特征森林</a></td>
-                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">融合形态学与纹理特征的级联分析。</td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">肿瘤形态识别极其精准</span></td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">对DICOM数据质量敏感</span></td>
-                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">93%</strong></td>
-                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.97</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-ksvm-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">核-支持向量</a></td>
-                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">多项式核函数映射辅助小样本医学影像切片分析。</td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">适应极小规模科研数据集</span></td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">类别不平衡下容易波动</span></td>
-                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">91%</strong></td>
-                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.96</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-tree-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">医学判别决策树</a></td>
-                                    <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">通过GINI系数优化出的关键影像判断特征树。</td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">临床逻辑透明可追踪</span></td>
-                                    <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">单一树深度较高时会不稳定</span></td>
-                                    <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">88%</strong></td>
-                                    <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.92</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    </div>
+                    <div>
+                        <h3 style="color: #1e3a8a; font-weight: 700; margin-bottom: 6px; font-size: 1.5rem; letter-spacing: -0.5px;">核心算法性能矩阵</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 0;">全方位剖析基因组学与影像学 AI 模型的计算逻辑、核心优势及临床性能边界</p>
                     </div>
                 </div>
+                <div style="padding: 30px;">
+                    
+                    <!-- 算法比较表格 -->
+                    <div class="algorithm-comparison mb-4">
+                        <div class="table-responsive shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;">
+                            <table class="table table-hover mb-0" style="background: white; min-width: 1000px;">
+                                <thead style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white;">
+                                    <tr>
+                                        <th class="text-center" style="border: none; padding: 18px; width: 100px;">领域</th>
+                                        <th class="text-center" style="border: none; padding: 18px; width: 140px;">算法模型</th>
+                                        <th style="border: none; padding: 18px;">逻辑深度</th>
+                                        <th style="border: none; padding: 18px;">核心优势</th>
+                                        <th style="border: none; padding: 18px;">性能局限</th>
+                                        <th class="text-center" style="border: none; padding: 18px; width: 100px;">准确率</th>
+                                        <th class="text-center" style="border: none; padding: 18px; width: 100px;">AUC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="5" class="text-center" style="background: #f0f7ff; vertical-align: middle; border-right: 1px solid #e2e8f0; font-weight: 700; color: #1e40af;">
+                                            <i class="fas fa-dna d-block mb-1" style="font-size: 1.2rem;"></i>
+                                            基因组学
+                                        </td>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 600; border-top: none;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-rf-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">随机森林</a></td>
+                                        <td style="color: #4b5563; font-size: 0.9rem; border-top: none; padding: 15px;">通过集成多棵并行决策树，利用随机子空间特征选取来缓解模型过拟合。</td>
+                                        <td style="border-top: none; padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">高维鲁棒性、抗过拟合</span></td>
+                                        <td style="border-top: none; padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">内存消耗高度依赖树量</span></td>
+                                        <td class="text-center" style="vertical-align: middle; border-top: none;"><strong style="color: #059669; font-size: 1.1rem;">92%</strong></td>
+                                        <td class="text-center" style="vertical-align: middle; border-top: none;"><span style="color: #2563eb; font-weight: 600;">0.96</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-svm-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">支持向量机</a></td>
+                                        <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">构建最优分隔超平面，结合核技巧将低维不可分数据映射至高维线性可分。</td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">泛化性极佳、核心稳定</span></td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">大规模数据预测速度减慢</span></td>
+                                        <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">90%</strong></td>
+                                        <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.95</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-lr-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">逻辑回归</a></td>
+                                        <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">经典的回归概率分类，通过梯度下降优化损失函数。</td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">极致解释性、计算极快</span></td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">线性边界限制复杂识别</span></td>
+                                        <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">81.5%</strong></td>
+                                        <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.88</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-knn-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">K-近邻</a></td>
+                                        <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">基于闵可夫斯基距离的实例分析，捕捉局部数据拓扑特征。</td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">算法直观且动态适应</span></td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">易受异常离群点干扰</span></td>
+                                        <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">85%</strong></td>
+                                        <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.90</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-rgene-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">WGCNA-MSGL 联合算法 (R)</a></td>
+                                        <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">基于 R 语言流程完成 WGCNA 共表达模块提取、互信息加权与多项式稀疏群 Lasso 联合分类。</td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5;">适合高维小样本、多组学特征筛选</span></td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">依赖预处理与 R 运行环境</span></td>
+                                        <td class="text-center" style="vertical-align: middle;"><strong style="color: #059669; font-size: 1.1rem;">94%</strong></td>
+                                        <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.98</span></td>
+                                    </tr>
+                                    <tr style="border-top: 2px solid #f3f4f6;">
+                                        <td rowspan="3" class="text-center" style="background: #fffafa; vertical-align: middle; border-right: 1px solid #e2e8f0; font-weight: 700; color: #b91c1c;">
+                                            <i class="fas fa-microscope d-block mb-1" style="font-size: 1.2rem;"></i>
+                                            医学影像
+                                        </td>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-ensemble-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">集成特征森林</a></td>
+                                        <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">融合形态学与纹理特征的级联分析。</td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">肿瘤形态识别极其精准</span></td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">对DICOM数据质量敏感</span></td>
+                                        <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">93%</strong></td>
+                                        <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.97</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-ksvm-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">核-支持向量</a></td>
+                                        <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">多项式核函数映射辅助小样本医学影像切片分析。</td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">适应极小规模科研数据集</span></td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">类别不平衡下容易波动</span></td>
+                                        <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">91%</strong></td>
+                                        <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.96</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center" style="vertical-align: middle; font-weight: 600;"><a href="javascript:void(0);" onclick="jumpToDeepDive('v-pills-tree-tab')" style="color: inherit; text-decoration: none; cursor: pointer;" title="点击查看深度解析">医学判别决策树</a></td>
+                                        <td style="color: #4b5563; font-size: 0.9rem; padding: 15px;">通过GINI系数优化出的关键影像判断特征树。</td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2;">临床逻辑透明可追踪</span></td>
+                                        <td style="padding: 15px;"><span class="badge badge-pill" style="background: #f9fafb; color: #4b5563; border: 1px solid #f3f4f6;">单一树深度较高时会不稳定</span></td>
+                                        <td class="text-center" style="vertical-align: middle;"><strong style="color: #b91c1c; font-size: 1.1rem;">88%</strong></td>
+                                        <td class="text-center" style="vertical-align: middle;"><span style="color: #2563eb; font-weight: 600;">0.92</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
+                </div>
             </div>
-        </div>
         
 
         
@@ -1076,7 +1102,7 @@
                                     </div>
                                     <h4 style="margin: 0; font-weight: 700; color: #1f2937;">匹配预测算法</h4>
                                 </div>
-                                <span class="badge badge-primary" style="background: #2563eb; padding: 6px 12px; border-radius: 20px;">共 7 种可用模型</span>
+                                <span class="badge badge-primary" style="background: #2563eb; padding: 6px 12px; border-radius: 20px;">共 8 种可用模型</span>
                             </div>
 
                             <div class="row" style="margin-bottom: 30px;">
@@ -1165,6 +1191,16 @@
                                         <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">适应极小规模科研数据集</p>
                                     </div>
                                 </div>
+
+                                <div class="col-sm-6 mb-3">
+                                    <div class="model-option" style="border: 1px solid #e2e8f0; background: #fff; border-radius: 12px; padding: 15px; cursor: pointer; transition: all 0.2s ease;">
+                                        <div class="d-flex align-items-start mb-2 w-100">
+                                            <h6 style="font-weight: 700; color: #334155; margin: 0; padding-right: 15px; word-break: break-word;">WGCNA-MSGL高维组学联合集群 (R)</h6>
+                                            <button class="btn btn-sm view-details-btn ml-auto flex-shrink-0" onclick="jumpToDeepDive('v-pills-rgene-tab')" style="color: #2563eb; background: rgba(37,99,235,0.1); border-radius: 6px; padding: 4px 10px; font-weight: 600; text-decoration: none;"><i class="fas fa-book-open mr-1"></i> 解析</button>
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">适合上传高维基因表达数据，调用 R 科研算法流程</p>
+                                    </div>
+                                </div>
                             </div>
 
                             <button id="start-prediction-btn" class="btn btn-primary btn-block" style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37,99,235,0.3);">
@@ -1241,6 +1277,7 @@
                 <!-- 左侧导航 -->
                 <div class="col-md-3 mb-4">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active" id="v-pills-rgene-tab" data-toggle="pill" href="#v-pills-rgene" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-dna mr-2"></i> WGCNA-MSGL (R)</a>
                         <a class="nav-link" id="v-pills-rf-tab" data-toggle="pill" href="#v-pills-rf" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-tree mr-2"></i> 随机森林</a>
                         <a class="nav-link" id="v-pills-svm-tab" data-toggle="pill" href="#v-pills-svm" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-wave-square mr-2"></i> 支持向量机</a>
                         <a class="nav-link" id="v-pills-lr-tab" data-toggle="pill" href="#v-pills-lr" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-chart-line mr-2"></i> 逻辑回归</a>
@@ -1260,8 +1297,44 @@
                     </style>
                     <div class="tab-content deep-dive-scroll" id="v-pills-tabContent" style="background: #f8fafc; padding: 30px 40px; border-radius: 12px; height: 500px; overflow-y: auto; overflow-x: hidden; border: 1px solid #e2e8f0;">
 
+                        <div class="tab-pane fade show active" id="v-pills-rgene" role="tabpanel">
+                            <h4 style="color: #1e3a8a; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;"><i class="fas fa-dna text-primary mr-2"></i> WGCNA-MSGL 高维组学联合算法 (R)</h4>
+                            <div class="mb-4">
+                                <h6 style="color: #2563eb; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px;">核心科研流程</h6>
+                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">该模块采用 R 语言构建完整的高维组学分析链路，先通过 WGCNA 提取基因共表达模块，再融合互信息权重、模块隶属度与多项式稀疏群 Lasso 联合分类。</p>
+                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">与常规结构化表单算法不同，这条链路面向的是“样本少、特征多、变量分组明确”的科研场景，重点解决高维小样本条件下的特征筛选、模块聚类与鲁棒分类问题。</p>
+                            </div>
+                            <div style="background: #ecfeff; padding: 25px; border-radius: 12px; border-left: 5px solid #0891b2; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); margin-top: 30px;">
+                                <h6 style="color: #0f766e; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px;">相对常规机器学习模型的优势</h6>
+                                <ul style="color: #155e75; margin: 0; padding-left: 20px; line-height: 1.9; font-size: 1.05rem;">
+                                    <li><strong>先做模块，再做分类</strong>：先通过 WGCNA 在表达谱中提取共表达模块，再进入分类阶段，能减少直接在全量基因空间中硬分类带来的噪声干扰。</li>
+                                    <li><strong>兼顾组信息与单基因权重</strong>：MSGL/AMRSOGL 一类方法既利用特征分组结构，也引入互信息和模块隶属度权重，更适合真实多组学科研数据。</li>
+                                    <li><strong>适配高维小样本</strong>：当样本量远小于特征维度时，联合惩罚与特征筛选机制比通用表单模型更稳定。</li>
+                                </ul>
+                            </div>
+                            <div style="background: white; border-radius: 12px; padding: 25px; margin-top: 30px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                                <h6 style="color: #1e3a8a; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center;"><i class="fas fa-microchip text-secondary mr-2"></i>科研流程关键组件</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped" style="font-size: 0.95rem; margin-bottom: 0;">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th>组成模块</th>
+                                                <th>作用</th>
+                                                <th>在本项目中的实现</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td><code>WGCNA</code></td><td>提取基因共表达模块，构建分组结构</td><td>用于高维表达谱的模块聚类与网络关系分析</td></tr>
+                                            <tr><td><code>Mutual Information</code></td><td>衡量特征与分类目标的相关权重</td><td>通过互信息结果生成参数权重文件</td></tr>
+                                            <tr><td><code>MSGL / AMRSOGL</code></td><td>进行分组稀疏约束下的多分类建模</td><td>承担最终分类推理与关键特征筛选</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- RF 内容 -->
-                        <div class="tab-pane fade show active" id="v-pills-rf" role="tabpanel">
+                        <div class="tab-pane fade" id="v-pills-rf" role="tabpanel">
                             <h4 style="color: #1e3a8a; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;"><i class="fas fa-tree text-primary mr-2"></i> 随机森林模型 (Random Forest)</h4>
                             <div class="mb-4">
                                 <h6 style="color: #2563eb; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px;">模型工作原理</h6>
@@ -2303,25 +2376,6 @@
         }
     </script>
 
-
-
-
-
-
-
-
-<div id="toastContainer"></div>
-<script src="js/auth.js"></script>
-
-
-
-<div id="toastContainer"></div>
-<script src="js/auth.js"></script>
-
-
-
-<div id="toastContainer"></div>
-<script src="js/auth.js"></script>
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

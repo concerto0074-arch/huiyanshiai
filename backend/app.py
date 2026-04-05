@@ -339,6 +339,116 @@ def health_check():
         'timestamp': pd.Timestamp.now().isoformat()
     })
 
+# ============================================================
+# 登录功能（后端实现）
+# ============================================================
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    """用户登录接口，使用 Supabase REST API 验证用户名和密码"""
+    try:
+        data = request.json
+        username = data.get('username')
+        password = data.get('password')
+        if not username or not password:
+            return jsonify({'success': False, 'error': '缺少用户名或密码'}), 400
+
+        supabase_url = os.getenv('SUPABASE_URL')
+        anon_key = os.getenv('SUPABASE_ANON_KEY')
+        if not supabase_url or not anon_key:
+            logger.error('Supabase 配置缺失')
+            return jsonify({'success': False, 'error': '服务器未配置 Supabase'}), 500
+
+        # 使用 Supabase REST API 查询匹配的用户记录
+        query_url = f"{supabase_url}/rest/v1/users?username=eq.{username}&password=eq.{password}&select=id,username,email,role"
+        headers = {
+            'apikey': anon_key,
+            'Authorization': f'Bearer {anon_key}',
+            'Accept': 'application/json'
+        }
+        resp = requests.get(query_url, headers=headers, timeout=5)
+        if resp.status_code != 200:
+            logger.error(f'Supabase 查询失败，状态码 {resp.status_code}')
+            return jsonify({'success': False, 'error': '登录验证失败'}), 500
+
+        users = resp.json()
+        if not users:
+            return jsonify({'success': False, 'error': '用户名或密码错误'}), 401
+
+        user = users[0]
+        token = f"dummy-token-{user['id']}"
+        return jsonify({
+            'success': True,
+            'user': {
+                'id': user['id'],
+                'username': user.get('username'),
+                'email': user.get('email'),
+                'role': user.get('role', 'user')
+            },
+            'token': token
+        })
+    except Exception as e:
+        logger.error(f'登录异常: {str(e)}', exc_info=True)
+        return jsonify({'success': False, 'error': '服务器内部错误'}), 500
+
+# ============================================================
+# 注册功能（后端实现）
+# ============================================================
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    """用户注册接口，向 Supabase 插入新用户记录"""
+    try:
+        data = request.json
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        phone = data.get('phone', '')
+        if not username or not email or not password:
+            return jsonify({'success': False, 'error': '缺少必填字段'}), 400
+
+        supabase_url = os.getenv('SUPABASE_URL')
+        anon_key = os.getenv('SUPABASE_ANON_KEY')
+        if not supabase_url or not anon_key:
+            logger.error('Supabase 配置缺失')
+            return jsonify({'success': False, 'error': '服务器未配置 Supabase'}), 500
+
+        insert_url = f"{supabase_url}/rest/v1/users"
+        headers = {
+            'apikey': anon_key,
+            'Authorization': f'Bearer {anon_key}',
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+        }
+        payload = {
+            'username': username,
+            'email': email,
+            'password': password,
+            'phone': phone,
+            'role': 'user'
+        }
+        resp = requests.post(insert_url, json=payload, headers=headers, timeout=5)
+        if resp.status_code not in (200, 201):
+            logger.error(f'Supabase 注册失败，状态码 {resp.status_code}, 响应: {resp.text}')
+            return jsonify({'success': False, 'error': '注册失败，请稍后重试'}), 500
+
+        user = resp.json()[0] if isinstance(resp.json(), list) else resp.json()
+        token = f"dummy-token-{user.get('id')}"
+        return jsonify({
+            'success': True,
+            'user': {
+                'id': user.get('id'),
+                'username': user.get('username'),
+                'email': user.get('email'),
+                'role': user.get('role', 'user')
+            },
+            'token': token
+        })
+    except Exception as e:
+        logger.error(f'注册异常: {str(e)}', exc_info=True)
+        return jsonify({'success': False, 'error': '服务器内部错误'}), 500
+
+
 if __name__ == '__main__':
     port = int(os.getenv("PORT", API_PORT))
     app.run(debug=API_DEBUG, host=API_HOST, port=port)

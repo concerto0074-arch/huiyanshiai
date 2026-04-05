@@ -209,9 +209,6 @@ def get_patients_by_date_range(start_date, end_date, user_id=None):
         q = q.filter_by(user_id=user_id)
     if getattr(g, 'tenant_id', None) is not None:
         q = q.filter_by(tenant_id=g.tenant_id)
-    q = PatientModel.query.filter(PatientModel.created_at >= start_date, PatientModel.created_at <= end_date)
-    if user_id:
-        q = q.filter_by(user_id=user_id)
     return [_patient_dto(m) for m in q.order_by(PatientModel.created_at.desc()).all()]
 
 def get_patients_by_user_id(user_id):
@@ -219,7 +216,6 @@ def get_patients_by_user_id(user_id):
     if getattr(g, 'tenant_id', None) is not None:
         q = q.filter_by(tenant_id=g.tenant_id)
     return [_patient_dto(m) for m in q.order_by(PatientModel.created_at.desc()).all()]
-    return [_patient_dto(m) for m in PatientModel.query.filter_by(user_id=user_id).order_by(PatientModel.created_at.desc()).all()]
 
 def add_patient(patient):
     # 若未显式提供 tenant_id，则使用当前请求的租户上下文
@@ -251,11 +247,6 @@ def delete_patient(patient_id):
     m = q.first()
     if not m:
         return False
-    db.session.delete(m)
-    db.session.commit()
-    return True
-    m = PatientModel.query.get(patient_id)
-    if not m: return False
     db.session.delete(m)
     db.session.commit()
     return True

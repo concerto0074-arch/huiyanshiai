@@ -11,9 +11,10 @@
     // 判断是否在本地运行 (本地开发可能是 localhost 或 127.0.0.1)
     const isLocal = (hostname === 'localhost' || hostname === '127.0.0.1');
     
-    // 您未来真实的公网后端地址放在下面：
-    // （如果您的云服务提供商给了您其他地址，例如 Render，您可以直接修改这一行）
-    const PRODUCTION_API_URL = "https://api.huiyanshiai.com";
+    // ⚠️ 重要：请将下面的地址替换为您在 Render 上实际部署的后端 URL
+    // 格式通常为: https://huiyanshiai-api.onrender.com （不要带末尾斜杠）
+    // 您可以在 Render Dashboard → 您的 Web Service → Settings 中找到该地址
+    const PRODUCTION_API_URL = "https://huiyanshiai-api.onrender.com";
     
     // 运行时确定最终的后端地址
     // 如果在本地运行，使用 localhost:5000；如果在 Vercel/生产环境，使用 Render 地址

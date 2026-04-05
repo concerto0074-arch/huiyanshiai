@@ -95,6 +95,12 @@ if not db_url or db_url == 'sqlite:///../data/patients.db':
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
     db_url = 'sqlite:///' + db_path.replace('\\', '/')
 
+# Supabase / Heroku 等平台提供的连接串以 postgres:// 开头，
+# 但 SQLAlchemy 1.4+ 要求使用 postgresql:// 前缀
+if db_url.startswith('postgres://') and not db_url.startswith('postgresql://'):
+    db_url = db_url.replace('postgres://', 'postgresql://', 1)
+
+logger.info(f"Database URI scheme: {db_url.split('://')[0] if '://' in db_url else 'unknown'}")
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -233,8 +239,38 @@ def login_user():
 # Simple admin token authentication
 def _is_admin(request):
     token = request.headers.get('X-Admin-Token')
+    auth_header = request.headers.get('Authorization', '')
+    if not token and auth_header.startswith('Bearer '):
+        token = auth_header[7:].strip()
     expected = os.getenv('ADMIN_TOKEN', '')
-    return token == expected
+    if expected and token == expected:
+        return True
+    if not token:
+        return False
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        return payload.get('role') == 'admin'
+    except Exception:
+        return False
+
+# Admin: Get dashboard statistics
+@app.route('/api/admin/stats', methods=['GET'])
+def admin_get_stats():
+    if not _is_admin(request):
+        return jsonify({'error': 'Unauthorized'}), 403
+    users = get_all_users()
+    total_users = len(users)
+    active_users = sum(1 for u in users if getattr(u, 'status', 'active') == 'active')
+    admin_users = sum(1 for u in users if getattr(u, 'role', 'user') == 'admin')
+    # 模拟报告统计（后续可对接真实报告表）
+    return jsonify({
+        'total_users': total_users,
+        'active_users': active_users,
+        'admin_users': admin_users,
+        'total_reports': 0,  # TODO: 对接报告表
+        'high_risk_count': 0,
+        'today_reports': 0
+    })
 
 # Admin: Get all users
 @app.route('/api/admin/users', methods=['GET'])
@@ -249,14 +285,14 @@ def admin_get_users():
 def admin_create_user():
     if not _is_admin(request):
         return jsonify({'error': 'Unauthorized'}), 403
-    data = request.json
+    data = request.json or {}
     required = ['username', 'password', 'email']
     if not all(k in data for k in required):
         return jsonify({'error': 'Missing required fields'}), 400
     role = data.get('role', 'user')
     new_user = User(
         username=data['username'],
-        password=data['password'],
+        password=generate_password_hash(data['password'], method='pbkdf2:sha256'),
         email=data['email'],
         role=role
     )
@@ -281,6 +317,8 @@ def admin_update_user(user_id):
     data = request.json or {}
     if not data:
         return jsonify({'error': 'No data provided'}), 400
+    if 'password' in data and data['password']:
+        data['password'] = generate_password_hash(data['password'], method='pbkdf2:sha256')
     success = update_user(user_id, data)
     if not success:
         return jsonify({'error': 'Update failed'}), 400
@@ -359,6 +397,46 @@ REQUIRED_COLUMNS = [
     'mean concave points', 'mean symmetry', 'mean fractal dimension'
 ]
 
+# 列名映射表：支持中文列名和常见变体自动识别
+COLUMN_ALIASES = {
+    'mean radius': ['mean_radius', 'radius_mean', '平均半径', '半径均值', 'radius'],
+    'mean texture': ['mean_texture', 'texture_mean', '平均纹理', '纹理均值', 'texture'],
+    'mean perimeter': ['mean_perimeter', 'perimeter_mean', '平均周长', '周长均值', 'perimeter'],
+    'mean area': ['mean_area', 'area_mean', '平均面积', '面积均值', 'area'],
+    'mean smoothness': ['mean_smoothness', 'smoothness_mean', '平均光滑度', '光滑度均值', 'smoothness'],
+    'mean compactness': ['mean_compactness', 'compactness_mean', '平均紧凑度', '紧凑度均值', 'compactness'],
+    'mean concavity': ['mean_concavity', 'concavity_mean', '平均凹度', '凹度均值', 'concavity'],
+    'mean concave points': ['mean_concave_points', 'concave_points_mean', '平均凹点数', '凹点均值', 'concave_points'],
+    'mean symmetry': ['mean_symmetry', 'symmetry_mean', '平均对称性', '对称性均值', 'symmetry'],
+    'mean fractal dimension': ['mean_fractal_dimension', 'fractal_dimension_mean', '平均分形维数', '分形维数均值', 'fractal_dimension']
+}
+
+def auto_map_columns(df):
+    """自动识别并映射CSV列名到标准列名"""
+    mapped_df = df.copy()
+    column_mapping = {}
+    
+    for standard_col, aliases in COLUMN_ALIASES.items():
+        # 先检查是否已有标准列名
+        if standard_col in df.columns:
+            continue
+        # 检查别名
+        for alias in aliases:
+            if alias in df.columns:
+                column_mapping[alias] = standard_col
+                break
+            # 不区分大小写匹配
+            for col in df.columns:
+                if col.lower().strip() == alias.lower():
+                    column_mapping[col] = standard_col
+                    break
+    
+    if column_mapping:
+        mapped_df = mapped_df.rename(columns=column_mapping)
+        logger.info(f"自动列名映射: {column_mapping}")
+    
+    return mapped_df, column_mapping
+
 @app.route('/api/predict', methods=['POST'])
 @rate_limit('predict', limit=20, per_seconds=60)
 def predict():
@@ -380,10 +458,17 @@ def predict():
         # 读取CSV文件
         df = pd.read_csv(file)
         
+        # 自动识别并映射列名
+        df, column_mapping = auto_map_columns(df)
+        
         # 检查必要的列
         missing_columns = [col for col in REQUIRED_COLUMNS if col not in df.columns]
         if missing_columns:
-            return jsonify({'error': f'缺少必要的列: {missing_columns}'}), 400
+            return jsonify({
+                'error': f'缺少必要的列: {missing_columns}',
+                'hint': '支持的列名格式包括: mean radius, mean_radius, radius_mean, 平均半径 等',
+                'detected_columns': list(df.columns)
+            }), 400
         
         # 检查是否有缺失值
         if df[REQUIRED_COLUMNS].isnull().any().any():
@@ -520,7 +605,6 @@ def predict():
 # 支持以前指向 5001 和 5000 的前端请求，统一路由。
 @app.route('/api/predict_form', methods=['POST'])
 @app.route('/api/ml/predict', methods=['POST'])
-@app.route('/api/predict', methods=['POST'])
 @rate_limit('predict_form', limit=20, per_seconds=60)
 def predict_form():
     """
@@ -731,6 +815,91 @@ def polish_text():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ============================================================
+# AI 智能报告生成接口 (DeepSeek 大模型)
+# ============================================================
+@app.route('/api/generate_ai_report', methods=['POST'])
+@rate_limit('generate_ai_report', limit=5, per_seconds=60)
+def generate_ai_report():
+    """使用 DeepSeek 大模型生成定制化医学评估报告"""
+    try:
+        data = request.json
+        patient_data = data.get('patient_data', {})
+        prediction_results = data.get('prediction_results', {})
+
+        api_key = os.getenv("DEEPSEEK_API_KEY")
+        base_url = os.getenv("API_BASE_URL", "https://api.deepseek.com/v1").rstrip('/')
+
+        if not api_key:
+            return jsonify({"error": "DeepSeek API Key 未配置，无法生成智能报告。"}), 500
+
+        # 构建更详细的患者信息
+        risk_level = prediction_results.get('riskLevel', '未知')
+        confidence = prediction_results.get('confidence', '未知')
+        
+        prompt = f"""
+作为一名资深三甲医院肿瘤科主任医师，请根据以下AI辅助诊断结果，为患者撰写一份专业、温暖且具有指导意义的医学评估报告。
+
+## 患者基础信息
+| 项目 | 数值 |
+|------|------|
+| 年龄 | {patient_data.get('patientAge', '未知')} |
+| 性别 | {patient_data.get('patientGender', '未知')} |
+| BMI指数 | {patient_data.get('patientBmi', '未知')} |
+| 吸烟史 | {patient_data.get('patientSmoke', '未知')} |
+
+## AI模型评估结果
+- **使用算法**: {prediction_results.get('algorithm', '未知')}
+- **风险等级**: {risk_level}
+- **置信度**: {confidence}%
+- **概率分布**: {prediction_results.get('probabilities', '未知')}
+
+## 输出要求
+请使用Markdown格式，包含以下三个核心板块：
+
+### 一、病情与风险深度剖析
+- 结合患者年龄、性别、BMI、吸烟史等因素，分析当前风险等级的临床意义
+- 说明该风险等级在同类人群中的相对位置
+- 指出需要重点关注的风险因素
+
+### 二、病理指标解读
+- 解释AI模型评估的科学依据
+- 说明置信度{confidence}%的临床参考价值
+- 对比分析各风险等级的概率分布含义
+
+### 三、专业随访与生活指导
+- 根据{risk_level}给出具体的复查建议和时间安排
+- 提供针对性的生活方式改善建议
+- 列出需要警惕的症状和就医指征
+
+**注意**：语言要专业但易懂，既要科学严谨，也要给予患者适当的心理支持。避免过度恐慌或过度乐观。
+"""
+
+        response = requests.post(
+            f"{base_url}/chat/completions",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": os.getenv("MODEL_NAME", "deepseek-chat"),
+                "messages": [
+                    {"role": "system", "content": "你是一位极其专业的肿瘤医学权威专家，说话逻辑清晰且具备极高的临床科研素养与同理心。"},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": 0.4
+            },
+            timeout=60
+        )
+        response.raise_for_status()
+        report_markdown = response.json().get("choices", [{}])[0].get("message", {}).get("content", "生成失败")
+
+        return jsonify({"success": True, "report": report_markdown})
+
+    except Exception as e:
+        logger.error(f"生成 AI 报告失败: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e), "details": "AI 请求拥挤或配置错误"}), 500
+
 # 模型列表
 @app.route('/api/models', methods=['GET'])
 def list_models():
@@ -752,7 +921,13 @@ def index():
 
 @app.route('/<path:path>', methods=['GET'])
 def serve_static(path):
-    return app.send_static_file(path)
+    response = app.send_static_file(path)
+    # 添加静态资源缓存头优化加载性能
+    if path.endswith(('.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.woff', '.woff2')):
+        response.headers['Cache-Control'] = 'public, max-age=31536000'  # 1年缓存
+    elif path.endswith('.html'):
+        response.headers['Cache-Control'] = 'no-cache, must-revalidate'  # HTML不缓存
+    return response
 
 if __name__ == '__main__':
     # 初始化数据库
@@ -769,4 +944,4 @@ if __name__ == '__main__':
     print(f" 已加载模型: {list(loaded_models.keys())}")
     print(f"=========================================")
     
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False)

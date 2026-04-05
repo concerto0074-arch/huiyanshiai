@@ -87,6 +87,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const activeTab = document.querySelector('.custom-pills .nav-link.active').id;
         
         let patientData = {};
+        const geneModelMap = {
+            'WGCNA-MSGL高维组学联合集群 (R)': 'AI 智能匹配 (推荐)',
+            'WGCNA-MSGL高维组学联合集群': 'AI 智能匹配 (推荐)',
+            'AI 智能匹配 (推荐)': 'AI 智能匹配 (推荐)',
+            '支持向量机 (SVM)': 'MSGL算法'
+        };
 
         if (activeTab === 'upload-tab') {
             if (!isFileUploaded || !uploadedFile) {
@@ -100,9 +106,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             let usingModel = selectedModel;
             if (selectedModel === 'AI 智能匹配 (推荐)') {
-                usingModel = 'WGCNA-MSGL高维组学联合集群';
+                usingModel = 'AI 智能匹配 (推荐)';
                 alert('💡 AI 智能匹配推演：\n系统解析到您上传的是高维基因表达特征文件。\n已自动为您路由至科研级【WGCNA与多项式稀疏群Lasso算法】运算集群。');
             }
+            usingModel = geneModelMap[usingModel] || 'AI 智能匹配 (推荐)';
             formData.append('algorithm', usingModel); // Send raw model name for R
             
             // 1. Hide selection view
@@ -111,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
             computingView.style.display = 'flex';
             
             // 3. Execute R-based prediction
-            executeGenePrediction(formData, usingModel);
+            executeGenePrediction(formData, selectedModel === 'AI 智能匹配 (推荐)' ? 'WGCNA-MSGL高维组学联合集群 (R)' : selectedModel);
             return;
         } else {
             // Validate manual input
@@ -308,14 +315,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
 
         try {
-            const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/predict';
+            const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/predict_form';
             
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     algorithm: backendAlgo,
-                    patient_data: patientData
+                    ...patientData
                 })
             });
             
@@ -326,29 +333,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const resultData = await response.json();
             
             // Map AI result to LocalStorage for report.html rendering
+            // predict_form 返回字段: riskLevel(中文), confidence, probabilities(中文key), factors, tumorMarkers, recommendations
             const reportData = {
-                patientName: '测试用户',
+                patientName: resultData.patientName || '测试用户',
                 patientGender: patientData.gender === 'male' ? '男' : '女',
                 patientAge: patientData.age,
                 patientBmi: patientData.bmi,
                 patientSmoke: patientData.smoke === 'never' ? '从不吸烟' : '有吸烟史',
                 algorithm: displayModelName,
-                riskLevel: resultData.risk_level === 'low' ? '低风险' : (resultData.risk_level === 'medium' ? '中风险' : '高风险'),
-                confidence: resultData.confidence ? resultData.confidence.toFixed(1) : 90.0,
-                probabilities: { 
-                    '低风险': (resultData.probabilities?.low || 0) / 100,
-                    '中风险': (resultData.probabilities?.medium || 0) / 100,
-                    '高风险': (resultData.probabilities?.high || 0) / 100
-                },
-                factors: [
-                    { name: '年龄', value: patientData.age + '岁', impact: '基础风险系数', isPositive: patientData.age < 50 },
-                    { name: '核心肿瘤标志物', value: patientData.tumorMarker1, impact: '疾病活性标志权重', isPositive: patientData.tumorMarker1 < 5.0 }
+                riskLevel: resultData.riskLevel || '未知',
+                confidence: resultData.confidence || 90.0,
+                probabilities: resultData.probabilities || { '低风险': 0, '中风险': 0, '高风险': 0 },
+                factors: resultData.factors || [
+                    { name: '年龄', value: patientData.age + '岁', impact: '基础风险系数', isPositive: patientData.age < 50 }
                 ],
-                tumorMarkers: [
+                tumorMarkers: resultData.tumorMarkers || [
                     { name: 'CEA', value: patientData.tumorMarker1, normalRange: '0-5 ng/mL', status: patientData.tumorMarker1 <= 5.0 ? '正常' : '异常' }
                 ],
-                recommendations: [
-                    // DeepSeek AI Report generation will be requested dynamically inside report.html
+                recommendations: resultData.recommendations || [
                     { title: 'AI 深度分析队列中', content: '等待服务端大模型生成详细专业指导...' }
                 ]
             };

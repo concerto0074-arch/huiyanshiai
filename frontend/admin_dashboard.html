@@ -1010,13 +1010,38 @@
         
         // 检查是否已登录
         function checkLogin() {
-            if (!localStorage.getItem('adminLoggedIn')) {
+            if (!localStorage.getItem('adminLoggedIn') || !localStorage.getItem('X-Admin-Token')) {
                 // 未登录，显示登录模态框
                 $('#loginModal').modal('show');
             }
         }
         
+        // 获取管理员API基地址
+        function getAdminApiBaseUrl() {
+            return (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL) ? window.APP_CONFIG.API_BASE_URL : '';
+        }
         
+        // 获取管理员认证头部
+        function getAdminAuthHeaders(includeJson = false) {
+            const token = localStorage.getItem('X-Admin-Token') || localStorage.getItem('token') || '';
+            const headers = {};
+            if (includeJson) {
+                headers['Content-Type'] = 'application/json';
+            }
+            if (token) {
+                headers['X-Admin-Token'] = token;
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            return headers;
+        }
+        
+        // 处理管理员未授权
+        function handleAdminUnauthorized() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('X-Admin-Token');
+            alert('管理员登录状态已失效，请重新登录');
+            $('#loginModal').modal('show');
+        }
         
         // 显示登录模态框
         function showLoginModal() {
@@ -1029,10 +1054,6 @@
             $('#registerModal').modal('show');
             $('#loginModal').modal('hide');
         }
-        
-        
-
-        
         
         // 为登录表单添加提交事件
         document.getElementById('userLoginForm')?.addEventListener('submit', function(e) {
@@ -1096,13 +1117,37 @@
             }
         }
         
-        // 模拟加载仪表盘数据
-        function loadDashboardData() {
-            // 模拟统计数据（带动画效果）
-            animateValue('totalUsers', 0, 1254, 1000);
-            animateValue('totalReports', 0, 3892, 1200);
-            animateValue('highRisk', 0, 231, 800);
-            animateValue('todayReports', 0, 45, 1000);
+        // 加载仪表盘数据（从真实API获取）
+        async function loadDashboardData() {
+            try {
+                const response = await fetch(`${getAdminApiBaseUrl()}/api/admin/stats`, {
+                    headers: getAdminAuthHeaders()
+                });
+                if (response.ok) {
+                    const stats = await response.json();
+                    // 使用真实数据（带动画效果）
+                    animateValue('totalUsers', 0, stats.total_users || 0, 1000);
+                    animateValue('totalReports', 0, stats.total_reports || 0, 1200);
+                    animateValue('highRisk', 0, stats.high_risk_count || 0, 800);
+                    animateValue('todayReports', 0, stats.today_reports || 0, 1000);
+                } else if (response.status === 401 || response.status === 403) {
+                    handleAdminUnauthorized();
+                    return;
+                } else {
+                    // 降级使用模拟数据
+                    animateValue('totalUsers', 0, 0, 1000);
+                    animateValue('totalReports', 0, 0, 1200);
+                    animateValue('highRisk', 0, 0, 800);
+                    animateValue('todayReports', 0, 0, 1000);
+                }
+            } catch (error) {
+                console.error('获取统计数据失败:', error);
+                // 降级使用模拟数据
+                animateValue('totalUsers', 0, 0, 1000);
+                animateValue('totalReports', 0, 0, 1200);
+                animateValue('highRisk', 0, 0, 800);
+                animateValue('todayReports', 0, 0, 1000);
+            }
             
             // 模拟最近报告数据
             const reports = [
@@ -1171,8 +1216,8 @@
 
         async function fetchUsersFromAPI() {
             try {
-                const response = await fetch('/api/admin/users', {
-                    headers: { 'X-Admin-Token': 'admin-secret-token' }
+                const response = await fetch(`${getAdminApiBaseUrl()}/api/admin/users`, {
+                    headers: getAdminAuthHeaders()
                 });
                 if (response.ok) {
                     const data = await response.json();
@@ -1188,6 +1233,8 @@
                         phone: u.phone || ''
                     }));
                     searchUsers(); // filters, sorts, and renders
+                } else if (response.status === 401 || response.status === 403) {
+                    handleAdminUnauthorized();
                 } else {
                     console.error('获取用户数据失败');
                 }
@@ -1234,18 +1281,17 @@
 
         async function toggleUserStatus(id, newStatus) {
             try {
-                const response = await fetch(`/api/admin/users/${id}/status`, {
+                const response = await fetch(`${getAdminApiBaseUrl()}/api/admin/users/${id}/status`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Admin-Token': 'admin-secret-token'
-                    },
+                    headers: getAdminAuthHeaders(true),
                     body: JSON.stringify({ status: newStatus })
                 });
                 
                 if (response.ok) {
                     alert('用户状态已更新');
                     fetchUsersFromAPI();
+                } else if (response.status === 401 || response.status === 403) {
+                    handleAdminUnauthorized();
                 } else {
                     const errorData = await response.json();
                     alert('更新失败: ' + (errorData.error || '未知错误'));
@@ -1368,14 +1414,11 @@
             
             try {
                 const method = isEdit ? 'PUT' : 'POST';
-                const url = isEdit ? `/api/admin/users/${id}` : '/api/admin/users';
+                const url = isEdit ? `${getAdminApiBaseUrl()}/api/admin/users/${id}` : `${getAdminApiBaseUrl()}/api/admin/users`;
                 
                 const response = await fetch(url, {
                     method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Admin-Token': 'admin-secret-token'
-                    },
+                    headers: getAdminAuthHeaders(true),
                     body: JSON.stringify(payload)
                 });
                 
@@ -1383,6 +1426,8 @@
                     $('#userManageModal').modal('hide');
                     alert(isEdit ? '用户信息已更新' : '已成功新增用户');
                     fetchUsersFromAPI();
+                } else if (response.status === 401 || response.status === 403) {
+                    handleAdminUnauthorized();
                 } else {
                     const errorData = await response.json();
                     alert('操作失败: ' + (errorData.error || '未知错误'));
@@ -1397,14 +1442,16 @@
         async function deleteUser(id) {
             if (confirm('确定要删除这个用户吗？此操作不可逆。')) {
                 try {
-                    const response = await fetch(`/api/admin/users/${id}`, {
+                    const response = await fetch(`${getAdminApiBaseUrl()}/api/admin/users/${id}`, {
                         method: 'DELETE',
-                        headers: { 'X-Admin-Token': 'admin-secret-token' }
+                        headers: getAdminAuthHeaders()
                     });
                     
                     if (response.ok) {
                         alert('已成功删除用户');
                         fetchUsersFromAPI();
+                    } else if (response.status === 401 || response.status === 403) {
+                        handleAdminUnauthorized();
                     } else {
                         const errorData = await response.json();
                         alert('删除失败: ' + (errorData.error || '未知错误'));

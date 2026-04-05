@@ -1277,68 +1277,26 @@
                 <!-- 左侧导航 -->
                 <div class="col-md-3 mb-4">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link active" id="v-pills-rgene-tab" data-toggle="pill" href="#v-pills-rgene" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-dna mr-2"></i> WGCNA-MSGL (R)</a>
-                        <a class="nav-link" id="v-pills-rf-tab" data-toggle="pill" href="#v-pills-rf" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-tree mr-2"></i> 随机森林</a>
+                        <a class="nav-link active" id="v-pills-rf-tab" data-toggle="pill" href="#v-pills-rf" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-tree mr-2"></i> 随机森林</a>
                         <a class="nav-link" id="v-pills-svm-tab" data-toggle="pill" href="#v-pills-svm" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-wave-square mr-2"></i> 支持向量机</a>
                         <a class="nav-link" id="v-pills-lr-tab" data-toggle="pill" href="#v-pills-lr" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-chart-line mr-2"></i> 逻辑回归</a>
                         <a class="nav-link" id="v-pills-knn-tab" data-toggle="pill" href="#v-pills-knn" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-users mr-2"></i> K-近邻</a>
-                        <a class="nav-link" id="v-pills-tree-tab" data-toggle="pill" href="#v-pills-tree" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-sitemap mr-2"></i> 医疗特征决策树</a>
+                        <a class="nav-link" id="v-pills-rgene-tab" data-toggle="pill" href="#v-pills-rgene" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-dna mr-2"></i> WGCNA-MSGL (R)</a>
                         <a class="nav-link" id="v-pills-ensemble-tab" data-toggle="pill" href="#v-pills-ensemble" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-layer-group mr-2"></i> 集成特征森林</a>
                         <a class="nav-link" id="v-pills-ksvm-tab" data-toggle="pill" href="#v-pills-ksvm" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-atom mr-2"></i> 核-支持向量</a>
+                        <a class="nav-link" id="v-pills-tree-tab" data-toggle="pill" href="#v-pills-tree" role="tab" style="border-radius: 8px; margin-bottom: 8px; font-weight: 600; padding: 12px 20px;"><i class="fas fa-sitemap mr-2"></i> 医疗特征决策树</a>
                     </div>
                 </div>
                 <!-- 右侧内容 -->
                 <div class="col-md-9">
                     <style>
-                        .deep-dive-scroll::-webkit-scrollbar { width: 6px; }
-                        .deep-dive-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-                        .deep-dive-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-                        .deep-dive-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-                    </style>
-                    <div class="tab-content deep-dive-scroll" id="v-pills-tabContent" style="background: #f8fafc; padding: 30px 40px; border-radius: 12px; height: 500px; overflow-y: auto; overflow-x: hidden; border: 1px solid #e2e8f0;">
-
-                        <div class="tab-pane fade show active" id="v-pills-rgene" role="tabpanel">
-                            <h4 style="color: #1e3a8a; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;"><i class="fas fa-dna text-primary mr-2"></i> WGCNA-MSGL 高维组学联合算法 (R)</h4>
-                            <div class="mb-4">
-                                <h6 style="color: #2563eb; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px;">核心科研流程</h6>
-                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">该模块采用 R 语言构建完整的高维组学分析链路，先通过 WGCNA 提取基因共表达模块，再融合互信息权重、模块隶属度与多项式稀疏群 Lasso 联合分类。</p>
-                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">与常规结构化表单算法不同，这条链路面向的是“样本少、特征多、变量分组明确”的科研场景，重点解决高维小样本条件下的特征筛选、模块聚类与鲁棒分类问题。</p>
-                            </div>
-                            <div style="background: #ecfeff; padding: 25px; border-radius: 12px; border-left: 5px solid #0891b2; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); margin-top: 30px;">
-                                <h6 style="color: #0f766e; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px;">相对常规机器学习模型的优势</h6>
-                                <ul style="color: #155e75; margin: 0; padding-left: 20px; line-height: 1.9; font-size: 1.05rem;">
-                                    <li><strong>先做模块，再做分类</strong>：先通过 WGCNA 在表达谱中提取共表达模块，再进入分类阶段，能减少直接在全量基因空间中硬分类带来的噪声干扰。</li>
-                                    <li><strong>兼顾组信息与单基因权重</strong>：MSGL/AMRSOGL 一类方法既利用特征分组结构，也引入互信息和模块隶属度权重，更适合真实多组学科研数据。</li>
-                                    <li><strong>适配高维小样本</strong>：当样本量远小于特征维度时，联合惩罚与特征筛选机制比通用表单模型更稳定。</li>
-                                </ul>
-                            </div>
-                            <div style="background: white; border-radius: 12px; padding: 25px; margin-top: 30px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-                                <h6 style="color: #1e3a8a; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center;"><i class="fas fa-microchip text-secondary mr-2"></i>科研流程关键组件</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped" style="font-size: 0.95rem; margin-bottom: 0;">
-                                        <thead class="bg-light">
-                                            <tr>
-                                                <th>组成模块</th>
-                                                <th>作用</th>
-                                                <th>在本项目中的实现</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr><td><code>WGCNA</code></td><td>提取基因共表达模块，构建分组结构</td><td>用于高维表达谱的模块聚类与网络关系分析</td></tr>
-                                            <tr><td><code>Mutual Information</code></td><td>衡量特征与分类目标的相关权重</td><td>通过互信息结果生成参数权重文件</td></tr>
-                                            <tr><td><code>MSGL / AMRSOGL</code></td><td>进行分组稀疏约束下的多分类建模</td><td>承担最终分类推理与关键特征筛选</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- RF 内容 -->
-                        <div class="tab-pane fade" id="v-pills-rf" role="tabpanel">
+                        <div class="tab-pane fade show active" id="v-pills-rf" role="tabpanel">
                             <h4 style="color: #1e3a8a; font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;"><i class="fas fa-tree text-primary mr-2"></i> 随机森林模型 (Random Forest)</h4>
                             <div class="mb-4">
                                 <h6 style="color: #2563eb; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px;">模型工作原理</h6>
-                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">随机森林是一种极为健壮的集成学习算法。它是通过构建数百个独立的决策树（Decision Tree），并将它们的判定结果进行集成组装，以极大提高对非线性复杂医疗数据的预测准确率。其核心思想类似于临床诊断中的“多专家跨科室联合会诊（MDT）”。</p>
+                                <p style="color: #475569; line-height: 1.8; font-size: 1.05rem;">随机森林是一种极为健壮的集成学习算法。它是通过构建数百个独立的决策树（Decision Tree），并将它们的判定结果进行集成组装，以极大提高对非线性复杂医疗数据的预测准确率。其核心思想类似于临床诊断中的"多专家跨科室联合会诊（MDT）"。</p>
                                 <div style="background: white; border-radius: 8px; padding: 20px; margin-top: 20px; border: 1px solid #e2e8f0;">
                                     <p style="color: #475569; line-height: 1.8; margin-bottom: 0;">
                                         <strong>严密的算法训练步骤：</strong><br>
@@ -1353,7 +1311,7 @@
                                 <ul style="color: #0d9488; margin: 0; padding-left: 20px; line-height: 1.9; font-size: 1.05rem;">
                                     <li><strong>无与伦比的抗异常点干扰能力</strong>：内生随机变量特性使得体检孤证错检数据能够被伴侣树群组完美对消过滤，避免极端的医疗误诊。</li>
                                     <li><strong>完美包容信息缺失</strong>：即使病人在常规体检中缺失某些具体的标志物项目，模型依然能在残缺的维度树下进行高精度估算。</li>
-                                    <li><strong>可解释性特征归因 (Feature Importance)</strong>：它并非暗箱算法，系统在出具判定报告时，可以向主治医生明确交代：“此患者导致算法判定高风险的最主要权重指标是其特定癌胚抗原数量”。</li>
+                                    <li><strong>可解释性特征归因 (Feature Importance)</strong>：它并非暗箱算法，系统在出具判定报告时，可以向主治医生明确交代："此患者导致算法判定高风险的最主要权重指标是其特定癌胚抗原数量"。</li>
                                 </ul>
                             </div>
 

@@ -272,6 +272,46 @@ function injectSharedAuthStyles() {
             max-width: 560px !important;
             margin: 1.5rem auto !important;
         }
+        /* 手机端自适应 */
+        @media (max-width: 576px) {
+            #loginModal .modal-dialog, #registerModal .modal-dialog {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+            #loginModal .modal-content, #registerModal .modal-content {
+                border-radius: 20px 20px 0 0 !important;
+                max-height: 92vh !important;
+            }
+            #loginModal .modal-header, #registerModal .modal-header {
+                padding: 14px 20px !important;
+                border-radius: 20px 20px 0 0 !important;
+            }
+            #loginModal .modal-body, #registerModal .modal-body {
+                padding: 16px 20px 8px !important;
+            }
+            #loginModal .modal-footer, #registerModal .modal-footer {
+                padding: 8px 20px 24px !important;
+            }
+            /* 注册表单在手机上改为单列 */
+            #registerForm > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            #registerForm > div > .form-group[style*="grid-column"] {
+                grid-column: auto !important;
+            }
+        }
+        /* 平板端适配 */
+        @media (min-width: 577px) and (max-width: 768px) {
+            #loginModal .modal-dialog, #registerModal .modal-dialog {
+                max-width: 95vw !important;
+                margin: 1rem auto !important;
+            }
+        }
         #loginModal .modal-content, #registerModal .modal-content {
             border: 1px solid rgba(255, 255, 255, 0.4) !important;
             border-radius: 28px !important;

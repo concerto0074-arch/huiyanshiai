@@ -379,12 +379,28 @@
         @media (max-width: 992px) {
             .dashboard-body { grid-template-columns: 1fr; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .user-hero-card { flex-direction: column; text-align: center; gap: 20px; }
+            .user-hero-card { flex-direction: column; text-align: center; gap: 20px; padding: 28px 24px; }
             .user-main-info { flex-direction: column; }
+            .hero-actions { width: 100%; text-align: center; }
         }
 
         @media (max-width: 576px) {
-            .stats-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .user-center-wrapper { margin: 16px auto; gap: 16px; padding: 0 12px; }
+            .user-hero-card { padding: 22px 18px; border-radius: 18px; }
+            .avatar-wrapper { width: 68px; height: 68px; font-size: 1.7rem; }
+            .info-text h2 { font-size: 1.3rem; }
+            .content-main { padding: 20px 16px; }
+            .content-sidebar { padding: 12px; }
+            .nav-btn { padding: 10px 14px; font-size: 0.9rem; }
+            .section-title { font-size: 1.2rem; }
+            .stat-card { padding: 18px 12px; }
+            .stat-number { font-size: 1.6rem; }
+            /* 导航栏 */
+            .navbar-nav { display: none; }
+            #navbarUserDropdown span { display: none; }
+            #navbarUserDropdown .fas.fa-chevron-down { display: none; }
+            #__authNavUserDropdown span { display: none; }
         }
     </style>
     <script src="config.js"></script>

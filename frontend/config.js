@@ -17,7 +17,7 @@
     // ⚠️ 重要：请将下面的地址替换为您在 Render 上实际部署的后端 URL
     // 格式通常为: https://huiyanshiai-api.onrender.com （不要带末尾斜杠）
     // 您可以在 Render Dashboard → 您的 Web Service → Settings 中找到该地址
-    const PRODUCTION_API_URL = "https://huiyanshiai-api.onrender.com";
+    const PRODUCTION_API_URL = "https://huiyanshiai.onrender.com";
     
     // 运行时确定最终的后端地址
     // 如果由后端本地服务提供页面，则直接使用同源；否则回退到本地后端固定端口 5000

@@ -232,13 +232,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
 
         try {
-            const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/predict/gene';
-            
+            const BASE_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000');
+            const API_URL = BASE_URL + '/api/predict/gene';
+
+            // 先唤醒后端（Render 免费版冷启动可能需要 30~50 秒）
+            try { await fetch(BASE_URL + '/api/health', { method: 'GET', signal: AbortSignal.timeout(55000) }); } catch(e) {}
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000);
             const response = await fetch(API_URL, {
                 method: 'POST',
                 // Note: Do NOT set Content-Type header when sending FormData, browser handles boundary
-                body: formData
+                body: formData,
+                signal: controller.signal
             });
+            clearTimeout(timeoutId);
             
             if (!response.ok) {
                 throw new Error('API Request Failed, status: ' + response.status);

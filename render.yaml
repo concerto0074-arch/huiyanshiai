@@ -9,14 +9,15 @@ services:
     region: singapore # 如果是国内用户，新加坡速度较快
     envVars:
       - key: FLASK_APP
-        value: api/app.py
+        value: backend/app.py
       - key: JWT_SECRET
         generateValue: true
       - key: DEEPSEEK_API_KEY
         sync: false # 请在 Render 后台手动填入
-      - key: DATABASE_URL
-        sync: false # ⚠️ 必须在 Render 后台填入 Supabase PostgreSQL 连接串
-        # 格式: postgresql://postgres.[项目ID]:[密码]@aws-0-[区域].pooler.supabase.com:6543/postgres
+      - key: SUPABASE_URL
+        sync: false # 请在 Render 后台填入 Supabase 项目 URL
+      - key: SUPABASE_ANON_KEY
+        sync: false # 请在 Render 后台填入 Supabase API 匿名密钥
       - key: FRONTEND_URL
-        value: https://huiyanshiai.vercel.app # ⚠️ 请替换为您实际的 Vercel 前端域名
+        value: https://huiyanshiai.vercel.app # 请替换为您实际的 Vercel 前端域名
     autoDeploy: true # 每次推送至 GitHub 时自动重新部署

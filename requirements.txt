@@ -7,3 +7,5 @@ scikit-learn
 requests
 openai
 python-dotenv
+bcrypt
+PyJWT

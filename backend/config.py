@@ -53,7 +53,7 @@ model_descriptions = {
 
 # API配置
 API_HOST = '0.0.0.0'
-API_PORT = 5001
+API_PORT = 5000
 API_DEBUG = False
 
 # 日志配置

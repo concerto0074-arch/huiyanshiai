@@ -53,33 +53,28 @@ python standalone_test.py
 
 ### 4. 测试服务器启动
 
-启动Flask服务器：
+使用统一入口启动本地服务：
 
 ```bash
-cd api
-python app.py
+./start_local.ps1
 ```
 
-正常启动应该看到类似输出：
+正常启动后请优先检查：
 ```
- * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
- * Debug mode: on
+首页: http://127.0.0.1:5000/
+算法页: http://127.0.0.1:5000/algorithms.html
+状态: http://127.0.0.1:5000/api/system-status
 ```
 
 ### 5. 测试API请求
 
-使用curl测试API：
+使用 curl 测试状态接口：
 
 ```bash
-curl -X POST -F "file=@data/breast_cancer.csv" http://localhost:5000/predict
+curl http://127.0.0.1:5000/api/system-status
 ```
 
-或者使用Postman：
-1. 创建一个POST请求到 `http://localhost:5000/predict`
-2. 在"Body"选项卡中选择"form-data"
-3. 添加一个键为"file"的字段，类型为"File"
-4. 选择CSV文件上传
-5. 点击"Send"
+如果状态接口正常，再测试业务接口。
 
 ### 6. 检查错误日志
 
@@ -113,19 +108,15 @@ pip install -r requirements.txt
 **解决方案：** 检查端口是否被占用，尝试使用不同的端口：
 
 ```bash
-cd api
-python app.py 5001
+./start_local.ps1
 ```
 
-然后修改app.py中的端口：
-```python
-app.run(host='0.0.0.0', port=5001, debug=True)
-```
+如需改端口，请修改根目录 `.env` 中的 `PORT`，当前统一默认值为 `5000`。
 
 ### 问题4：API请求失败
 **解决方案：** 
 1. 检查服务器是否正在运行
-2. 检查请求URL是否正确（http://localhost:5000/predict）
+2. 先检查状态接口是否正常（http://127.0.0.1:5000/api/system-status）
 3. 检查请求方法是否为POST
 4. 检查文件字段名称是否为"file"
 
@@ -200,13 +191,10 @@ if __name__ == "__main__":
 
 1. 下载并安装Postman：https://www.postman.com/downloads/
 2. 打开Postman，创建一个新的请求
-3. 设置请求方法为POST
-4. 输入URL: http://localhost:5000/predict
+3. 先设置请求方法为GET
+4. 输入URL: http://127.0.0.1:5000/api/system-status
 5. 点击"Body"选项卡
-6. 选择"form-data"
-7. 在Key字段输入"file"，选择类型为"File"
-8. 在Value字段点击"Select Files"，选择CSV文件
-9. 点击"Send"按钮
+6. 确认状态正常后，再切换到具体业务接口测试
 
 ## 服务器日志
 

@@ -265,6 +265,9 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('predictionResult', JSON.stringify(reportData));
             updateResultViewDOM(reportData);
             
+            // 自动保存报告到后端（如果用户已登录）
+            autoSaveReport(reportData);
+
             // Finish progress successfully
             clearInterval(interval);
             computingProgress.style.width = '100%';
@@ -358,6 +361,9 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('predictionResult', JSON.stringify(reportData));
             updateResultViewDOM(reportData);
             
+            // 自动保存报告到后端（如果用户已登录）
+            autoSaveReport(reportData, patientData);
+
             // Finish progress successfully
             clearInterval(interval);
             computingProgress.style.width = '100%';
@@ -376,6 +382,43 @@ document.addEventListener('DOMContentLoaded', function() {
             
             computingView.style.display = 'none';
             modelSelectionView.style.display = 'block';
+        }
+    }
+
+    // === 自动保存报告到后端 ===
+    async function autoSaveReport(reportData, patientData) {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('[autoSaveReport] 用户未登录，跳过保存');
+            return;
+        }
+        try {
+            const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/save_report';
+            const body = {
+                algorithm: reportData.algorithm || '未知',
+                riskLevel: reportData.riskLevel,
+                confidence: reportData.confidence,
+                probabilities: reportData.probabilities,
+                factors: reportData.factors,
+                recommendations: reportData.recommendations,
+                patient_data: patientData || {}
+            };
+            const resp = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(body)
+            });
+            const data = await resp.json();
+            if (data.success) {
+                console.log('[autoSaveReport] 报告已保存, ID=' + data.report_id);
+            } else {
+                console.warn('[autoSaveReport] 保存失败:', data.error);
+            }
+        } catch (e) {
+            console.warn('[autoSaveReport] 网络异常，报告未保存:', e);
         }
     }
 

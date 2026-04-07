@@ -60,8 +60,8 @@ COPY . /app/
 
 # ---------- 8️⃣ 环境变量 & 暴露端口 ----------
 ENV PYTHONUNBUFFERED=1
-ENV FLASK_APP=api/app.py
+ENV FLASK_APP=backend/app.py
 EXPOSE 5000
 
 # ---------- 9️⃣ 启动命令 ----------
-CMD ["python3", "api/app.py"]
+CMD ["python3", "backend/app.py"]

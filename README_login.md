@@ -67,5 +67,5 @@ curl -X POST http://127.0.0.1:5000/api/login \
 如果您仍然无法解决登录问题，请检查：
 1. Python环境是否正确安装
 2. 必要的依赖是否已安装：`pip install -r requirements.txt`
-3. 数据库文件是否存在：`api/patients.db`
+3. `.env` 中的 `SUPABASE_URL`、`SUPABASE_ANON_KEY`、`JWT_SECRET` 是否已正确配置
 4. 防火墙是否阻止了5000端口的访问

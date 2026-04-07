@@ -595,7 +595,156 @@
         .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #007BFF; color: #fff; border-radius: 5px; text-decoration: none; margin-bottom: 30px; transition: all 0.3s; }
         .back-btn:hover { background: #0056b3; color: #fff; transform: translateX(-5px); }
         .article-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
-        .related-articles { background: #fff; padding: 30px; border-radius: 12px; margin-top: 40px; }
+        .related-articles {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+        .related-articles h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 24px;
+        }
+        .related-article-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            height: 100%;
+        }
+        .related-article-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 36px rgba(37, 99, 235, 0.16);
+        }
+        .related-article-card .card-body {
+            padding: 22px 20px 18px;
+        }
+        .related-article-card .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.45;
+            margin-bottom: 12px;
+        }
+        .related-article-card .card-text {
+            color: #6b7280;
+            line-height: 1.7;
+            min-height: 54px;
+        }
+        .related-article-card .btn-link {
+            padding: 0;
+            color: #16a34a !important;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .related-article-card .btn-link:hover {
+            color: #15803d !important;
+            text-decoration: none;
+        }
+        .article-thumbnail,
+        .related-article-card .card-img-top {
+            height: 190px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .article-thumbnail::before,
+        .related-article-card .card-img-top::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.24), transparent 42%);
+        }
+        .article-thumbnail img,
+        .related-article-card .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .article-thumbnail img {
+            opacity: 0;
+        }
+                .related-icon-overlay {
+            position: absolute;
+            z-index: 2;
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.96);
+            filter: drop-shadow(0 8px 18px rgba(15, 23, 42, 0.18));
+        }
+.article-thumbnail::after {
+            content: "\f0f1";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.96);
+            position: absolute;
+            z-index: 1;
+        }
+        footer {
+            background-color: #0056b3 !important;
+            background: #0056b3 !important;
+            color: #ffffff !important;
+            padding: 30px 0 !important;
+        }
+        footer .container,
+        footer .row,
+        footer .col-md-4,
+        footer .text-center,
+        footer .social-icons {
+            background-color: #0056b3 !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+        footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        footer p, footer li {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ffffff !important;
+        }
+        footer h5 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff !important;
+        }
+        footer a {
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+        footer a:hover {
+            color: #cce7ff !important;
+            text-decoration: underline !important;
+        }
+        footer .social-icons a {
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+        footer .social-icons a:hover {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+            color: #cce7ff !important;
+            transform: translateY(-3px);
+        }
+        footer hr {
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
     </style>
 </head>
 <body>
@@ -618,12 +767,12 @@
             <!-- 导航菜单 -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="algorithms.html">AI风险预测</a></li>
                     <li class="nav-item"><a class="nav-link" href="products.html">产品服务</a></li>
                     <li class="nav-item"><a class="nav-link" href="group.html">团体方案</a></li>
                     <li class="nav-item"><a class="nav-link" href="experts.html">专家在线</a></li>
-                    <li class="nav-item"><a class="nav-link" href="knowledge.html">知识科普</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="knowledge.html">知识科普</a></li>
                     <li class="nav-item"><a class="nav-link" href="cases.html">客户案例</a></li>
                 </ul>
                 
@@ -759,25 +908,56 @@
                     <p>免疫治疗为癌症患者带来了新的希望，但并不是所有患者都适合免疫治疗。患者在接受免疫治疗前，应与医生充分沟通，了解治疗的益处和风险。</p>
                 </div>
             </div>
-
-            <!-- 相关文章样式 -->
+            <!-- 相关文章 -->
             <div class="related-articles">
                 <h3>相关文章推荐</h3>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-4">
                         <div class="card related-article-card">
                             <div class="article-thumbnail">
-                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20fill%3D%22%236B7280%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3E%E5%8C%96%E7%96%97%E5%89%AF%E4%BD%9C%E7%94%A8%3C/text%3E%3C/svg%3E" alt="化疗副作用" class="img-fluid">
+                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3C/svg%3E" alt="免疫治疗：癌症治疗的新希望" class="img-fluid">
+                                <i class="fas fa-shield-alt related-icon-overlay"></i>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">化疗期间的副作用管理：实用指南</h5>
-                                <p class="card-text">了解化疗常见的副作用及其管理方法。</p>
-                                <a href="article-detail-5.html" class="btn btn-link text-danger">阅读更多</a>
+                                <div class="mb-2"><span class="badge badge-pill badge-light" style="font-size: 0.78rem; color: #2563eb; background: #eff6ff; padding: 6px 12px;">治疗方法</span></div>
+                                <h5 class="card-title">免疫治疗：癌症治疗的新希望</h5>
+                                <p class="card-text">本文介绍了免疫治疗的原理、应用和优势，以及在癌症治疗中的最新进展和未来展望。</p>
+                                <a href="article-detail-8.html" class="btn btn-link">阅读更多 <i class="fas fa-arrow-right ml-1"></i></a>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card related-article-card">
+                            <div class="article-thumbnail">
+                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3C/svg%3E" alt="癌症患者的心理调适：如何保持积极心态" class="img-fluid">
+                                <i class="fas fa-brain related-icon-overlay"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-2"><span class="badge badge-pill badge-light" style="font-size: 0.78rem; color: #2563eb; background: #eff6ff; padding: 6px 12px;">心理调适</span></div>
+                                <h5 class="card-title">癌症患者的心理调适：如何保持积极心态</h5>
+                                <p class="card-text">癌症诊断和治疗过程中，心理调适同样重要。本文将介绍癌症患者常见的心理问题及应对策略，帮助患者和家属保持积极心态。</p>
+                                <a href="article-detail-9.html" class="btn btn-link">阅读更多 <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card related-article-card">
+                            <div class="article-thumbnail">
+                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3C/svg%3E" alt="基因检测在癌症预防中的应用" class="img-fluid">
+                                <i class="fas fa-dna related-icon-overlay"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-2"><span class="badge badge-pill badge-light" style="font-size: 0.78rem; color: #2563eb; background: #eff6ff; padding: 6px 12px;">科学研究</span></div>
+                                <h5 class="card-title">基因检测在癌症预防中的应用</h5>
+                                <p class="card-text">本文介绍了基因检测在癌症预防中的作用，以及如何利用基因信息制定个性化的癌症预防策略。</p>
+                                <a href="article-detail-10.html" class="btn btn-link">阅读更多 <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
+<footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
@@ -794,11 +974,12 @@
                     <h5 class="mb-3">快速链接</h5>
                     <ul class="list-unstyled">
                         <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
+                        <li><a href="algorithms.html" class="text-white text-decoration-none">AI风险预测</a></li>
                         <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
-                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
-                        <li><a href="experts.html" class="text-white text-decoration-none">专家团队</a></li>
-                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
                         <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
+                        <li><a href="experts.html" class="text-white text-decoration-none">专家在线</a></li>
+                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
+                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -819,13 +1000,8 @@
         </div>
     </footer>
     
-    
-
-
-    
-
-    
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -835,7 +1011,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- 登录选项卡 -->
                     <ul class="nav nav-tabs" id="loginTabs" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
@@ -845,7 +1020,6 @@
                         </li>
                     </ul>
                     <div class="tab-content mt-3" id="loginTabsContent">
-                        <!-- 用户登录表单 -->
                         <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
                             <form id="userLoginForm">
                                 <div class="form-group">
@@ -863,7 +1037,6 @@
                                 <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
                             </form>
                         </div>
-                        <!-- 管理员登录表单 -->
                         <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
                             <form id="adminLoginForm">
                                 <div class="form-group">
@@ -879,7 +1052,17 @@
                         </div>
                     </div>
                 </div>
-<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？点击注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -890,51 +1073,38 @@
                 </div>
                 <div class="modal-body">
                     <form id="registerForm" novalidate>
-                        <!-- 用户名 -->
                         <div class="form-group">
                             <label for="registerUsername"><i class="fas fa-user mr-1"></i>用户名 <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="registerUsername" placeholder="3-20位字母、数字或下划线" required minlength="3" maxlength="20" autocomplete="username">
+                            <input type="text" class="form-control" id="registerUsername" placeholder="3-20位，支持中文、字母、数字" required minlength="3" maxlength="20" autocomplete="username">
                             <div class="input-hint" id="usernameHint"></div>
                         </div>
-                        <!-- 邮箱 -->
                         <div class="form-group">
                             <label for="registerEmail"><i class="fas fa-envelope mr-1"></i>邮箱 <span class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="registerEmail" placeholder="example@email.com" required autocomplete="email">
                             <div class="input-hint" id="emailHint"></div>
                         </div>
-                        <!-- 手机号（可选） -->
                         <div class="form-group">
                             <label for="registerPhone"><i class="fas fa-mobile-alt mr-1"></i>手机号 <small class="text-muted">（选填）</small></label>
                             <input type="tel" class="form-control" id="registerPhone" placeholder="11位手机号码" maxlength="11" autocomplete="tel">
                             <div class="input-hint" id="phoneHint"></div>
                         </div>
-                        <!-- 密码 -->
                         <div class="form-group">
                             <label for="registerPassword"><i class="fas fa-lock mr-1"></i>密码 <span class="text-danger">*</span></label>
-                            <div class="password-toggle-wrap">
-                                <input type="password" class="form-control" id="registerPassword" placeholder="至少6位，含字母和数字" required minlength="6" maxlength="20" autocomplete="new-password">
-                                <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" onclick="togglePasswordVisibility('registerPassword', 'toggleRegPassword')"></i>
-                            </div>
+                            <input type="password" class="form-control" id="registerPassword" placeholder="至少6位，含字母和数字" required minlength="6" maxlength="20" autocomplete="new-password">
                             <div class="password-strength-bar" id="passwordStrengthBar">
                                 <div class="strength-fill" id="strengthFill"></div>
                             </div>
                             <div class="password-strength-text" id="passwordStrengthText"></div>
                         </div>
-                        <!-- 确认密码 -->
                         <div class="form-group">
                             <label for="confirmPassword"><i class="fas fa-lock mr-1"></i>确认密码 <span class="text-danger">*</span></label>
-                            <div class="password-toggle-wrap">
-                                <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required autocomplete="new-password">
-                                <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"></i>
-                            </div>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required autocomplete="new-password">
                             <div class="input-hint" id="confirmHint"></div>
                         </div>
-                        <!-- 服务条款 -->
                         <div class="agree-terms">
                             <input type="checkbox" id="agreeTerms">
                             <label for="agreeTerms">我已阅读并同意 <a href="#" onclick="event.preventDefault(); showToast('info', '服务条款页面建设中，敬请期待');">《用户服务条款》</a> 和 <a href="#" onclick="event.preventDefault(); showToast('info', '隐私政策页面建设中，敬请期待');">《隐私政策》</a></label>
                         </div>
-                        <!-- 错误信息 -->
                         <div id="registerError" class="text-danger" style="margin-bottom: 10px; font-size: 0.9rem;"></div>
                     </form>
                 </div>
@@ -950,7 +1120,10 @@
                 </div>
             </div>
         </div>
-<div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+    </div>
+
+    <!-- 用户信息模态框 -->
+    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -978,9 +1151,7 @@
                             <div class="tab-content mt-3" id="userTabsContent">
                                 <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
                                     <h5>历史报告</h5>
-                                    <div id="reportsList" class="mt-3">
-                                        <!-- 报告列表将通过JavaScript动态生成 -->
-                                    </div>
+                                    <div id="reportsList" class="mt-3"></div>
                                 </div>
                                 <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
                                     <h5>账户设置</h5>
@@ -997,6 +1168,15 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <div id="toastContainer"></div>
 <script src="js/auth.js"></script>
 </body>

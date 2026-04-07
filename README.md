@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ### 2. 配置DeepSeek API（可选）
 
-如果需要使用文本润色功能，在`api/app.py`文件中检查API密钥配置：
+如果需要使用文本润色功能，请在 `backend/app.py` 对应的运行环境中配置 API 密钥：
 
 ```python
 API_KEY = "sk-cea68c36b6e74d928f3289fe4fe0180a"  # DeepSeek API密钥
@@ -46,15 +46,18 @@ API_KEY = "sk-cea68c36b6e74d928f3289fe4fe0180a"  # DeepSeek API密钥
 ### 1. 启动服务器
 
 ```bash
-cd api
-python app.py
+.\start_local.ps1
 ```
 
-服务器将在`http://localhost:5000`启动。
+统一本地启动入口会启动 `backend/app.py`，默认地址为 `http://127.0.0.1:5000`。
 
 ### 2. 访问前端界面
 
-在浏览器中访问：http://localhost:5000
+在浏览器中访问：
+
+- 首页：`http://127.0.0.1:5000/`
+- 算法页：`http://127.0.0.1:5000/algorithms.html`
+- 系统状态：`http://127.0.0.1:5000/api/system-status`
 
 ### 3. 上传数据文件
 
@@ -142,10 +145,11 @@ POST /api/polish
 
 ```
 huiyanshiai/
-├── api/
-│   ├── app.py            # Flask应用主文件
-│   └── simple_start.py   # 启动脚本
+├── backend/
+│   ├── app.py            # 当前主后端入口（本地/Render）
+│   └── config.py         # 后端配置
 ├── frontend/             # 前端界面目录
+├── start_local.ps1       # 本地统一启动脚本
 ├── models/
 │   └── simulated_model.py # 模拟预测模型
 ├── sample.csv            # 示例数据文件

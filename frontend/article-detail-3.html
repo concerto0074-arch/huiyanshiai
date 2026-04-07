@@ -595,7 +595,156 @@
         .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #007BFF; color: #fff; border-radius: 5px; text-decoration: none; margin-bottom: 30px; transition: all 0.3s; }
         .back-btn:hover { background: #0056b3; color: #fff; transform: translateX(-5px); }
         .article-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 20px 0; }
-        .related-articles { background: #fff; padding: 30px; border-radius: 12px; margin-top: 40px; }
+        .related-articles {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+        .related-articles h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 24px;
+        }
+        .related-article-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            height: 100%;
+        }
+        .related-article-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 36px rgba(37, 99, 235, 0.16);
+        }
+        .related-article-card .card-body {
+            padding: 22px 20px 18px;
+        }
+        .related-article-card .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.45;
+            margin-bottom: 12px;
+        }
+        .related-article-card .card-text {
+            color: #6b7280;
+            line-height: 1.7;
+            min-height: 54px;
+        }
+        .related-article-card .btn-link {
+            padding: 0;
+            color: #16a34a !important;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .related-article-card .btn-link:hover {
+            color: #15803d !important;
+            text-decoration: none;
+        }
+        .article-thumbnail,
+        .related-article-card .card-img-top {
+            height: 190px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .article-thumbnail::before,
+        .related-article-card .card-img-top::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.24), transparent 42%);
+        }
+        .article-thumbnail img,
+        .related-article-card .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .article-thumbnail img {
+            opacity: 0;
+        }
+                .related-icon-overlay {
+            position: absolute;
+            z-index: 2;
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.96);
+            filter: drop-shadow(0 8px 18px rgba(15, 23, 42, 0.18));
+        }
+.article-thumbnail::after {
+            content: "\f0f1";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.96);
+            position: absolute;
+            z-index: 1;
+        }
+        footer {
+            background-color: #0056b3 !important;
+            background: #0056b3 !important;
+            color: #ffffff !important;
+            padding: 30px 0 !important;
+        }
+        footer .container,
+        footer .row,
+        footer .col-md-4,
+        footer .text-center,
+        footer .social-icons {
+            background-color: #0056b3 !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+        footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        footer p, footer li {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #ffffff !important;
+        }
+        footer h5 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff !important;
+        }
+        footer a {
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+        footer a:hover {
+            color: #cce7ff !important;
+            text-decoration: underline !important;
+        }
+        footer .social-icons a {
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+        footer .social-icons a:hover {
+            background-color: rgba(255, 255, 255, 0.3) !important;
+            color: #cce7ff !important;
+            transform: translateY(-3px);
+        }
+        footer hr {
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
     </style>
 </head>
 <body>
@@ -618,12 +767,12 @@
             <!-- 导航菜单 -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="algorithms.html">AI风险预测</a></li>
                     <li class="nav-item"><a class="nav-link" href="products.html">产品服务</a></li>
                     <li class="nav-item"><a class="nav-link" href="group.html">团体方案</a></li>
                     <li class="nav-item"><a class="nav-link" href="experts.html">专家在线</a></li>
-                    <li class="nav-item"><a class="nav-link" href="knowledge.html">知识科普</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="knowledge.html">知识科普</a></li>
                     <li class="nav-item"><a class="nav-link" href="cases.html">客户案例</a></li>
                 </ul>
                 
@@ -729,25 +878,56 @@
                     <p>通过选择健康的食物和饮食模式，可以显著降低患癌风险。请记住，饮食只是癌症预防的一部分，还应该结合定期运动、戒烟限酒、防晒等其他健康生活方式。</p>
                 </div>
             </div>
-
-            <!-- 相关文章样式 -->
+            <!-- 相关文章 -->
             <div class="related-articles">
                 <h3>相关文章推荐</h3>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-4">
                         <div class="card related-article-card">
                             <div class="article-thumbnail">
-                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22sans-serif%22%20font-size%3D%2220%22%20fill%3D%22%236B7280%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3E%E7%99%8C%E7%97%87%E9%A2%84%E9%98%B2%3C/text%3E%3C/svg%3E" alt="癌症预防" class="img-fluid">
+                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3C/svg%3E" alt="运动与癌症预防：科学证据与建议" class="img-fluid">
+                                <i class="fas fa-running related-icon-overlay"></i>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">癌症预防的五大黄金法则</h5>
-                                <p class="card-text">通过生活方式改变降低患癌风险。</p>
-                                <a href="article-detail-1.html" class="btn btn-link text-danger">阅读更多</a>
+                                <div class="mb-2"><span class="badge badge-pill badge-light" style="font-size: 0.78rem; color: #2563eb; background: #eff6ff; padding: 6px 12px;">癌症预防</span></div>
+                                <h5 class="card-title">运动与癌症预防：科学证据与建议</h5>
+                                <p class="card-text">规律的体育锻炼可以降低多种癌症的风险。本文将介绍运动与癌症预防的科学证据，以及适合不同人群的运动建议和注意事项。</p>
+                                <a href="article-detail-4.html" class="btn btn-link">阅读更多 <i class="fas fa-arrow-right ml-1"></i></a>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card related-article-card">
+                            <div class="article-thumbnail">
+                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3C/svg%3E" alt="抗癌饮食金字塔：如何吃得更健康" class="img-fluid">
+                                <i class="fas fa-apple-alt related-icon-overlay"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-2"><span class="badge badge-pill badge-light" style="font-size: 0.78rem; color: #2563eb; background: #eff6ff; padding: 6px 12px;">营养饮食</span></div>
+                                <h5 class="card-title">抗癌饮食金字塔：如何吃得更健康</h5>
+                                <p class="card-text">本文介绍了抗癌饮食金字塔的结构，包括各类食物的推荐摄入量和选择建议，帮助您建立科学合理的饮食习惯。</p>
+                                <a href="article-detail-5.html" class="btn btn-link">阅读更多 <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card related-article-card">
+                            <div class="article-thumbnail">
+                                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22400%22%20height%3D%22200%22%20viewBox%3D%220%200%20400%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23F3F4F6%22/%3E%3C/svg%3E" alt="癌症患者的心理支持：家人和朋友可以做什么" class="img-fluid">
+                                <i class="fas fa-brain related-icon-overlay"></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-2"><span class="badge badge-pill badge-light" style="font-size: 0.78rem; color: #2563eb; background: #eff6ff; padding: 6px 12px;">心理调适</span></div>
+                                <h5 class="card-title">癌症患者的心理支持：家人和朋友可以做什么</h5>
+                                <p class="card-text">本文探讨了癌症患者的心理需求，以及家人和朋友如何提供有效的支持，帮助患者度过治疗和康复期。</p>
+                                <a href="article-detail-6.html" class="btn btn-link">阅读更多 <i class="fas fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
+<footer class="py-5" style="background-color: #0056b3; color: #ffffff;">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
@@ -764,11 +944,12 @@
                     <h5 class="mb-3">快速链接</h5>
                     <ul class="list-unstyled">
                         <li><a href="index.html" class="text-white text-decoration-none">首页</a></li>
+                        <li><a href="algorithms.html" class="text-white text-decoration-none">AI风险预测</a></li>
                         <li><a href="products.html" class="text-white text-decoration-none">产品服务</a></li>
-                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
-                        <li><a href="experts.html" class="text-white text-decoration-none">专家团队</a></li>
-                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
                         <li><a href="group.html" class="text-white text-decoration-none">团体方案</a></li>
+                        <li><a href="experts.html" class="text-white text-decoration-none">专家在线</a></li>
+                        <li><a href="knowledge.html" class="text-white text-decoration-none">知识科普</a></li>
+                        <li><a href="cases.html" class="text-white text-decoration-none">客户案例</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -789,13 +970,7 @@
         </div>
     </footer>
     
-    
-
-
-    
-
-    
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -849,7 +1024,16 @@
                         </div>
                     </div>
                 </div>
-<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？点击注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -863,7 +1047,7 @@
                         <!-- 用户名 -->
                         <div class="form-group">
                             <label for="registerUsername"><i class="fas fa-user mr-1"></i>用户名 <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="registerUsername" placeholder="3-20位字母、数字或下划线" required minlength="3" maxlength="20" autocomplete="username">
+                            <input type="text" class="form-control" id="registerUsername" placeholder="3-20位，支持中文、字母、数字" required minlength="3" maxlength="20" autocomplete="username">
                             <div class="input-hint" id="usernameHint"></div>
                         </div>
                         <!-- 邮箱 -->
@@ -920,7 +1104,9 @@
                 </div>
             </div>
         </div>
-<div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+    </div>
+
+    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -967,6 +1153,15 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <div id="toastContainer"></div>
 <script src="js/auth.js"></script>
 </body>

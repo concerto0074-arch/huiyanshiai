@@ -49,12 +49,27 @@
             background: linear-gradient(90deg, #3b82f6, #8b5cf6);
         }
         
+        .report-header-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        .report-header-gradient .report-title {
+            color: white;
+            background: none;
+            -webkit-background-clip: initial;
+            -webkit-text-fill-color: white;
+        }
+        .report-header-gradient .report-subtitle {
+            color: rgba(255,255,255,0.9);
+        }
+        
         .report-title {
             font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #1e3a8a;
             margin-bottom: 0.5rem;
             letter-spacing: 1px;
         }
@@ -274,10 +289,132 @@
         
         /* 打印样式 */
         @media print {
-            body { background: white; }
-            .report-container { box-shadow: none; border: none; max-width: 100%; padding: 0; margin: 0; }
-            .report-section { break-inside: avoid; border: 1px solid #e2e8f0; margin-bottom: 2rem; }
+            .no-print { display: none !important; }
+            body { 
+                background: white !important; 
+                margin: 0 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .container { 
+                max-width: 100% !important; 
+                padding: 0 !important; 
+                margin: 0 !important;
+                background: white !important;
+            }
+            .report-container { 
+                box-shadow: none !important; 
+                border: none !important; 
+                max-width: 100% !important; 
+                padding: 10mm !important; 
+                margin: 0 !important;
+                background: white !important;
+                border-radius: 0 !important;
+            }
+            .report-section { 
+                break-inside: avoid-page !important; 
+                page-break-inside: avoid !important;
+                border: 1px solid #e2e8f0 !important; 
+                margin-bottom: 1rem !important;
+                padding: 1rem !important;
+            }
             .navbar, #backToTop { display: none !important; }
+            /* 优化打印时的信息密度 */
+            .info-row { 
+                margin-bottom: 0.5rem !important; 
+                padding-bottom: 0.3rem !important;
+            }
+            .factor-item { 
+                margin-bottom: 0.5rem !important; 
+                padding: 0.6rem !important;
+            }
+            .recommendation-item {
+                margin-bottom: 0.5rem !important;
+                padding: 0.6rem !important;
+            }
+            .report-header {
+                margin-bottom: 1.5rem !important;
+                padding-bottom: 1rem !important;
+            }
+            .report-title {
+                font-size: 2rem !important;
+            }
+            .risk-level {
+                font-size: 2.5rem !important;
+            }
+        }
+        
+        /* PDF导出时样式 */
+        .pdf-exporting .report-section {
+            margin-bottom: 0.8rem !important;
+            padding: 0.8rem !important;
+            border-left-width: 3px !important;
+        }
+        .pdf-exporting .report-header {
+            margin-bottom: 1rem !important;
+            padding-bottom: 0.8rem !important;
+        }
+        .pdf-exporting .report-title {
+            font-size: 1.8rem !important;
+            background: none !important;
+            -webkit-background-clip: initial !important;
+            -webkit-text-fill-color: #1e3a8a !important;
+            color: #1e3a8a !important;
+        }
+        .pdf-exporting .section-title {
+            font-size: 1.1rem !important;
+            margin-bottom: 0.8rem !important;
+        }
+        .pdf-exporting .info-row {
+            margin-bottom: 0.4rem !important;
+            padding-bottom: 0.2rem !important;
+        }
+        .pdf-exporting .risk-level {
+            font-size: 2rem !important;
+        }
+        .pdf-exporting .factor-item,
+        .pdf-exporting .recommendation-item {
+            margin-bottom: 0.5rem !important;
+            padding: 0.5rem !important;
+        }
+        .pdf-exporting .reference-item {
+            margin-bottom: 0.5rem !important;
+            padding: 0.5rem !important;
+        }
+        .pdf-exporting .markdown-body h1,
+        .pdf-exporting .markdown-body h2,
+        .pdf-exporting .markdown-body h3 {
+            margin-top: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            font-size: 1.1rem !important;
+        }
+        .pdf-exporting .markdown-body p,
+        .pdf-exporting .markdown-body li {
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
+            margin-bottom: 0.5rem !important;
+        }
+        .pdf-exporting .risk-confidence {
+            font-size: 0.9rem !important;
+            padding: 6px 10px !important;
+        }
+        .pdf-exporting .distribution-item {
+            margin-bottom: 0.8rem !important;
+        }
+        
+        body.pdf-exporting {
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        body.pdf-exporting .report-container {
+            margin: 0 !important;
+            padding: 8mm !important;
+            box-shadow: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            max-width: 100% !important;
         }
         
         /* 导航栏 */
@@ -298,6 +435,27 @@
             font-size: 1.5rem;
             margin-right: 0.5rem;
             color: #2563eb;
+        }
+        
+        /* 基因数据特殊显示 */
+        .gene-data-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .gene-badge { 
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe); 
+            color: #1e40af; 
+            border: 1px solid #93c5fd;
+        }
+        
+        .gene-value-badge { 
+            background: #f3f4f6; 
+            color: #4b5563; 
+            border: 1px solid #e5e7eb;
         }
     </style>
     <!-- 全局环境配置 -->
@@ -354,7 +512,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="algorithms.html">AI风险预测</a></li>
                     <li class="nav-item"><a class="nav-link" href="products.html">产品服务</a></li>
@@ -363,6 +521,10 @@
                     <li class="nav-item"><a class="nav-link" href="knowledge.html">知识科普</a></li>
                     <li class="nav-item"><a class="nav-link" href="cases.html">客户案例</a></li>
                 </ul>
+                <div class="navbar-right ml-3">
+                    <button id="navbarLoginBtn" class="btn btn-primary btn-sm" onclick="showLoginModal()" style="border-radius:20px;padding:8px 18px;font-weight:600;">登录/注册</button>
+                    <button id="navbarUserCenterBtn" class="btn btn-primary btn-sm" onclick="window.location.href='user_center.html'" style="border-radius:20px;padding:8px 18px;font-weight:600;display:none;">用户中心</button>
+                </div>
             </div>
         </div>
     </nav>
@@ -617,13 +779,62 @@
     </style>
     <style>
         .no-print { display: block; }
-        /* 打印样式 */
+        /* 打印样式优化 - 减少空白 */
         @media print {
             .no-print { display: none !important; }
-            body { background: white; }
-            .report-container { box-shadow: none; border: none; max-width: 100%; padding: 0; margin: 0; }
-            .report-section { break-inside: avoid; border: 1px solid #e2e8f0; margin-bottom: 2rem; }
+            body { 
+                background: white !important; 
+                margin: 0 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .container { 
+                max-width: 100% !important; 
+                padding: 0 !important; 
+                margin: 0 !important;
+                background: white !important;
+            }
+            .report-container { 
+                box-shadow: none !important; 
+                border: none !important; 
+                max-width: 100% !important; 
+                padding: 10mm !important; 
+                margin: 0 !important;
+                background: white !important;
+                border-radius: 0 !important;
+            }
+            .report-section { 
+                break-inside: avoid-page !important; 
+                page-break-inside: avoid !important;
+                border: 1px solid #e2e8f0 !important; 
+                margin-bottom: 1rem !important;
+                padding: 1rem !important;
+            }
             .navbar, #backToTop { display: none !important; }
+            /* 优化打印时的信息密度 */
+            .info-row { 
+                margin-bottom: 0.5rem !important; 
+                padding-bottom: 0.3rem !important;
+            }
+            .factor-item { 
+                margin-bottom: 0.5rem !important; 
+                padding: 0.6rem !important;
+            }
+            .recommendation-item {
+                margin-bottom: 0.5rem !important;
+                padding: 0.6rem !important;
+            }
+            .report-header {
+                margin-bottom: 1.5rem !important;
+                padding-bottom: 1rem !important;
+            }
+            .report-title {
+                font-size: 2rem !important;
+            }
+            .risk-level {
+                font-size: 2.5rem !important;
+            }
         }
     </style>
     <script>
@@ -772,18 +983,38 @@
             document.getElementById('reportTime').textContent = timeStr;
             document.getElementById('assessmentTime').textContent = timeStr;
             
-            // 填充患者信息
-            document.getElementById('patientName').textContent = data.patientName || "未知";
-            document.getElementById('patientGender').textContent = data.patientGender || "未知";
-            document.getElementById('patientAge').textContent = data.patientAge || "未知";
-            document.getElementById('patientHeight').textContent = data.patientHeight ? `${data.patientHeight} cm` : "未知";
-            document.getElementById('patientWeight').textContent = data.patientWeight ? `${data.patientWeight} kg` : "未知";
-            document.getElementById('patientBmi').textContent = data.patientBmi || "未知";
-            document.getElementById('patientSmoke').textContent = data.patientSmoke || "未知";
-            document.getElementById('patientDrink').textContent = data.patientDrink || "未知";
-            document.getElementById('patientFamilyHistory').textContent = data.patientFamilyHistory || "未知";
-            document.getElementById('patientPastHistory').textContent = data.patientPastHistory || "未知";
-            document.getElementById('algorithmName').textContent = data.algorithm || "未知";
+            // 检测是否为基因数据流
+            const isGeneData = data.patientName === '匿名供体样本 (基因流)' || 
+                              (data.algorithm && data.algorithm.includes('WGCNA'));
+            
+            // 填充患者信息 - 根据数据类型显示不同格式
+            if (isGeneData) {
+                // 基因数据流特殊显示
+                document.getElementById('patientName').innerHTML = '<span class="gene-data-badge gene-badge">🧬 基因表达样本</span>';
+                document.getElementById('patientGender').textContent = data.patientGender || '多组学数据';
+                document.getElementById('patientAge').innerHTML = '<span class="gene-data-badge gene-value-badge">高维特征矩阵</span>';
+                document.getElementById('patientHeight').textContent = '-';
+                document.getElementById('patientWeight').textContent = '-';
+                document.getElementById('patientBmi').textContent = data.patientBmi || '详见WGCNA模块';
+                document.getElementById('patientSmoke').textContent = data.patientSmoke || 'N/A';
+                document.getElementById('patientDrink').textContent = data.patientDrink || 'N/A';
+                document.getElementById('patientFamilyHistory').textContent = data.patientFamilyHistory || 'N/A';
+                document.getElementById('patientPastHistory').textContent = data.patientPastHistory || 'N/A';
+            } else {
+                // 普通患者数据
+                document.getElementById('patientName').textContent = data.patientName || "匿名患者";
+                document.getElementById('patientGender').textContent = data.patientGender || "-";
+                document.getElementById('patientAge').textContent = data.patientAge || "-";
+                document.getElementById('patientHeight').textContent = data.patientHeight ? `${data.patientHeight} cm` : "-";
+                document.getElementById('patientWeight').textContent = data.patientWeight ? `${data.patientWeight} kg` : "-";
+                document.getElementById('patientBmi').textContent = data.patientBmi || "-";
+                document.getElementById('patientSmoke').textContent = data.patientSmoke || "-";
+                document.getElementById('patientDrink').textContent = data.patientDrink || "-";
+                document.getElementById('patientFamilyHistory').textContent = data.patientFamilyHistory || "-";
+                document.getElementById('patientPastHistory').textContent = data.patientPastHistory || "-";
+            }
+            
+            document.getElementById('algorithmName').textContent = data.algorithm || "AI 智能匹配";
             
             // 填充风险评估
             const riskLevel = data.riskLevel || "未知";
@@ -875,7 +1106,7 @@
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle mr-2"></i> <strong>大模型服务暂不可用</strong>
                         <p class="mt-2 mb-0">无法连接到 DeepSeek 分析引擎。错误详情：${error.message}</p>
-                        <p class="mb-0">解决方案：确保后端的 Flask 服务已启动 (5000端口)，并在 \`.env\` 根目录文件中配置了有效的 \`DEEPSEEK_API_KEY\`。</p>
+                        <p class="mb-0">解决方案：确保后端的 Flask 服务已启动 (5000端口)，并在\`.env\` 根目录文件中配置了有效的 \`DEEPSEEK_API_KEY\`。</p>
                     </div>
                     <ul>
                         <li>建议一：保持良好的生活习惯，并定期体验。</li>
@@ -887,6 +1118,22 @@
         // 页面加载完成后填充报告内容
         document.addEventListener('DOMContentLoaded', function() {
             populateReport();
+
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const auto = (urlParams.get('autodownload') || '').toLowerCase();
+                if (auto === 'pdf') {
+                    setTimeout(() => {
+                        try {
+                            downloadReportPDF();
+                        } catch (e) {
+                            console.error('自动导出 PDF 失败:', e);
+                        }
+                    }, 600);
+                }
+            } catch (e) {
+                console.error('解析 autodownload 参数失败:', e);
+            }
         });
         
         function printReport() {
@@ -906,29 +1153,91 @@
             URL.revokeObjectURL(url);
         }
 
-        // PDF导出功能
+        // PDF导出功能 - 优化布局减少空白
         function downloadReportPDF() {
             const element = document.querySelector('.report-container');
             const reportId = document.getElementById('reportId').textContent;
+            
+            // 添加PDF导出时的临时样式
+            element.classList.add('pdf-exporting');
+            document.body.classList.add('pdf-exporting');
+            
             const opt = {
-                margin: [10, 10, 10, 10],
+                margin: [8, 8, 8, 8], // 适中的页边距
                 filename: '慧眼识癌_预测报告_' + reportId + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, logging: false },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: 1050,
+                    windowHeight: element.scrollHeight,
+                    backgroundColor: '#ffffff',
+                    removeContainer: true
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait',
+                    compress: true
+                },
+                pagebreak: { 
+                    mode: ['css', 'avoid-all'],
+                    avoid: ['.report-section', '.factor-item', '.recommendation-item', '.reference-item'],
+                    before: '.report-section'
+                }
             };
             
             // 隐藏不需要导出的元素
-            const noPrintElements = document.querySelectorAll('.no-print');
-            noPrintElements.forEach(el => el.style.display = 'none');
+            const noPrintElements = document.querySelectorAll('.no-print, .navbar, #backToTop');
+            const originalDisplays = [];
+            noPrintElements.forEach(el => {
+                originalDisplays.push(el.style.display);
+                el.style.display = 'none';
+            });
+            
+            // 临时调整样式以优化PDF输出
+            const originalBodyBg = document.body.style.background;
+            document.body.style.background = 'white';
             
             html2pdf().set(opt).from(element).save().then(() => {
-                // 恢复隐藏的元素
-                noPrintElements.forEach(el => el.style.display = '');
+                // 恢复隐藏的元素和样式
+                noPrintElements.forEach((el, i) => {
+                    el.style.display = originalDisplays[i] || '';
+                });
+                document.body.style.background = originalBodyBg;
+                element.classList.remove('pdf-exporting');
+                document.body.classList.remove('pdf-exporting');
+            }).catch(err => {
+                console.error('PDF导出失败:', err);
+                alert('PDF导出失败，请重试或使用浏览器打印功能');
+                // 恢复样式
+                noPrintElements.forEach((el, i) => {
+                    el.style.display = originalDisplays[i] || '';
+                });
+                document.body.style.background = originalBodyBg;
+                element.classList.remove('pdf-exporting');
+                document.body.classList.remove('pdf-exporting');
             });
         }
     </script>
     <script src="js/auth.js"></script>
+    <script>
+        // 检测登录状态，切换导航栏按钮
+        (function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const loginBtn = document.getElementById('navbarLoginBtn');
+            const ucBtn = document.getElementById('navbarUserCenterBtn');
+            if (isLoggedIn) {
+                if (loginBtn) loginBtn.style.display = 'none';
+                if (ucBtn) ucBtn.style.display = 'inline-block';
+            } else {
+                if (loginBtn) loginBtn.style.display = 'inline-block';
+                if (ucBtn) ucBtn.style.display = 'none';
+            }
+        })();
+    </script>
 </body>
 </html>

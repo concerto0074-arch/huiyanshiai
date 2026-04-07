@@ -6,6 +6,7 @@ scikit-learn
 pandas
 numpy
 joblib
+bcrypt
 xgboost
 lightgbm
 pyjwt

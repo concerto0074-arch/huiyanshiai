@@ -30,6 +30,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     age INTEGER,
     gender VARCHAR(20),
     phone VARCHAR(20),
+    plan VARCHAR(20) DEFAULT 'free',       -- free(基础评估), standard(全面评估), premium(年度健康)
+    plan_expire_at TIMESTAMP WITH TIME ZONE, -- 付费套餐到期时间，free 可为 NULL
     tenant_id INTEGER REFERENCES public.tenants(id) ON DELETE SET NULL, -- 归属的租户机构
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

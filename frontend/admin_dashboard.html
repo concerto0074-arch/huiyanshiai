@@ -133,9 +133,11 @@
         .sidebar-menu a {
             color: white;
             text-decoration: none;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             padding: 15px 20px;
-            border-radius: 4px;
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
         
@@ -143,12 +145,39 @@
             background-color: #34495e;
             color: white;
             text-decoration: none;
+            transform: translateX(4px);
         }
         
         .sidebar-menu a.active {
             background-color: #3498db;
+            box-shadow: 0 8px 18px rgba(52, 152, 219, 0.28);
         }
-        
+
+        .sidebar-menu a i {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0 !important;
+            background: rgba(255, 255, 255, 0.12);
+            color: #eaf4ff;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover i {
+            background: rgba(255, 255, 255, 0.18);
+            transform: scale(1.05);
+        }
+
+        .sidebar-menu a.active i {
+            background: rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+        }
+
         /* 主内容区样式 */
         .main-content {
             margin-left: 250px;
@@ -599,6 +628,7 @@
                                     <th onclick="sortUsers('gender')" style="cursor: pointer;">性别 <span id="sortGender">-</span></th>
                                     <th onclick="sortUsers('registerTime')" style="cursor: pointer;">注册时间 <span id="sortRegisterTime">-</span></th>
                                     <th onclick="sortUsers('status')" style="cursor: pointer;">状态 <span id="sortStatus">-</span></th>
+                                    <th onclick="sortUsers('plan')" style="cursor: pointer;">套餐 <span id="sortPlan">-</span></th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
@@ -995,6 +1025,93 @@
         </div>
     </div>
 
+    <!-- 用户管理模态框（新增/编辑用户） -->
+    <div class="modal fade" id="userManageModal" tabindex="-1" role="dialog" aria-labelledby="userManageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userManageModalLabel">新增用户</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="userManageForm">
+                        <input type="hidden" id="manageUserId">
+                        <div class="form-group">
+                            <label for="manageUsername">用户名 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="manageUsername" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="manageEmail">邮箱 <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="manageEmail" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="managePassword">密码 <small class="text-muted">(编辑时留空则不修改)</small></label>
+                            <input type="password" class="form-control" id="managePassword" placeholder="请输入密码">
+                        </div>
+                        <div class="form-group">
+                            <label for="managePhone">手机号</label>
+                            <input type="tel" class="form-control" id="managePhone" placeholder="选填">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="manageAge">年龄</label>
+                                    <input type="number" class="form-control" id="manageAge" min="1" max="150" placeholder="选填">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="manageGender">性别</label>
+                                    <select class="form-control" id="manageGender">
+                                        <option value="">未设置</option>
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="managePlan">套餐</label>
+                                    <select class="form-control" id="managePlan">
+                                        <option value="free">基础评估（免费）</option>
+                                        <option value="standard">全面评估套餐</option>
+                                        <option value="premium">年度健康套餐</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="manageRole">角色</label>
+                                    <select class="form-control" id="manageRole">
+                                        <option value="user">普通用户</option>
+                                        <option value="admin">管理员</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="manageStatus">状态</label>
+                                    <select class="form-control" id="manageStatus">
+                                        <option value="active">活跃</option>
+                                        <option value="inactive">禁用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="saveUser()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
@@ -1055,8 +1172,116 @@
             $('#loginModal').modal('hide');
         }
         
+        // 登录函数
+        async function login() {
+            // 判断当前激活的 tab
+            const isAdminTab = document.querySelector('#admin-login-tab.active') !== null;
+            const username = isAdminTab
+                ? document.getElementById('adminLoginUsername').value
+                : document.getElementById('userLoginUsername').value;
+            const password = isAdminTab
+                ? document.getElementById('adminLoginPassword').value
+                : document.getElementById('userLoginPassword').value;
+            const errorEl = isAdminTab
+                ? document.getElementById('adminLoginError')
+                : document.getElementById('loginError');
+
+            if (!username || !password) {
+                errorEl.textContent = '请输入用户名和密码';
+                return;
+            }
+            errorEl.textContent = '';
+
+            try {
+                const resp = await fetch(`${getAdminApiBaseUrl()}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await resp.json();
+                if (resp.ok && data.success) {
+                    const user = data.user || {};
+                    const token = data.token || '';
+                    // 管理员登录需要验证角色
+                    if (isAdminTab && user.role !== 'admin') {
+                        errorEl.textContent = '该账户不是管理员';
+                        return;
+                    }
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    localStorage.setItem('X-Admin-Token', token);
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', user.username || username);
+                    localStorage.setItem('email', user.email || '');
+                    localStorage.setItem('role', user.role || 'user');
+                    $('#loginModal').modal('hide');
+                    // 更新欢迎信息
+                    document.querySelector('.user-info span').textContent = '欢迎，' + (user.username || '管理员');
+                    loadDashboardData();
+                } else {
+                    errorEl.textContent = data.error || '登录失败';
+                }
+            } catch (e) {
+                console.error('登录异常:', e);
+                errorEl.textContent = '网络异常，请检查后端服务是否启动';
+            }
+        }
+
+        // 注册函数
+        async function register() {
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPwd = document.getElementById('confirmPassword').value;
+            const errorEl = document.getElementById('registerError');
+
+            if (!username || !email || !password) {
+                errorEl.textContent = '请填写所有必填字段';
+                return;
+            }
+            if (password !== confirmPwd) {
+                errorEl.textContent = '两次输入的密码不一致';
+                return;
+            }
+            errorEl.textContent = '';
+
+            try {
+                const resp = await fetch(`${getAdminApiBaseUrl()}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                const data = await resp.json();
+                if (resp.ok && data.success) {
+                    alert('注册成功！请使用新账号登录。');
+                    showLoginModal();
+                } else {
+                    errorEl.textContent = data.error || '注册失败';
+                }
+            } catch (e) {
+                console.error('注册异常:', e);
+                errorEl.textContent = '网络异常，请稍后重试';
+            }
+        }
+
+        // 登出函数
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('X-Admin-Token');
+            localStorage.removeItem('token');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('email');
+            localStorage.removeItem('role');
+            window.location.reload();
+        }
+
         // 为登录表单添加提交事件
         document.getElementById('userLoginForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            login();
+        });
+        document.getElementById('adminLoginForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             login();
         });
@@ -1230,7 +1455,8 @@
                         registerTime: u.created_at || '-',
                         status: u.status || 'active',
                         role: u.role || 'user',
-                        phone: u.phone || ''
+                        phone: u.phone || '',
+                        plan: u.plan || 'free'
                     }));
                     searchUsers(); // filters, sorts, and renders
                 } else if (response.status === 401 || response.status === 403) {
@@ -1257,6 +1483,9 @@
                 const row = document.createElement('tr');
                 const isStatusActive = user.status === 'active';
                 const statusBadge = `<span class="badge ${isStatusActive ? 'badge-success' : 'badge-secondary'}">${isStatusActive ? '活跃' : '禁用'}</span>`;
+                const planMap = { 'free': {label:'免费',cls:'badge-light'}, 'standard': {label:'全面评估',cls:'badge-primary'}, 'premium': {label:'年度健康',cls:'badge-warning'} };
+                const pInfo = planMap[user.plan] || planMap['free'];
+                const planBadge = `<span class="badge ${pInfo.cls}">${pInfo.label}</span>`;
                 const toggleTitle = isStatusActive ? "禁用" : "启用";
                 const toggleIcon = isStatusActive ? "fa-ban" : "fa-check";
                 const toggleClass = isStatusActive ? "btn-warning" : "btn-success";
@@ -1269,6 +1498,7 @@
                     <td>${user.gender}</td>
                     <td>${user.registerTime}</td>
                     <td>${statusBadge}</td>
+                    <td>${planBadge}</td>
                     <td>
                         <button class="btn btn-sm ${toggleClass} mr-1" onclick="toggleUserStatus(${user.id}, '${isStatusActive ? 'inactive' : 'active'}')" title="${toggleTitle}"><i class="fa ${toggleIcon}"></i></button>
                         <button class="btn btn-sm btn-primary mr-1" onclick="editUser(${user.id})" title="编辑"><i class="fa fa-edit"></i></button>
@@ -1378,6 +1608,7 @@
             document.getElementById('manageRole').value = user.role;
             document.getElementById('manageStatus').value = user.status;
             document.getElementById('managePhone').value = user.phone;
+            document.getElementById('managePlan').value = user.plan || 'free';
             
             document.getElementById('userManageModalLabel').textContent = '编辑用户';
             $('#userManageModal').modal('show');
@@ -1396,6 +1627,7 @@
             const role = document.getElementById('manageRole').value;
             const status = document.getElementById('manageStatus').value;
             const phone = document.getElementById('managePhone').value;
+            const plan = document.getElementById('managePlan').value;
             
             if (!username || !email) {
                 alert('请填写用户名和邮箱');
@@ -1406,7 +1638,7 @@
                 return;
             }
             
-            let payload = { username, email, role, status };
+            let payload = { username, email, role, status, plan };
             if (password) payload.password = password;
             if (age) payload.age = parseInt(age);
             if (gender) payload.gender = gender;

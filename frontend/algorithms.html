@@ -892,29 +892,11 @@
                                     <th class="text-center" style="border: none; padding: 18px; width: 140px;">算法模型</th>
                                     <th style="border: none; padding: 18px;">逻辑深度</th>
                                     <th style="border: none; padding: 18px;">核心优势</th>
-                    </div>
-                    <div>
-                        <h3 style="color: #1e3a8a; font-weight: 700; margin-bottom: 6px; font-size: 1.5rem; letter-spacing: -0.5px;">核心算法性能矩阵</h3>
-                        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 0;">全方位剖析基因组学与影像学 AI 模型的计算逻辑、核心优势及临床性能边界</p>
-                    </div>
-                </div>
-                <div style="padding: 30px;">
-                    
-                    <!-- 算法比较表格 -->
-                    <div class="algorithm-comparison mb-4">
-                        <div class="table-responsive shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;">
-                            <table class="table table-hover mb-0" style="background: white; min-width: 1000px;">
-                                <thead style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white;">
-                                    <tr>
-                                        <th class="text-center" style="border: none; padding: 18px; width: 100px;">领域</th>
-                                        <th class="text-center" style="border: none; padding: 18px; width: 140px;">算法模型</th>
-                                        <th style="border: none; padding: 18px;">逻辑深度</th>
-                                        <th style="border: none; padding: 18px;">核心优势</th>
-                                        <th style="border: none; padding: 18px;">性能局限</th>
-                                        <th class="text-center" style="border: none; padding: 18px; width: 100px;">准确率</th>
-                                        <th class="text-center" style="border: none; padding: 18px; width: 100px;">AUC</th>
-                                    </tr>
-                                </thead>
+                                    <th style="border: none; padding: 18px;">性能局限</th>
+                                    <th class="text-center" style="border: none; padding: 18px; width: 100px;">准确率</th>
+                                    <th class="text-center" style="border: none; padding: 18px; width: 100px;">AUC</th>
+                                </tr>
+                            </thead>
                                 <tbody>
                                     <tr>
                                         <td rowspan="5" class="text-center" style="background: #f0f7ff; vertical-align: middle; border-right: 1px solid #e2e8f0; font-weight: 700; color: #1e40af;">
@@ -1972,8 +1954,8 @@
                 
                 // 将真实数据注入到 HTML 中的默认提取逻辑中，避免离线打开时没有数据
                 htmlText = htmlText.replace(
-                    "return JSON.parse(decodeURIComponent(reportData));", 
-                    "return JSON.parse(decodeURIComponent(reportData)) || " + JSON.stringify(result) + ";"
+                    "// 默认数据", 
+                    "return " + JSON.stringify(result) + "; // 注入的数据\n            // 默认数据"
                 );
                 
                 // 移除 URL 解析，防止离线文件找不到 search string 报错
@@ -2013,8 +1995,7 @@
             const useModelButtons = document.querySelectorAll('button[onclick^="useModel"]');
             console.log('找到', useModelButtons.length, '个"使用模型"按钮');
             
-            // 检查登录状态
-            checkLoginStatus();
+            // 登录状态由 auth.js 管理
             
             // 导航栏滚动效果
             window.addEventListener('scroll', function() {
@@ -2027,33 +2008,7 @@
             });
         });
         
-        // 登录注册功能
-        // 显示登录模态框
-        
-        
-        // 显示注册模态框
-        
-        
-        // 检查登录状态（使用localStorage模拟）
-        
-                if (document.getElementById('navbarLoginBtn')) {
-                    document.getElementById('navbarLoginBtn').style.display = 'none';
-                }
-            } else {
-                // 未登录则隐藏用户中心按钮，显示登录按钮
-                if (document.getElementById('navbarUserCenterBtn')) {
-                    document.getElementById('navbarUserCenterBtn').style.display = 'none';
-                }
-                if (document.getElementById('navbarLoginBtn')) {
-                    document.getElementById('navbarLoginBtn').style.display = 'block';
-                }
-            }
-        }
-        
-        
-        
-        
-        
+        // 登录及注册逻辑已迁移到 auth.js
 
         
     </script>
@@ -2424,6 +2379,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="login()">
+                        <span id="loginBtnText"> login </span>
+                        <span id="loginBtnSpinner" style="display:none;">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            login...
+                        </span>
+                    </button>
+                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">no account? click register</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">

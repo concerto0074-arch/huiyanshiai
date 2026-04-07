@@ -8,6 +8,602 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+
+
+<style>
+        /* 全局样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 区块渐入动画 */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 平滑滚动效果 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 按钮点击反馈效果 */
+        .btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* 导航栏滚动效果 */
+        .navbar {
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 0.25rem 1rem;
+        }
+        
+        /* 表单提交反馈 */
+        .form-control:focus {
+            border-color: #007BFF;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* 模态框动画增强 */
+        .modal.fade .modal-dialog {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform: translateY(-25px);
+        }
+        
+        .modal.show .modal-dialog {
+            transform: translateY(0);
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            color: #007BFF !important;
+        }
+        
+        .navbar-brand .logo-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .brand-main {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .brand-sub {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .nav-item {
+            margin: 0 15px;
+        }
+        
+        .nav-link {
+            color: #495057 !important;
+            font-weight: 500;
+            padding: 8px 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #007BFF !important;
+        }
+        
+        .nav-link.active {
+            background-color: #007BFF;
+            color: white !important;
+            border-radius: 4px;
+            padding: 8px 16px;
+        }
+        
+        /* 确保导航栏背景色透明 */
+        .navbar .container {
+            max-width: 1200px;
+            padding: 0 1rem;
+            margin: 0 auto;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .notification-icon {
+            font-size: 20px;
+            color: #495057;
+            margin-right: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+        .login-btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* 水波纹背景效果 */
+        .ripple-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(220, 53, 69, 0.1);
+            animation: ripple-animation 20s infinite;
+        }
+
+        @keyframes ripple-animation {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* 英雄区 */
+        .hero-section {
+            position: relative;
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 核心功能卡片 */
+        .core-features {
+            background-color: white;
+            padding: 4rem 0;
+        }
+
+        .feature-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        /* 文章卡片 */
+        .articles-section {
+            background-color: #f8f9fa;
+            padding: 4rem 0;
+        }
+
+        .article-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .article-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .article-card:hover img {
+            transform: scale(1.05);
+        }
+
+        /* 图片容器，用于实现图片hover效果 */
+        .article-image-container {
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* 图片加载中效果 */
+        .article-image-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDUwdjUwSDB6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTAuMDQ2NEwyNSA0LjAzMjAzQTIgMiAwIDAgMCAyNCAySDE2QTEyIDEyIDAgMCAwIDE2IDEyVjM4QTEyIDEyIDAgMCAwIDI4IDMwVjE1Ljk2NzJDMjcuOTY5NiAxNS45ODA5IDI4IDE1Ljk5NDcgMjggMTZWMzBDMjggMzYuNjI3NCAyMy42Mjc0IDQxIDIwIDQxQTE5Ljk2NzIgNDEgMCAwIDEgMjAgMjEuNTMzNkwxNSAxNC41MTc3TDIwIDEwLjA0NjRaIiBmaWxsPSIjMzMzMzMzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTUuODMzM0MxOC4zNzI2IDE1LjgzMzMgMTMuODMzMyAyMC4zNzI2IDEzLjgzMzMgMjcgMTMuODMzMyAzMy42Mjc0IDE4LjMyNzYgMzggMjUgMzggMjUgMzggMzAuMzcyNCAzMy42Mjc0IDM1IDI1IDM1IDIwLjM3MjYgMzAuMzcyNCAxNS44MzMzIDM1IDI1IDE1LjgzMzMgMjUgMTUuODMzMyAyMC4zNzI2IDE1LjgzMzMgMTUuODMzM1oiIGZpbGw9IiMzMzMzMzMiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PC9wYXRoPjwvc3ZnPg==') center center no-repeat;
+            background-size: 50px;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        /* 图片加载成功后隐藏加载动画 */
+        .article-card img.loaded + .article-image-container::before {
+            display: none;
+        }
+
+        .article-content {
+            padding: 1.5rem;
+        }
+
+        .article-content h3 {
+            margin-bottom: 0.8rem;
+            color: #333;
+            font-size: 1.3rem;
+            transition: color 0.3s ease;
+        }
+
+        .article-card:hover .article-content h3 {
+            color: #007BFF;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .article-excerpt {
+            color: #555;
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* 专家卡片 */
+        .experts-section {
+            background-color: white;
+            padding: 4rem 0;
+        }
+
+        .expert-card {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            background: linear-gradient(180deg, white 0%, #f8f9fa 100%);
+        }
+
+        .expert-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(180deg, white 0%, #e9ecef 100%);
+        }
+
+        /* 专家头像容器 */
+        .expert-avatar-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .expert-avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            object-fit: cover;
+            border: 5px solid #007BFF;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .expert-card:hover .expert-avatar {
+            transform: scale(1.1);
+            border-color: #dc3545;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        /* 专家头像加载动画 */
+        .expert-avatar-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 130px;
+            height: 130px;
+            margin: -65px 0 0 -65px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDUwdjUwSDB6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTAuMDQ2NEwyNSA0LjAzMjAzQTIgMiAwIDAgMCAyNCAySDE2QTEyIDEyIDAgMCAwIDE2IDEyVjM4QTEyIDEyIDAgMCAwIDI4IDMwVjE1Ljk2NzJDMjcuOTY5NiAxNS45ODA5IDI4IDE1Ljk5NDcgMjggMTZWMzBDMjggMzYuNjI3NCAyMy42Mjc0IDQxIDIwIDQxQTE5Ljk2NzIgNDEgMCAwIDEgMjAgMjEuNTMzNkwxNSAxNC41MTc3TDIwIDEwLjA0NjRaIiBmaWxsPSIjMzMzMzMzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjwvcGF0aD48cGF0aCBkPSJNMjUgMTUuODMzM0MxOC4zNzI2IDE1LjgzMzMgMTMuODMzMyAyMC4zNzI2IDEzLjgzMzMgMjcgMTMuODMzMyAzMy42Mjc0IDE4LjMyNzYgMzggMjUgMzggMjUgMzggMzAuMzcyNCAzMy42Mjc0IDM1IDI1IDM1IDIwLjM3MjYgMzAuMzcyNCAxNS44MzMzIDM1IDI1IDE1LjgzMzMgMjUgMTUuODMzMyAyMC4zNzI2IDE1LjgzMzMgMTUuODMzM1oiIGZpbGw9IiMzMzMzMzMiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PC9wYXRoPjwvc3ZnPg==') center center no-repeat;
+            background-size: 40px;
+            opacity: 0.5;
+            z-index: 1;
+            border-radius: 50%;
+        }
+
+        /* 图片加载成功后隐藏加载动画 */
+        .expert-avatar.loaded + .expert-avatar-container::before {
+            display: none;
+        }
+
+        .expert-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .expert-title {
+            color: #007BFF;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .expert-card:hover .expert-title {
+            color: #dc3545;
+        }
+
+        /* 通知徽章 */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: white;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                border-radius: 12px;
+                padding: 20px;
+                margin-top: 10px;
+            }
+            
+            .navbar-nav {
+                list-style: none !important;
+                padding-left: 0 !important;
+            }
+            
+            .nav-item {
+                margin: 5px 0 !important;
+                text-align: center;
+            }
+            
+            .nav-link {
+                display: block;
+                padding: 12px !important;
+                border-radius: 8px;
+            }
+            
+            .nav-link.active {
+                background-color: #007BFF;
+                color: white !important;
+            }
+
+            .navbar-right {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+                margin-top: 15px;
+                align-items: center;
+            }
+            
+            .notification-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .login-btn {
+                width: 80% !important;
+                margin-left: 0 !important;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1rem;
+            }
+
+            .feature-card, .article-card, .expert-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section {
+                padding: 4rem 1rem;
+            }
+
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+            
+            .navbar-brand .brand-main {
+                font-size: 16px;
+            }
+            
+            .navbar-brand .brand-sub {
+                font-size: 10px;
+            }
+        }
+
+        /* 移除任何可能导致导航出现点点的样式 */
+        .navbar-nav, .navbar-nav li {
+            list-style: none !important;
+            list-style-type: none !important;
+        }
+    </style>
     <style>
         /* 页面加载动画 */
         .page-loader {
@@ -233,203 +829,492 @@
         /* 主内容区样式 */
         .container {
             background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            margin: 20px auto;
-            max-width: 1200px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            padding: 3rem 2rem;
+            margin: 2rem auto;
+            max-width: 1100px;
+            backdrop-filter: blur(10px);
         }
         
         /* 页面标题 */
         .page-title {
             text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 2rem;
         }
-        
+
         .page-title h1 {
-            color: #212529;
-            font-weight: bold;
-            margin-bottom: 10px;
+            color: #1e3a8a;
+            font-weight: 800;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
         }
-        
+
         .page-title p {
-            color: #6c757d;
-            font-size: 18px;
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 装饰线条 */
+        .decorative-line {
+            height: 4px;
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+            border-radius: 2px;
+            margin: 2rem 0;
         }
         
         /* 产品卡片 */
         .product-card {
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            margin-bottom: 0;
             transition: all 0.3s ease;
             overflow: hidden;
+            height: 100%;
+            background: #ffffff;
         }
         
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        .product-card .card-header {
-            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
-            color: white;
-            border: none;
-            padding: 20px;
-        }
-        
-        .product-card .card-body {
-            padding: 25px;
-        }
-        
-        .product-card .card-title {
-            color: #212529;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        
-        .product-card .card-text {
-            color: #6c757d;
-            line-height: 1.8;
-            margin-bottom: 20px;
-        }
-        
-        .product-features {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 20px;
-        }
-        
-        .product-features li {
-            color: #495057;
-            margin-bottom: 10px;
-            padding-left: 25px;
-            position: relative;
-        }
-        
-        .product-features li:before {
-            content: '\f00c';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
-            color: #28a745;
-            position: absolute;
-            left: 0;
-        }
-        
-        /* 价格标签 */
-        .price-tag {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-        }
-        
-        .price-tag .price {
-            font-size: 28px;
-            font-weight: bold;
-            color: #dc3545;
-        }
-        
-        .price-tag .period {
-            color: #6c757d;
-            font-size: 14px;
-        }
-        
-        /* 右侧固定浮窗样式 */
-        .sticky-sidebar {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        @keyframes bounceIn {
-            0% { transform: scale(0); opacity: 0; }
-            60% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-        
-        .sticky-btn {
-            background-color: #FFA500;
-            color: white;
-            border: none;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: bounceIn 0.5s ease-out both;
-        }
-        
-        .sticky-btn:nth-child(1) { animation-delay: 1.9s; }
-        .sticky-btn:nth-child(2) { animation-delay: 2.0s; }
-        .sticky-btn:nth-child(3) { animation-delay: 2.1s; }
-        
-        .sticky-btn:hover {
-            background-color: #e69500;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4);
-        }
-        
-        /* 页面底部样式 */
-        .disclaimer {
-            margin-top: 50px;
-            font-size: 12px;
-            color: #6c757d;
-            text-align: center;
-        }
+
+            .product-plan-grid {
+                display: grid;
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+                gap: 16px;
+                align-items: stretch;
+                margin-bottom: 30px;
+            }
+
+            .plan-col-wrapper {
+                max-width: none;
+                padding: 0;
+            }
+
+            .product-card .card-header {
+                background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
+                color: white;
+                border: none;
+                padding: 16px 14px;
+                min-height: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            /* 针对不同档次添加渐变色头 */
+            .plan-free .card-header {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            }
+            .plan-basic .card-header {
+                background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+            }
+            .plan-core .card-header {
+                background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            }
+            .plan-highrisk .card-header {
+                background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+            }
+            .plan-annual .card-header {
+                background: linear-gradient(135deg, #8b5cf6 0%, #5b21b6 100%);
+            }
+
+            .product-card.plan-core {
+                border-color: rgba(59, 130, 246, 0.4);
+                box-shadow: 0 12px 35px rgba(59, 130, 246, 0.15);
+                transform: translateY(-4px);
+            }
+            
+            .product-card.plan-core::before {
+                content: '推荐套餐';
+                position: absolute;
+                top: 0;
+                right: 0;
+                background: #ef4444;
+                color: #fff;
+                font-size: 0.7rem;
+                font-weight: 700;
+                padding: 4px 10px;
+                border-bottom-left-radius: 12px;
+                z-index: 2;
+            }
+            
+            .product-card .card-body {
+                padding: 18px 14px;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .product-card .card-title {
+                color: #ffffff;
+                font-weight: 800;
+                margin-bottom: 0;
+                font-size: 1.25rem;
+                line-height: 1.3;
+            }
+            
+            .product-card .card-text {
+                color: #64748b;
+                line-height: 1.6;
+                margin-bottom: 16px;
+                min-height: 100px;
+                font-size: 0.88rem;
+            }
+            
+            .product-features {
+                list-style: none;
+                padding: 0;
+                margin-bottom: 18px;
+                flex: 1;
+            }
+            
+            .product-features li {
+                color: #495057;
+                margin-bottom: 10px;
+                padding-left: 20px;
+                position: relative;
+                line-height: 1.5;
+                font-size: 0.88rem;
+            }
+            
+            .product-features li:before {
+                content: '\f00c';
+                font-family: 'Font Awesome 5 Free';
+                font-weight: 900;
+                color: #28a745;
+                position: absolute;
+                left: 0;
+                font-size: 0.85rem;
+            }
+            
+            /* 价格标签 */
+            .price-tag {
+                background-color: #f8f9fa;
+                border-radius: 12px;
+                padding: 15px;
+                margin-top: auto;
+                margin-bottom: 14px;
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 6px;
+            }
+            
+            .price-tag .price {
+                font-size: 28px;
+                font-weight: bold;
+                color: #dc3545;
+                line-height: 1;
+            }
+            
+            .price-tag .period {
+                color: #6c757d;
+                font-size: 14px;
+                line-height: 1;
+            }
+
+            .product-card .btn.btn-block {
+                border-radius: 10px;
+                font-weight: 700;
+                padding: 11px 16px;
+                margin-top: 0;
+            }
+
+            @media (max-width: 1199.98px) {
+                .product-plan-grid {
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                }
+            }
+
+            @media (max-width: 991.98px) {
+                .product-plan-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+
+            @media (max-width: 767.98px) {
+                .product-plan-grid {
+                    grid-template-columns: 1fr;
+                }
+                .product-card.plan-core {
+                    transform: none;
+                }
+                .product-card .card-text {
+                    min-height: auto;
+                }
+                .product-card .card-header {
+                    min-height: auto;
+                }
+            }
+            
+            
+            /* 页面底部样式 */
+            .disclaimer {
+                margin-top: 50px;
+                font-size: 12px;
+                color: #6c757d;
+                text-align: center;
+            }
+
+            /* 经典高对比度精修版 - 彻底简化表头 */
+            .product-comparison-wrapper {
+                background: #ffffff;
+                border-radius: 16px;
+                box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+                overflow: hidden;
+                border: 1px solid #e2e8f0;
+                margin-top: 3rem;
+            }
+
+            .product-comparison-table {
+                margin-bottom: 0;
+                border: none;
+            }
+
+            .product-comparison-table thead th {
+                color: #ffffff !important;
+                font-weight: 800;
+                padding: 24px 12px;
+                font-size: 1.05rem;
+                vertical-align: middle;
+                text-align: center;
+                border: none;
+            }
+
+            /* 还原各列主题色 */
+            .col-header-1 { background: #10b981 !important; } 
+            .col-header-2 { background: #0ea5e9 !important; }
+            .col-header-3 { background: #1b4ed8 !important; } 
+            .col-header-4 { background: #f59e0b !important; }
+            .col-header-5 { background: #8b5cf6 !important; }
+            
+            /* 首列维度视觉增强 */
+            .product-comparison-table tbody td:first-child {
+                background: #f8fafc !important;
+                font-weight: 700;
+                color: #334155;
+                text-align: left;
+                padding-left: 20px;
+                border-right: 2px solid #e2e8f0;
+                width: 15%;
+            }
+
+            .product-comparison-table tbody td {
+                padding: 18px 12px;
+                color: #1e293b;
+                text-align: center;
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            /* 核心服务列全列高亮 - 保持视觉引导 */
+            .highlight-core-col {
+                background-color: #eff6ff !important;
+                font-weight: 600;
+                color: #1e40af;
+            }
+
+            .row-icon {
+                margin-right: 10px;
+                color: #64748b;
+                width: 20px;
+                text-align: center;
+            }
+
+            .price-row td {
+                padding: 28px 12px !important;
+            }
+            .price-val {
+                font-size: 1.5rem;
+                font-weight: 800;
+                display: block;
+            }
+            .price-unit {
+                font-size: 0.82rem;
+                color: #64748b;
+            }
+            
+            .price-focus {
+                border: 2px solid #1b4ed8;
+                border-radius: 12px;
+                background: #ffffff;
+                padding: 12px 10px;
+                display: block;
+                margin: -6px;
+                box-shadow: 0 10px 25px rgba(27, 78, 216, 0.12);
+            }
+
+            /* 移动端表格首列固定 */
+            @media (max-width: 991.98px) {
+                .product-comparison-wrapper {
+                    overflow-x: auto;
+                }
+                .product-comparison-table {
+                    min-width: 900px !important;
+                }
+                .product-comparison-table th:first-child,
+                .product-comparison-table td:first-child {
+                    position: sticky;
+                    left: 0;
+                    z-index: 10;
+                    box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+                }
+            }
+
     </style>
     <!-- 全局环境配置 -->
     <script src="config.js"></script>
 
     <style>
-        /* 优化登录/注册模态框及弹窗排版 */
-        .modal .nav-tabs {
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 1rem;
-            display: flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-        }
-        .modal .nav-tabs .nav-item {
-            margin-bottom: -1px;
-            flex: 1;
-            width: 50%;
-            text-align: center;
-        }
-        .modal .nav-tabs .nav-link {
-            color: #6c757d !important;
+        /* 统一认证模态框样式 - Premium 风格 */
+        .modal-content {
             border: none;
-            border-bottom: 2px solid transparent;
-            font-weight: 500;
-            padding: 10px 15px !important;
-            border-radius: 0 !important;
+            border-radius: 28px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(255, 255, 255, 0.88) !important;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            color: white !important;
+            padding: 24px 32px !important;
+            border-bottom: none !important;
+        }
+        .modal-title {
+            font-weight: 800 !important;
+            font-size: 1.5rem !important;
+            color: white !important;
+        }
+        .modal-header .close {
+            color: white !important;
+            opacity: 0.8;
+            text-shadow: none;
+        }
+        .modal-header .close:hover {
+            opacity: 1;
+        }
+        .modal-body {
+            padding: 32px !important;
             background: transparent !important;
-            width: 100%;
         }
-        .modal .nav-tabs .nav-link:hover {
-            color: #007BFF !important;
-            border-bottom: 2px solid #007BFF;
-            border-color: #007BFF;
+        .modal-footer {
+            padding: 0 32px 32px !important;
+            border-top: none !important;
+            background: transparent !important;
         }
-        .modal .nav-tabs .nav-link.active {
-            color: #007BFF !important;
-            border-color: #007BFF;
-            border-bottom: 2px solid #007BFF;
-            font-weight: bold !important;
-            background-color: transparent !important;
+
+        /* Tabs 切换器 */
+        .auth-premium-tabs {
+            background: rgba(15, 23, 42, 0.05);
+            padding: 4px;
+            border-radius: 14px;
+            display: flex !important;
+            border: none !important;
+            margin-bottom: 24px;
         }
+        .auth-premium-tabs .nav-item {
+            flex: 1;
+            list-style: none !important;
+        }
+        .auth-premium-tabs .nav-link {
+            border: none !important;
+            border-radius: 11px !important;
+            padding: 10px 15px !important;
+            font-weight: 700;
+            color: #64748b !important;
+            text-align: center;
+            transition: all 0.3s;
+            background: transparent !important;
+            margin: 0 !important;
+        }
+        .auth-premium-tabs .nav-link.active {
+            background: #ffffff !important;
+            color: #2563eb !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 表单增强输入框 */
+        .auth-input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .auth-input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1rem;
+            z-index: 5;
+        }
+        .auth-input-premium {
+            padding-left: 48px !important;
+            height: 52px !important;
+            border-radius: 14px !important;
+            border: 2px solid #f1f5f9 !important;
+            background: #f8fafc !important;
+            font-weight: 500;
+        }
+        .auth-input-premium:focus {
+            border-color: #3b82f6 !important;
+            background: white !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+        }
+
+        /* 渐变按钮 */
+        .auth-btn-gradient {
+            height: 52px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border: none;
+            color: white;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+            transition: all 0.3s;
+        }
+        .auth-btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35);
+        }
+
+        /* 其他辅助样式 */
+        .auth-field-label {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 0.88rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .auth-footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 0.88rem;
+            color: #64748b;
+        }
+        .auth-link-premium {
+            color: #2563eb;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .password-strength-bar {
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .strength-fill { height: 100%; transition: width 0.3s; }
+        .strength-fill.weak { width: 33%; background: #ef4444; }
+        .strength-fill.medium { width: 66%; background: #f59e0b; }
+        .strength-fill.strong { width: 100%; background: #10b981; }
     </style>
 </head>
 <body>
@@ -481,47 +1366,51 @@
             <h1>产品服务</h1>
             <p>专业的癌症风险评估与预防服务</p>
         </div>
+
+        <div class="decorative-line"></div>
         
-        <div class="row">
+        <div class="row product-plan-grid">
             <!-- 产品1 -->
-            <div class="col-md-4">
-                <div class="card product-card">
+            <div class="plan-col-wrapper">
+                <div class="card product-card plan-free">
                     <div class="card-header">
-                        <h3 class="card-title">基础评估套餐</h3>
+                        <h3 class="card-title">公益免费套餐</h3>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">提供基础的癌症风险评估服务，适合健康人群定期检查。</p>
+                        <p class="card-text">面向社区低保户、特困老人、残疾人、80岁以上高龄老人、困难党员等特殊群体，提供公益筛查支持。</p>
                         <ul class="product-features">
-                            <li>单项癌症风险评估</li>
-                            <li>基础健康报告</li>
-                            <li>简单预防建议</li>
-                            <li>在线客服支持</li>
+                            <li>4种高发癌种筛查</li>
+                            <li>基础报告解读</li>
+                            <li>1次随访</li>
+                            <li>公益科普服务</li>
+                            <li>采样包免费邮寄</li>
+                            <li>申请材料自动加密存储</li>
                         </ul>
                         <div class="price-tag">
                             <div class="price" style="color: #28a745;">免费</div>
                         </div>
-                        <button class="btn btn-success btn-block">免费使用</button>
+                        <button class="btn btn-success btn-block">申请公益名额</button>
                     </div>
                 </div>
             </div>
-            
+
             <!-- 产品2 -->
-            <div class="col-md-4">
-                <div class="card product-card">
+            <div class="plan-col-wrapper">
+                <div class="card product-card plan-basic">
                     <div class="card-header">
-                        <h3 class="card-title">全面评估套餐</h3>
+                        <h3 class="card-title">普惠基础套餐</h3>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">提供全面的癌症风险评估服务，适合关注健康的人群。</p>
+                        <p class="card-text">主要面向普通健康人群、无家族病史、无不良生活习惯者，提供高性价比基础筛查服务。</p>
                         <ul class="product-features">
-                            <li>多项癌症风险评估</li>
-                            <li>详细健康报告</li>
-                            <li>个性化预防方案</li>
-                            <li>专业医生咨询</li>
-                            <li>30天免费跟进</li>
+                            <li>1种自选癌症筛查</li>
+                            <li>简易报告解读</li>
+                            <li>基础健康建议</li>
+                            <li>1次年度随访</li>
+                            <li>报告密码解锁查看</li>
                         </ul>
                         <div class="price-tag">
-                            <div class="price">¥299</div>
+                            <div class="price">¥69</div>
                             <div class="period">/次</div>
                         </div>
                         <button class="btn btn-primary btn-block">立即购买</button>
@@ -530,23 +1419,72 @@
             </div>
             
             <!-- 产品3 -->
-            <div class="col-md-4">
-                <div class="card product-card">
+            <div class="plan-col-wrapper">
+                <div class="card product-card plan-core">
                     <div class="card-header">
-                        <h3 class="card-title">年度健康套餐</h3>
+                        <h3 class="card-title">核心服务套餐</h3>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">提供全年的癌症风险监控服务，适合高风险人群。</p>
+                        <p class="card-text">主要面向40岁以上中老年人、有吸烟饮酒等不良习惯及普通慢病风险人群，提供核心早筛服务。</p>
                         <ul class="product-features">
-                            <li>无限次风险评估</li>
-                            <li>季度健康报告</li>
-                            <li>专属健康顾问</li>
-                            <li>优先专家咨询</li>
-                            <li>紧急医疗指导</li>
-                            <li>家属优惠权益</li>
+                            <li>5种高发癌种筛查</li>
+                            <li>专家一对一解读（线上）</li>
+                            <li>个性化干预方案</li>
+                            <li>3次随访</li>
+                            <li>绿色转诊优先权</li>
                         </ul>
                         <div class="price-tag">
-                            <div class="price">¥999</div>
+                            <div class="price">¥139</div>
+                            <div class="period">/次</div>
+                        </div>
+                        <button class="btn btn-primary btn-block">立即购买</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 产品4 -->
+            <div class="plan-col-wrapper">
+                <div class="card product-card plan-highrisk">
+                    <div class="card-header">
+                        <h3 class="card-title">高危专项套餐</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">主要面向有癌症家族史、长期高危职业暴露、严重慢病患者等高危人群，提供更深度筛查与转诊支持。</p>
+                        <ul class="product-features">
+                            <li>10种高发癌种筛查</li>
+                            <li>专家一对一解读（线上+线下可选）</li>
+                            <li>定制化干预方案</li>
+                            <li>6次随访</li>
+                            <li>全程转诊陪同</li>
+                            <li>家属1次免费基础筛查</li>
+                        </ul>
+                        <div class="price-tag">
+                            <div class="price">¥199</div>
+                            <div class="period">/次</div>
+                        </div>
+                        <button class="btn btn-primary btn-block">立即购买</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 产品5 -->
+            <div class="plan-col-wrapper">
+                <div class="card product-card plan-annual">
+                    <div class="card-header">
+                        <h3 class="card-title">年度守护套餐</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">主要面向注重长期健康管理的家庭、中老年高危人群，提供持续性年度守护服务。</p>
+                        <ul class="product-features">
+                            <li>全年2次核心服务套餐</li>
+                            <li>季度深度健康报告</li>
+                            <li>专属健康顾问</li>
+                            <li>无限次专家咨询</li>
+                            <li>2次绿色转诊</li>
+                            <li>家属2次免费基础筛查</li>
+                        </ul>
+                        <div class="price-tag">
+                            <div class="price">¥299</div>
                             <div class="period">/年</div>
                         </div>
                         <button class="btn btn-primary btn-block">立即购买</button>
@@ -600,62 +1538,95 @@
         <!-- 产品对比表格 -->
         <div class="mt-5">
             <h3>产品对比</h3>
-            <div class="table-responsive mt-4">
-                <table class="table table-bordered table-hover">
-                    <thead class="thead-light">
+            <div class="table-responsive mt-4 product-comparison-wrapper" style="overflow-x: hidden;">
+                <table class="table product-comparison-table">
+                    <thead>
                         <tr>
-                            <th>服务内容</th>
-                            <th class="text-center">基础评估套餐</th>
-                            <th class="text-center">全面评估套餐</th>
-                            <th class="text-center">年度健康套餐</th>
+                            <th style="background: #334155; text-align: left;">服务维度 <i class="fas fa-layer-group float-right mt-1 opacity-50"></i></th>
+                            <th class="col-header-1">公益免费套餐</th>
+                            <th class="col-header-2">普惠基础套餐</th>
+                            <th class="col-header-3">核心服务套餐</th>
+                            <th class="col-header-4">高危专项套餐</th>
+                            <th class="col-header-5">年度守护套餐</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>评估项目数量</td>
-                            <td class="text-center">1项</td>
-                            <td class="text-center">5项</td>
-                            <td class="text-center">不限</td>
+                            <td><i class="fas fa-list-ol row-icon"></i>评估项目数量</td>
+                            <td>4项</td>
+                            <td>1项</td>
+                            <td class="highlight-core-col">5项</td>
+                            <td>10项</td>
+                            <td>全年2次核心服务</td>
                         </tr>
                         <tr>
-                            <td>可评估癌症类型</td>
-                            <td class="text-center">单项选择</td>
-                            <td class="text-center">肺癌、胃癌、乳腺癌、结直肠癌、肝癌</td>
-                            <td class="text-center">全部12种常见癌症</td>
+                            <td><i class="fas fa-dna row-icon"></i>可评估癌症类型</td>
+                            <td>4种高发癌种</td>
+                            <td>1种自选癌种</td>
+                            <td class="highlight-core-col">5种高发癌种</td>
+                            <td>10种高发癌种</td>
+                            <td>年度持续监测覆盖</td>
                         </tr>
                         <tr>
-                            <td>评估报告详细程度</td>
-                            <td class="text-center">基础版</td>
-                            <td class="text-center">详细版</td>
-                            <td class="text-center">专业版+季度追踪</td>
+                            <td><i class="fas fa-file-medical-alt row-icon"></i>报告详细程度</td>
+                            <td>基础报告解读</td>
+                            <td>简易报告解读</td>
+                            <td class="highlight-core-col">专家 1对1 解读</td>
+                            <td>专家深度解读</td>
+                            <td>季度深度健康报告</td>
                         </tr>
                         <tr>
-                            <td>预防建议</td>
-                            <td class="text-center">通用建议</td>
-                            <td class="text-center">个性化方案</td>
-                            <td class="text-center">定制化干预计划</td>
+                            <td><i class="fas fa-shield-virus row-icon"></i>预防建议</td>
+                            <td>公益科普服务</td>
+                            <td>基础健康建议</td>
+                            <td class="highlight-core-col">个性化干预方案</td>
+                            <td>定制化干预方案</td>
+                            <td>长期健康管理</td>
                         </tr>
                         <tr>
-                            <td>专家咨询</td>
-                            <td class="text-center">-</td>
-                            <td class="text-center">1次/年</td>
-                            <td class="text-center">3次/年</td>
+                            <td><i class="fas fa-user-md row-icon"></i>专家咨询</td>
+                            <td class="dash-icon"><i class="fas fa-times-circle"></i></td>
+                            <td class="dash-icon"><i class="fas fa-times-circle"></i></td>
+                            <td class="highlight-core-col"><i class="fas fa-check-circle text-primary"></i> 1对1 线上解读</td>
+                            <td><i class="fas fa-check-circle text-primary"></i> 线上+线下可选</td>
+                            <td><i class="fas fa-check-circle text-primary"></i> 专属健康顾问</td>
                         </tr>
                         <tr>
-                            <td>在线客服</td>
-                            <td class="text-center">工作时间</td>
-                            <td class="text-center">7×12小时</td>
-                            <td class="text-center">24小时优先服务</td>
+                            <td><i class="fas fa-concierge-bell row-icon"></i>增值服务</td>
+                            <td>采样包免费邮寄</td>
+                            <td>1次年度随访</td>
+                            <td class="highlight-core-col">绿色转诊优先权</td>
+                            <td>全程转诊陪同</td>
+                            <td>无限次专家咨询</td>
                         </tr>
                         <tr>
-                            <td>价格</td>
-                            <td class="text-center" style="color: #28a745; font-weight: bold;">免费</td>
-                            <td class="text-center">¥299/次</td>
-                            <td class="text-center">¥999/年</td>
+                            <td><i class="fas fa-user-shield row-icon"></i>隐私保护</td>
+                            <td>材料加密存储</td>
+                            <td>自主删除权</td>
+                            <td class="highlight-core-col">数据匿名化处理</td>
+                            <td>全程隐私保护</td>
+                            <td>数据独立授权</td>
+                        </tr>
+                        <tr class="price-row">
+                            <td style="border-right: 2px solid #e2e8f0; color: #1e293b;"><i class="fas fa-tags row-icon"></i>套餐价格</td>
+                            <td><span class="price-val" style="color: #10b981;">0元</span><span class="price-unit">公益补助项目</span></td>
+                            <td><span class="price-val">¥69</span><span class="price-unit">单次评估</span></td>
+                            <td class="highlight-core-col">
+                                <div class="price-focus-box">
+                                    <span class="price-val" style="color: #1d4ed8; font-size: 1.6rem;">¥139</span>
+                                    <span class="price-unit" style="color: #1d4ed8; font-weight: bold;">单次核心评估</span>
+                                </div>
+                            </td>
+                            <td><span class="price-val">¥199</span><span class="price-unit">专项增强包</span></td>
+                            <td><span class="price-val">¥299</span><span class="price-unit">年度无限守护</span></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="alert alert-light border mt-4" role="alert">
+            所有套餐均无隐形消费，价格透明，支持医保报销对接。医保对接过程中仅传递必要的脱敏数据，不泄露完整隐私信息，以进一步降低居民筛查成本，提升服务普惠性。
         </div>
 
         <!-- 用户评价 -->
@@ -788,236 +1759,115 @@
         <p>免责声明：本服务仅作为健康参考，不能替代专业医生的诊断和治疗。如有不适，请及时就医。</p>
     </div>
     
-    <!-- 右侧固定浮窗 -->
-    <div class="sticky-sidebar">
-        <button class="sticky-btn" title="我的">
-            <i class="fas fa-user"></i>
-        </button>
-        <button class="sticky-btn" title="客服">
-            <i class="fas fa-headset"></i>
-        </button>
-        <button class="sticky-btn" title="顶部" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-            <i class="fas fa-arrow-up"></i>
-        </button>
-    </div>
-    
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- 登录模态框 -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- 登录选项卡 -->
-                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content mt-3" id="loginTabsContent">
-                        <!-- 用户登录表单 -->
-                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
-                            <form id="userLoginForm">
-                                <div class="form-group">
-                                    <label for="userLoginUsername">用户名</label>
-                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="userLoginPassword">密码</label>
-                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
-                                </div>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label" for="rememberMe">记住我</label>
-                                </div>
-                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
-                            </form>
-                        </div>
-                        <!-- 管理员登录表单 -->
-                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
-                            <form id="adminLoginForm">
-                                <div class="form-group">
-                                    <label for="adminLoginUsername">管理员用户名</label>
-                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="adminLoginPassword">管理员密码</label>
-                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
-                                </div>
-                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="login()">登录</button>
-                    <button type="button" class="btn btn-link" onclick="showRegisterModal()">没有账号？点击注册</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 注册模态框 -->
-    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="registerForm">
-                        <div class="form-group">
-                            <label for="registerUsername">用户名</label>
-                            <input type="text" class="form-control" id="registerUsername" placeholder="请输入用户名" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registerEmail">邮箱</label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="请输入邮箱" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registerPassword">密码</label>
-                            <input type="password" class="form-control" id="registerPassword" placeholder="请输入密码" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">确认密码</label>
-                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required>
-                        </div>
-                        <div id="registerError" class="text-danger" style="margin-bottom: 10px;"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="register()">注册</button>
-                    <button type="button" class="btn btn-link" onclick="showLoginModal()">已有账号？点击登录</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 用户信息模态框 -->
-    <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="userInfoModalLabel">用户中心</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="user-profile">
-                                <div class="avatar">
-                                    <i class="fas fa-user-circle fa-5x"></i>
-                                </div>
-                                <h4 id="userName">用户</h4>
-                                <p id="userEmail">用户邮箱</p>
-                            </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="nav nav-tabs" id="userTabs" role="tablist">
-                                <a class="nav-item nav-link active" id="reports-tab" data-toggle="tab" href="#reports" role="tab" aria-controls="reports" aria-selected="true">我的报告</a>
-                                <a class="nav-item nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">设置</a>
-                            </div>
-                            <div class="tab-content mt-3" id="userTabsContent">
-                                <div class="tab-pane fade show active" id="reports" role="tabpanel" aria-labelledby="reports-tab">
-                                    <h5>历史报告</h5>
-                                    <div id="reportsList" class="mt-3">
-                                        <!-- 报告列表将通过JavaScript动态生成 -->
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-                                    <h5>账户设置</h5>
-                                    <div class="form-group">
-                                        <label for="newPassword">新密码</label>
-                                        <input type="password" class="form-control" id="newPassword" placeholder="请输入新密码">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="confirmNewPassword">确认新密码</label>
-                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="请再次输入新密码">
-                                    </div>
-                                    <button class="btn btn-primary" onclick="updatePassword()">修改密码</button>
-                                    <button class="btn btn-danger" onclick="logout()">退出登录</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- 登录/注册/用户信息模态框由 auth.js 动态注入 -->
     
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        (function() {
+            function hidePageLoader() {
+                var loader = document.getElementById('pageLoader');
+                if (!loader) return;
+                loader.classList.add('hidden');
+                window.setTimeout(function() {
+                    if (loader) {
+                        loader.style.display = 'none';
+                    }
+                }, 600);
+            }
+
+            document.addEventListener('DOMContentLoaded', hidePageLoader);
+            window.addEventListener('load', hidePageLoader);
+            window.setTimeout(hidePageLoader, 1200);
+        })();
+    </script>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <h5 class="modal-title" id="loginModalLabel">账号登录</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- 登录选项卡 -->
-                    <ul class="nav nav-tabs" id="loginTabs" role="tablist">
+                    <ul class="nav auth-premium-tabs" id="loginTabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-controls="user-login" aria-selected="true">用户登录</a>
+                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab">用户登录</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-controls="admin-login" aria-selected="false">管理员登录</a>
+                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab">管理员登录</a>
                         </li>
                     </ul>
-                    <div class="tab-content mt-3" id="loginTabsContent">
-                        <!-- 用户登录表单 -->
-                        <div class="tab-pane fade show active" id="user-login" role="tabpanel" aria-labelledby="user-login-tab">
+                    <div class="tab-content" id="loginTabsContent">
+                        <div class="tab-pane fade show active" id="user-login" role="tabpanel">
                             <form id="userLoginForm">
                                 <div class="form-group">
-                                    <label for="userLoginUsername">用户名</label>
-                                    <input type="text" class="form-control" id="userLoginUsername" placeholder="请输入用户名" required>
+                                    <label class="auth-field-label" for="userLoginUsername">用户名 / 邮箱</label>
+                                    <div class="auth-input-container">
+                                        <i class="fas fa-user auth-input-icon"></i>
+                                        <input type="text" class="form-control auth-input-premium" id="userLoginUsername" placeholder="请输入你的账号" required>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="userLoginPassword">密码</label>
-                                    <input type="password" class="form-control" id="userLoginPassword" placeholder="请输入密码" required>
+                                    <label class="auth-field-label" for="userLoginPassword">登录密码</label>
+                                    <div class="auth-input-container">
+                                        <i class="fas fa-lock auth-input-icon"></i>
+                                        <input type="password" class="form-control auth-input-premium" id="userLoginPassword" placeholder="请输入密码" required>
+                                    </div>
                                 </div>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label" for="rememberMe">记住我</label>
-                                </div>
-                                <div id="loginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                                <div id="loginError" class="text-danger mb-2" style="font-size:0.88rem; font-weight:500;"></div>
                             </form>
                         </div>
-                        <!-- 管理员登录表单 -->
-                        <div class="tab-pane fade" id="admin-login" role="tabpanel" aria-labelledby="admin-login-tab">
-                            <form id="adminLoginForm">
+                        <div class="tab-pane fade" id="admin-login" role="tabpanel">
+                             <form id="adminLoginForm">
                                 <div class="form-group">
-                                    <label for="adminLoginUsername">管理员用户名</label>
-                                    <input type="text" class="form-control" id="adminLoginUsername" placeholder="请输入管理员用户名" required>
+                                    <label class="auth-field-label" for="adminLoginUsername">管理员账号</label>
+                                    <div class="auth-input-container">
+                                        <i class="fas fa-user-shield auth-input-icon"></i>
+                                        <input type="text" class="form-control auth-input-premium" id="adminLoginUsername" placeholder="管理员专属账号" required>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="adminLoginPassword">管理员密码</label>
-                                    <input type="password" class="form-control" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                    <label class="auth-field-label" for="adminLoginPassword">管理员密码</label>
+                                    <div class="auth-input-container">
+                                        <i class="fas fa-key auth-input-icon"></i>
+                                        <input type="password" class="form-control auth-input-premium" id="adminLoginPassword" placeholder="请输入密码" required>
+                                    </div>
                                 </div>
-                                <div id="adminLoginError" class="text-danger" style="margin-bottom: 10px;"></div>
+                                <div id="adminLoginError" class="text-danger mb-2" style="font-size:0.88rem; font-weight:500;"></div>
                             </form>
                         </div>
                     </div>
@@ -1026,73 +1876,40 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel"><i class="fas fa-user-plus mr-2"></i>创建账号</h5>
+                    <h5 class="modal-title" id="registerModalLabel">创建账号</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form id="registerForm" novalidate>
-                        <!-- 用户名 -->
                         <div class="form-group">
-                            <label for="registerUsername"><i class="fas fa-user mr-1"></i>用户名 <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="registerUsername" placeholder="3-20位字母、数字或下划线" required minlength="3" maxlength="20" autocomplete="username">
-                            <div class="input-hint" id="usernameHint"></div>
+                            <label class="auth-field-label" for="registerUsername">用户名 <span class="text-danger">*</span></label>
+                            <div class="auth-input-container">
+                                <i class="fas fa-user auth-input-icon"></i>
+                                <input type="text" class="form-control auth-input-premium" id="registerUsername" placeholder="3-20位字符" required minlength="3" maxlength="20" autocomplete="username">
+                            </div>
                         </div>
-                        <!-- 邮箱 -->
                         <div class="form-group">
-                            <label for="registerEmail"><i class="fas fa-envelope mr-1"></i>邮箱 <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="registerEmail" placeholder="example@email.com" required autocomplete="email">
-                            <div class="input-hint" id="emailHint"></div>
+                            <label class="auth-field-label" for="registerEmail">邮箱地址 <span class="text-danger">*</span></label>
+                            <div class="auth-input-container">
+                                <i class="fas fa-envelope auth-input-icon"></i>
+                                <input type="email" class="form-control auth-input-premium" id="registerEmail" placeholder="example@email.com" required autocomplete="email">
+                            </div>
                         </div>
-                        <!-- 手机号（可选） -->
                         <div class="form-group">
-                            <label for="registerPhone"><i class="fas fa-mobile-alt mr-1"></i>手机号 <small class="text-muted">（选填）</small></label>
-                            <input type="tel" class="form-control" id="registerPhone" placeholder="11位手机号码" maxlength="11" autocomplete="tel">
-                            <div class="input-hint" id="phoneHint"></div>
-                        </div>
-                        <!-- 密码 -->
-                        <div class="form-group">
-                            <label for="registerPassword"><i class="fas fa-lock mr-1"></i>密码 <span class="text-danger">*</span></label>
-                            <div class="password-toggle-wrap">
-                                <input type="password" class="form-control" id="registerPassword" placeholder="至少6位，含字母和数字" required minlength="6" maxlength="20" autocomplete="new-password">
-                                <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" onclick="togglePasswordVisibility('registerPassword', 'toggleRegPassword')"></i>
+                            <label class="auth-field-label" for="registerPassword">创建密码 <span class="text-danger">*</span></label>
+                            <div class="auth-input-container">
+                                <i class="fas fa-lock auth-input-icon"></i>
+                                <div class="auth-password-wrap">
+                                    <input type="password" class="form-control auth-input-premium" id="registerPassword" placeholder="8位以上字母及数字" required minlength="8" maxlength="20" autocomplete="new-password">
+                                    <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" onclick="togglePasswordVisibility('registerPassword', 'toggleRegPassword')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:5;cursor:pointer;color:#6c757d;"></i>
+                                </div>
                             </div>
                             <div class="password-strength-bar" id="passwordStrengthBar">
                                 <div class="strength-fill" id="strengthFill"></div>
                             </div>
-                            <div class="password-strength-text" id="passwordStrengthText"></div>
                         </div>
-                        <!-- 确认密码 -->
-                        <div class="form-group">
-                            <label for="confirmPassword"><i class="fas fa-lock mr-1"></i>确认密码 <span class="text-danger">*</span></label>
-                            <div class="password-toggle-wrap">
-                                <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码" required autocomplete="new-password">
-                                <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"></i>
-                            </div>
-                            <div class="input-hint" id="confirmHint"></div>
-                        </div>
-                        <!-- 服务条款 -->
-                        <div class="agree-terms">
-                            <input type="checkbox" id="agreeTerms">
-                            <label for="agreeTerms">我已阅读并同意 <a href="#" onclick="event.preventDefault(); showToast('info', '服务条款页面建设中，敬请期待');">《用户服务条款》</a> 和 <a href="#" onclick="event.preventDefault(); showToast('info', '隐私政策页面建设中，敬请期待');">《隐私政策》</a></label>
-                        </div>
-                        <!-- 错误信息 -->
-                        <div id="registerError" class="text-danger" style="margin-bottom: 10px; font-size: 0.9rem;"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link text-muted" onclick="showLoginModal()"><i class="fas fa-sign-in-alt mr-1"></i>已有账号？点击登录</button>
-                    <button type="button" class="btn btn-primary" id="registerSubmitBtn" onclick="register()">
-                        <span id="registerBtnText">立即注册</span>
-                        <span id="registerBtnSpinner" style="display:none;">
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            注册中...
-                        </span>
-                    </button>
-                </div>
-            </div>
-        </div>
 <div class="modal fade" id="userInfoModal" tabindex="-1" role="dialog" aria-labelledby="userInfoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">

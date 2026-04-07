@@ -41,7 +41,7 @@
 # 将原先的 sqlite 直连替换为：
 DATABASE_URL=postgresql://postgres.xxxxx:你的密码@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
 ```
-*测试方法*：修改完 `.env` 后，在根目录运行 `python api/app.py`。如果控制台打印了 "App loaded successfully" 且没有报错，说明连接成功。
+*测试方法*：修改完 `.env` 后，在根目录运行 `./start_local.ps1`（Windows PowerShell 中可使用 `.\start_local.ps1`）。随后访问 `http://127.0.0.1:5000/api/system-status`，确认后端和 Supabase 状态正常。
 
 ### B. Render 线上部署 (生产环境)
 如果你把项目部署到了 Render，你需要：
@@ -57,7 +57,7 @@ DATABASE_URL=postgresql://postgres.xxxxx:你的密码@aws-0-ap-southeast-1.poole
 
 **不用手动去建表！** 👍
 
-得益于我们在 `api/app.py` 中编写的初始化逻辑，当你（在本地或服务器）**第一次启动后端项目时**，Flask 发现 Supabase 中没有 `users` 和 `patients` 表，它会自动为你执行相应的建表语句：
+得益于当前 `backend/app.py` 中的初始化逻辑，当你（在本地或服务器）**第一次启动后端项目时**，Flask 会按当前后端配置检查数据库连接与运行状态：
 
 ```python
 with app.app_context():
@@ -66,8 +66,8 @@ with app.app_context():
 
 建议你：
 1. 在 `.env` 填好 Supabase 链接。
-2. 运行 `python api/app.py` 启动一次服务。
-3. 回到 Supabase 控制台的 **Table Editor**，你会惊喜地发现 `users` 和 `patients` 表已经创建好，并且字段类型（如 VARCHAR、INTEGER、TIMESTAMP 等）均已完美适配。
+2. 运行 `./start_local.ps1` 启动一次服务。
+3. 访问 `http://127.0.0.1:5000/api/system-status`，确认 `supabase_configured` 和 `supabase_reachable` 状态。
 
 ---
 

@@ -1139,9 +1139,9 @@ function updateGlobalNavbar() {
                 }
             });
 
-            // 如果页面有 navbarLoginBtn 但没有用户下拉，动态创建
+            // 如果页面有 navbarLoginBtn 但没有用户下拉，动态创建（已有 navbarUserDropdown 则跳过）
             const loginNavBtn = document.getElementById('navbarLoginBtn');
-            if (loginNavBtn && !document.getElementById('__authNavUserDropdown')) {
+            if (loginNavBtn && !document.getElementById('__authNavUserDropdown') && !document.getElementById('navbarUserDropdown')) {
                 const drop = document.createElement('div');
                 drop.id = '__authNavUserDropdown';
                 drop.className = 'dropdown';

@@ -1221,126 +1221,9 @@
         });
     </script>
 
-    <!-- 登录模态框 -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">
-                        <i class="fas fa-lock mr-2"></i>账号登录
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" style="color: white;">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- 登录选项卡 -->
-                    <ul class="nav nav-tabs" id="loginTabs" role="tablist" style="margin-bottom: 20px;">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="user-login-tab" data-toggle="tab" href="#user-login" role="tab" aria-selected="true">用户登录</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="admin-login-tab" data-toggle="tab" href="#admin-login" role="tab" aria-selected="false">管理员登录</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="loginTabsContent">
-                        <!-- 用户登录表单 -->
-                        <div class="tab-pane fade show active" id="user-login" role="tabpanel">
-                            <form id="userLoginForm">
-                                <div class="auth-input-wrapper">
-                                    <i class="fas fa-user"></i>
-                                    <input type="text" class="form-control auth-input-premium" id="userLoginUsername" placeholder="用户名/手机号" required>
-                                </div>
-                                <div class="auth-input-wrapper">
-                                    <i class="fas fa-key"></i>
-                                    <input type="password" class="form-control auth-input-premium" id="userLoginPassword" placeholder="密码" required>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="rememberMe">
-                                        <label class="custom-control-label text-muted" for="rememberMe" style="font-size: 14px;">记住我</label>
-                                    </div>
-                                    <a href="#" class="text-primary" style="font-size: 14px;">忘记密码？</a>
-                                </div>
-                                <div id="loginError" class="text-danger small mb-3"></div>
-                                <button type="button" class="btn btn-block auth-btn-submit" onclick="login()">立即登录</button>
-                            </form>
-                        </div>
-                        <!-- 管理员登录表单 -->
-                        <div class="tab-pane fade" id="admin-login" role="tabpanel">
-                            <form id="adminLoginForm">
-                                <div class="auth-input-wrapper">
-                                    <i class="fas fa-user-shield"></i>
-                                    <input type="text" class="form-control auth-input-premium" id="adminLoginUsername" placeholder="管理员账号" required>
-                                </div>
-                                <div class="auth-input-wrapper">
-                                    <i class="fas fa-fingerprint"></i>
-                                    <input type="password" class="form-control auth-input-premium" id="adminLoginPassword" placeholder="密保信息" required>
-                                </div>
-                                <div id="adminLoginError" class="text-danger small mb-3"></div>
-                                <button type="button" class="btn btn-block auth-btn-submit" onclick="login()">安全登录</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-center border-0 pb-4">
-                    <span class="text-muted">没有账号？</span>
-                    <button type="button" class="btn btn-link p-0 font-weight-bold" onclick="showRegisterModal()">立即免费注册</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
-    <!-- 注册模态框 -->
-    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">
-                        <i class="fas fa-user-plus mr-2"></i>开启健康AI之旅
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" style="color: white;">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="registerForm">
-                        <div class="auth-input-wrapper">
-                            <i class="fas fa-user"></i>
-                            <input type="text" class="form-control auth-input-premium" id="registerUsername" placeholder="设置您的用户名" required>
-                        </div>
-                        <div class="auth-input-wrapper">
-                            <i class="fas fa-phone"></i>
-                            <input type="text" class="form-control auth-input-premium" id="registerPhone" placeholder="11位手机号码" required>
-                        </div>
-                        <div class="auth-input-wrapper">
-                            <i class="fas fa-shield-alt"></i>
-                            <div class="input-group">
-                                <input type="text" class="form-control auth-input-premium" id="registerVerifyCode" placeholder="短信证码" required>
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-primary" type="button" id="sendVerifyCode" style="border-radius: 0 12px 12px 0; font-weight: 600; border-width: 2px;">获取验证码</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="auth-input-wrapper">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" class="form-control auth-input-premium" id="registerPassword" placeholder="设置6-20位密码" required>
-                        </div>
-                        
-                        <div id="medicalNotice"></div>
-
-                        <div id="registerError" class="text-danger small mb-3"></div>
-                        
-                        <button type="button" class="btn btn-block auth-btn-submit" onclick="register()">开启健康之旅</button>
-                    </form>
-                </div>
-                <div class="modal-footer justify-content-center border-0 pb-4">
-                    <span class="text-muted">已有账号？</span>
-                    <button type="button" class="btn btn-link p-0 font-weight-bold" onclick="showLoginModal()">立即登录</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
     <div id="toastContainer"></div>
 
     <!-- 用户信息模态框 -->
@@ -1397,6 +1280,35 @@
         </div>
     </div>
 
-    <script src="js/auth.js"></script>
+    
+<!-- 登录模态框 -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">账号登录</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 注册模态框 -->
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">创建账号</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+<script src="js/auth.js"></script>
 </body>
 </html>

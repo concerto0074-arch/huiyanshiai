@@ -2447,24 +2447,6 @@
             document.getElementById('articleDetailViews').textContent = article.views;
             document.getElementById('articleDetailContent').textContent = article.content;
             
-            // 显示模态框
-            $('#articleDetailModal').modal('show');
-        }
-    </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    
-    <script>
-        // 查看文章详情
-        function viewArticle(articleId) {
-            window.location.href = `article-detail.html?id=${articleId}`;
-        }
-        
-        // 页面加载完成后执行
-        document.addEventListener('DOMContentLoaded', function() {
             // 隐藏页面加载动画
             setTimeout(function() {
                 const loader = document.getElementById('pageLoader');
@@ -2505,6 +2487,12 @@
         });
     </script>
 
+
+
+
+
+<div id="toastContainer"></div>
+
 <!-- 登录模态框 -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -2533,7 +2521,6 @@
     </div>
 </div>
 
-<div id="toastContainer"></div>
 <script src="js/auth.js"></script>
 </body>
 </html>

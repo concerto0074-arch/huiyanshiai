@@ -82,6 +82,8 @@ function watchModalVisibility(modalEl) {
                 } else if (modalEl.id === 'loginModal') {
                     try { normalizeLoginModalStructure(); } catch (_) {}
                 }
+                // 无论哪种触发方式，始终应用内联样式
+                try { injectSharedAuthStyles(); applyModalInlineStyles(modalEl.id); } catch (_) {}
             }
         });
         obs.observe(modalEl, { attributes: true, attributeFilter: ['class'] });
@@ -200,9 +202,44 @@ function redirectToIndexWithAuth(action) {
     }
 }
 
-window.showLoginModal = function() {
+function applyModalInlineStyles(modalId) {
     try {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        const dialog = modal.querySelector('.modal-dialog');
+        if (dialog) {
+            dialog.style.maxWidth = '580px';
+            dialog.style.width = '92vw';
+            dialog.style.margin = '1.5rem auto';
+        }
+        const content = modal.querySelector('.modal-content');
+        const header = modal.querySelector('.modal-header');
+        const body = modal.querySelector('.modal-body');
+        const footer = modal.querySelector('.modal-footer');
+        const title = modal.querySelector('.modal-title');
+        if (content) {
+            content.style.cssText = 'display:flex;flex-direction:column;max-height:calc(100vh - 80px);overflow:hidden;border-radius:28px;border:1px solid rgba(255,255,255,0.4);box-shadow:0 40px 100px rgba(0,0,0,0.2);background:rgba(255,255,255,0.95);';
+        }
+        if (header) {
+            header.style.cssText = 'background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#fff;padding:18px 28px;border-bottom:none;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;border-radius:28px 28px 0 0;';
+        }
+        if (title) title.style.cssText = 'color:#fff;font-weight:800;font-size:1.3rem;margin:0;';
+        const closeBtn = header && header.querySelector('.close');
+        if (closeBtn) closeBtn.style.cssText = 'color:#fff;opacity:0.85;text-shadow:none;font-size:1.4rem;';
+        if (body) {
+            body.style.cssText = 'flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding:16px 28px 8px;min-height:0;';
+        }
+        if (footer) {
+            footer.style.cssText = 'flex-shrink:0;padding:8px 28px 20px;border-top:none;background:transparent;';
+        }
+    } catch(_) {}
+}
+
+window.__authUnifiedShowLoginModal = function() {
+    try {
+        injectSharedAuthStyles();
         normalizeLoginModalStructure();
+        applyModalInlineStyles('loginModal');
     } catch (_) {}
     closeBootstrapModal('#registerModal');
     if (!openBootstrapModal('#loginModal')) {
@@ -210,11 +247,13 @@ window.showLoginModal = function() {
     }
 };
 
-window.showRegisterModal = function() {
+window.__authUnifiedShowRegisterModal = function() {
     try {
+        injectSharedAuthStyles();
         normalizeRegisterModalStructure();
         normalizeRegisterAgreement();
         bindPolicyLinks();
+        applyModalInlineStyles('registerModal');
     } catch (_) {}
     closeBootstrapModal('#loginModal');
     if (!openBootstrapModal('#registerModal')) {
@@ -223,36 +262,43 @@ window.showRegisterModal = function() {
 };
 
 function injectSharedAuthStyles() {
-    if (document.getElementById('sharedAuthStyle')) return;
+    const existing = document.getElementById('sharedAuthStyle');
+    if (existing) existing.remove();
     const style = document.createElement('style');
     style.id = 'sharedAuthStyle';
     style.textContent = `
         /* 增强型毛玻璃认证弹窗样式 */
         #loginModal .modal-dialog, #registerModal .modal-dialog {
-            max-width: 480px !important; /* 宽度适中，显得精致 */
+            max-width: 560px !important;
+            margin: 1.5rem auto !important;
         }
         #loginModal .modal-content, #registerModal .modal-content {
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(20px) saturate(160%);
-            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            border-radius: 28px !important;
+            overflow: hidden !important;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2) !important;
+            backdrop-filter: blur(20px) saturate(160%) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            max-height: calc(100vh - 3.5rem) !important;
         }
         #loginModal .modal-header, #registerModal .modal-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #ffffff;
-            border-bottom: none;
-            padding: 24px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-shrink: 0 !important;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            color: #ffffff !important;
+            border-bottom: none !important;
+            padding: 18px 28px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            border-radius: 28px 28px 0 0 !important;
         }
         #loginModal .modal-title, #registerModal .modal-title {
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 1.5rem;
-            letter-spacing: -0.02em;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 1.5rem !important;
+            letter-spacing: -0.02em !important;
         }
         #loginModal .close, #registerModal .close {
             color: #ffffff;
@@ -267,11 +313,15 @@ function injectSharedAuthStyles() {
         }
         #loginModal .modal-body, #registerModal .modal-body {
             padding: 24px 32px 16px;
+            flex: 1 1 auto !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
         }
         #loginModal .modal-footer, #registerModal .modal-footer {
-            padding: 16px 32px 32px;
-            border-top: none;
-            background: transparent;
+            padding: 16px 32px 28px !important;
+            border-top: none !important;
+            background: transparent !important;
+            flex-shrink: 0 !important;
         }
 
         /* Tabs 胶囊式设计 */
@@ -316,7 +366,7 @@ function injectSharedAuthStyles() {
         }
         .auth-input-container {
             position: relative;
-            margin-bottom: 18px;
+            margin-bottom: 10px;
         }
         .auth-input-icon {
             position: absolute;
@@ -330,8 +380,8 @@ function injectSharedAuthStyles() {
         }
         .auth-input-premium {
             padding-left: 42px !important;
-            height: 52px !important;
-            border-radius: 14px !important;
+            height: 44px !important;
+            border-radius: 12px !important;
             border: 2px solid #f1f5f9 !important;
             background: #f8fafc !important;
             font-weight: 500;
@@ -410,6 +460,39 @@ function injectSharedAuthStyles() {
         .input-hint { font-size: 0.78rem; height: 18px; margin-top: 4px; }
         .input-hint.success { color: #10b981; }
         .input-hint.error { color: #ef4444; }
+
+        /* 密码输入框+眼睛图标 */
+        .auth-password-wrap {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+        .auth-input-container > .auth-password-wrap {
+            padding-left: 0;
+        }
+        .auth-password-wrap .auth-input-premium {
+            padding-right: 44px !important;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            z-index: 10;
+            transition: color 0.2s;
+        }
+        .toggle-password:hover { color: #3b82f6; }
+
+        /* 服务协议图标修复 */
+        .agreement-notice-icon {
+            width: 26px !important;
+            height: 26px !important;
+            border-radius: 8px !important;
+            font-size: 0.85rem !important;
+        }
 
         .agreement-notice {
             margin-top: 12px;
@@ -629,57 +712,55 @@ function removeRegisterPlanSections() {
 function buildUnifiedRegisterFormMarkup() {
     return `
         <form id="registerForm" novalidate>
-            <div class="form-group mb-3">
-                <label class="auth-field-label" for="registerUsername">用户名 <span class="text-danger">*</span></label>
-                <div class="auth-input-container">
-                    <i class="fas fa-user auth-input-icon"></i>
-                    <input type="text" class="form-control auth-input-premium" id="registerUsername" placeholder="3-20位字符" required minlength="3" maxlength="20" autocomplete="username">
-                </div>
-                <div class="input-hint" id="usernameHint"></div>
-            </div>
-            <div class="form-group mb-3">
-                <label class="auth-field-label" for="registerEmail">邮箱地址 <span class="text-danger">*</span></label>
-                <div class="auth-input-container">
-                    <i class="fas fa-envelope auth-input-icon"></i>
-                    <input type="email" class="form-control auth-input-premium" id="registerEmail" placeholder="example@email.com" required autocomplete="email">
-                </div>
-                <small class="auth-helper-text">用于找回密码与接收健康报告通知</small>
-                <div class="input-hint" id="emailHint"></div>
-            </div>
-            <div class="form-group mb-3">
-                <label class="auth-field-label" for="registerPhone">手机号 <small class="text-muted">（可选）</small></label>
-                <div class="auth-input-container">
-                    <i class="fas fa-mobile-alt auth-input-icon"></i>
-                    <input type="tel" class="form-control auth-input-premium" id="registerPhone" placeholder="11位手机号码" maxlength="11" autocomplete="tel">
-                </div>
-                <div class="input-hint" id="phoneHint"></div>
-            </div>
-            <div class="form-group mb-3">
-                <label class="auth-field-label" for="registerPassword">创建密码 <span class="text-danger">*</span></label>
-                <div class="auth-input-container">
-                    <i class="fas fa-lock auth-input-icon"></i>
-                    <div class="auth-password-wrap">
-                        <input type="password" class="form-control auth-input-premium" id="registerPassword" placeholder="8位以上字母及数字组合" required minlength="8" maxlength="20" autocomplete="new-password">
-                        <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" onclick="togglePasswordVisibility('registerPassword', 'toggleRegPassword')"></i>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;">
+                <div class="form-group mb-0">
+                    <label class="auth-field-label" for="registerUsername">用户名 <span class="text-danger">*</span></label>
+                    <div class="auth-input-container" style="margin-bottom:4px;">
+                        <i class="fas fa-user auth-input-icon"></i>
+                        <input type="text" class="form-control auth-input-premium" id="registerUsername" placeholder="3-20位字符" required minlength="3" maxlength="20" autocomplete="username">
                     </div>
+                    <div class="input-hint" id="usernameHint" style="font-size:0.75rem;min-height:16px;"></div>
                 </div>
-                <div class="password-strength-bar" id="passwordStrengthBar">
-                    <div class="strength-fill" id="strengthFill"></div>
-                </div>
-                <div class="password-strength-text" id="passwordStrengthText" style="font-size:0.75rem; color:#94a3b8;"></div>
-            </div>
-            <div class="form-group mb-3">
-                <label class="auth-field-label" for="confirmPassword">确认密码 <span class="text-danger">*</span></label>
-                <div class="auth-input-container">
-                    <i class="fas fa-shield-alt auth-input-icon"></i>
-                    <div class="auth-password-wrap">
-                        <input type="password" class="form-control auth-input-premium" id="confirmPassword" placeholder="再次输入密码" required autocomplete="new-password">
-                        <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"></i>
+                <div class="form-group mb-0">
+                    <label class="auth-field-label" for="registerEmail">邮箱地址 <span class="text-danger">*</span></label>
+                    <div class="auth-input-container" style="margin-bottom:4px;">
+                        <i class="fas fa-envelope auth-input-icon"></i>
+                        <input type="email" class="form-control auth-input-premium" id="registerEmail" placeholder="example@email.com" required autocomplete="email">
                     </div>
+                    <div class="input-hint" id="emailHint" style="font-size:0.75rem;min-height:16px;"></div>
                 </div>
-                <div class="input-hint" id="confirmHint"></div>
+                <div class="form-group mb-0">
+                    <label class="auth-field-label" for="registerPhone">手机号 <small class="text-muted">（可选）</small></label>
+                    <div class="auth-input-container" style="margin-bottom:4px;">
+                        <i class="fas fa-mobile-alt auth-input-icon"></i>
+                        <input type="tel" class="form-control auth-input-premium" id="registerPhone" placeholder="11位手机号码" maxlength="11" autocomplete="tel">
+                    </div>
+                    <div class="input-hint" id="phoneHint" style="font-size:0.75rem;min-height:16px;"></div>
+                </div>
+                <div class="form-group mb-0">
+                    <label class="auth-field-label" for="registerPassword">创建密码 <span class="text-danger">*</span></label>
+                    <div class="auth-input-container" style="margin-bottom:4px;">
+                        <i class="fas fa-lock auth-input-icon"></i>
+                        <div class="auth-password-wrap">
+                            <input type="password" class="form-control auth-input-premium" id="registerPassword" placeholder="8位以上字母数字" required minlength="8" maxlength="20" autocomplete="new-password">
+                            <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" onclick="togglePasswordVisibility('registerPassword', 'toggleRegPassword')"></i>
+                        </div>
+                    </div>
+                    <div class="password-strength-bar" id="passwordStrengthBar" style="margin:2px 0;"><div class="strength-fill" id="strengthFill"></div></div>
+                </div>
+                <div class="form-group mb-0" style="grid-column:1/-1;">
+                    <label class="auth-field-label" for="confirmPassword">确认密码 <span class="text-danger">*</span></label>
+                    <div class="auth-input-container" style="margin-bottom:4px;">
+                        <i class="fas fa-shield-alt auth-input-icon"></i>
+                        <div class="auth-password-wrap">
+                            <input type="password" class="form-control auth-input-premium" id="confirmPassword" placeholder="再次输入密码" required autocomplete="new-password">
+                            <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')"></i>
+                        </div>
+                    </div>
+                    <div class="input-hint" id="confirmHint" style="font-size:0.75rem;min-height:16px;"></div>
+                </div>
             </div>
-            <div id="registerError" class="text-danger mb-2" style="font-size: 0.88rem; font-weight: 500;"></div>
+            <div id="registerError" class="mt-1" style="font-size:0.82rem;font-weight:600;color:#dc2626;min-height:18px;"></div>
         </form>
     `;
 }
@@ -710,6 +791,7 @@ function buildUnifiedLoginBodyMarkup() {
                             <i class="fas fa-lock auth-input-icon"></i>
                             <div class="auth-password-wrap">
                                 <input type="password" class="form-control auth-input-premium" id="userLoginPassword" placeholder="请输入密码" required>
+                                <i class="fas fa-eye-slash toggle-password" id="toggleLoginPassword" onclick="togglePasswordVisibility('userLoginPassword','toggleLoginPassword')"></i>
                             </div>
                         </div>
                     </div>
@@ -731,6 +813,7 @@ function buildUnifiedLoginBodyMarkup() {
                             <i class="fas fa-key auth-input-icon"></i>
                             <div class="auth-password-wrap">
                                 <input type="password" class="form-control auth-input-premium" id="adminLoginPassword" placeholder="请输入管理员密码" required>
+                                <i class="fas fa-eye-slash toggle-password" id="toggleAdminPassword" onclick="togglePasswordVisibility('adminLoginPassword','toggleAdminPassword')"></i>
                             </div>
                         </div>
                     </div>
@@ -849,15 +932,31 @@ function normalizeRegisterModalStructure() {
         title.textContent = '创建账号';
     }
 
+    // NOTE: 弹窗已显示时绝不替换 innerHTML，避免 Bootstrap backdrop 卡死
+    const isCurrentlyShown = modal.classList.contains('show');
     if (!hasModernStructure || !footerLooksUnified) {
-        modalBody.innerHTML = buildUnifiedRegisterFormMarkup();
-        modalFooter.innerHTML = buildUnifiedRegisterFooterMarkup();
+        if (!isCurrentlyShown) {
+            modalBody.innerHTML = buildUnifiedRegisterFormMarkup();
+            modalFooter.innerHTML = buildUnifiedRegisterFooterMarkup();
+        }
     }
+}
+
+function cleanupStuckBackdrop() {
+    try {
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(function(bd) { bd.remove(); });
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('padding-right');
+        document.body.style.removeProperty('overflow');
+    } catch(_) {}
 }
 
 function normalizeLoginModalStructure() {
     const modal = document.getElementById('loginModal');
     if (!modal) return;
+    // NOTE: 弹窗已显示时绝不替换 innerHTML
+    if (modal.classList.contains('show')) return;
 
     const modalBody = modal.querySelector('.modal-body');
     const modalFooter = modal.querySelector('.modal-footer');
@@ -974,10 +1073,84 @@ function hidePageLoader() {
     }, 600);
 }
 
+function updateGlobalNavbar() {
+    try {
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const username = localStorage.getItem('username') || '用户中心';
+
+        // 找所有"登录/注册"按钮（通过 id 或 onclick 特征）
+        const loginBtns = document.querySelectorAll(
+            '#navbarLoginBtn, [onclick*="showLoginModal"], [data-target="#loginModal"], [href*="auth=login"]'
+        );
+        const userBtns = document.querySelectorAll(
+            '#navbarUserCenterBtn, [onclick*="user_center"], [href*="user_center.html"]'
+        );
+
+        if (isLoggedIn) {
+            loginBtns.forEach(btn => {
+                // 仅处理导航栏里的登录按钮，不影响页面内容区的按钮
+                if (btn.closest('nav, .navbar, header, .navbar-right')) {
+                    btn.style.display = 'none';
+                }
+            });
+            userBtns.forEach(btn => {
+                if (btn.closest('nav, .navbar, header, .navbar-right')) {
+                    btn.style.display = 'inline-block';
+                }
+            });
+
+            // 如果页面有 navbarLoginBtn 但没有用户下拉，动态创建
+            const loginNavBtn = document.getElementById('navbarLoginBtn');
+            if (loginNavBtn && !document.getElementById('__authNavUserDropdown')) {
+                const drop = document.createElement('div');
+                drop.id = '__authNavUserDropdown';
+                drop.className = 'dropdown';
+                drop.style.cssText = 'display:inline-block;margin-left:10px;';
+                const initial = username.charAt(0).toUpperCase();
+                drop.innerHTML = `
+                    <button class="btn dropdown-toggle d-flex align-items-center" style="background:none;border:1.5px solid #e2e8f0;border-radius:24px;padding:5px 14px 5px 6px;gap:8px;" data-toggle="dropdown">
+                        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;">${initial}</div>
+                        <span style="font-weight:600;font-size:0.9rem;color:#1a1a2e;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${username}</span>
+                        <i class="fas fa-chevron-down" style="font-size:0.7rem;color:#94a3b8;"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" style="border-radius:14px;border:1px solid #e2e8f0;box-shadow:0 8px 30px rgba(0,0,0,0.1);padding:8px;min-width:180px;">
+                        <a class="dropdown-item" href="user_center.html" style="border-radius:8px;padding:10px 14px;font-weight:500;"><i class="fas fa-user-circle mr-2 text-primary"></i>个人中心</a>
+                        <div class="dropdown-divider" style="margin:6px 0;"></div>
+                        <a class="dropdown-item text-danger" href="#" onclick="localStorage.removeItem('isLoggedIn');localStorage.removeItem('username');window.location.href='index.html';" style="border-radius:8px;padding:10px 14px;font-weight:500;"><i class="fas fa-sign-out-alt mr-2"></i>退出登录</a>
+                    </div>`;
+                loginNavBtn.parentNode.insertBefore(drop, loginNavBtn.nextSibling);
+                loginNavBtn.style.display = 'none';
+            }
+        } else {
+            loginBtns.forEach(btn => {
+                if (btn.closest('nav, .navbar, header, .navbar-right')) {
+                    btn.style.display = '';
+                }
+            });
+            userBtns.forEach(btn => {
+                if (btn.closest('nav, .navbar, header, .navbar-right')) {
+                    btn.style.display = 'none';
+                }
+            });
+        }
+    } catch(_) {}
+}
+
+// 登录成功后调用此函数更新状态
+window.onLoginSuccess = function(userData) {
+    try {
+        localStorage.setItem('isLoggedIn', 'true');
+        if (userData && userData.username) localStorage.setItem('username', userData.username);
+        if (userData && userData.email) localStorage.setItem('email', userData.email);
+        updateGlobalNavbar();
+    } catch(_) {}
+};
+
 function __runAuthBootstrap() {
     installUnifiedAuthOpeners();
     startAuthOpenersTakeoverLoop();
     normalizeAuthUI();
+    updateGlobalNavbar();
     hidePageLoader();
     attachModalNormalization();
     attachDelegatedOpeners();
@@ -1034,6 +1207,48 @@ window.addEventListener('load', function() {
         }, delay);
     });
 });
+
+// 暴露全局清理函数，并监听 modal 关闭事件自动清理残留 backdrop
+window.cleanupStuckBackdrop = cleanupStuckBackdrop;
+
+// Bootstrap 4 modal 事件必须用 jQuery 监听
+function bindBackdropCleanup() {
+    if (!window.jQuery) {
+        setTimeout(bindBackdropCleanup, 200);
+        return;
+    }
+    const $ = window.jQuery;
+
+    // 弹窗显示前：替换结构（此时 show 类还未加，normalizeXxx 内的 isCurrentlyShown 为 false）
+    $(document).on('show.bs.modal', '#registerModal', function() {
+        try {
+            injectSharedAuthStyles();
+            normalizeRegisterModalStructure();
+            normalizeRegisterAgreement();
+            bindPolicyLinks();
+        } catch(_) {}
+    });
+    $(document).on('show.bs.modal', '#loginModal', function() {
+        try {
+            injectSharedAuthStyles();
+            normalizeLoginModalStructure();
+        } catch(_) {}
+    });
+
+    // 弹窗显示后：应用内联样式（dialog 宽度等）
+    $(document).on('shown.bs.modal', '#registerModal, #loginModal', function() {
+        try { applyModalInlineStyles(this.id); } catch(_) {}
+    });
+
+    // 弹窗关闭后：清理 backdrop
+    $(document).on('hidden.bs.modal', function() {
+        setTimeout(cleanupStuckBackdrop, 50);
+    });
+    $(document).on('hide.bs.modal', function() {
+        setTimeout(cleanupStuckBackdrop, 450);
+    });
+}
+bindBackdropCleanup();
 
 // ============================================================
 // 密码可见性切换

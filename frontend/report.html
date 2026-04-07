@@ -983,9 +983,8 @@
             document.getElementById('reportTime').textContent = timeStr;
             document.getElementById('assessmentTime').textContent = timeStr;
             
-            // 检测是否为基因数据流
-            const isGeneData = data.patientName === '匿名供体样本 (基因流)' || 
-                              (data.algorithm && data.algorithm.includes('WGCNA'));
+            // 检测是否为基因数据流（仅根据算法类型判断，不用 patientName）
+            const isGeneData = data.algorithm && (data.algorithm.includes('WGCNA') || data.algorithm.includes('gene') || data.algorithm.includes('基因'));
             
             // 填充患者信息 - 根据数据类型显示不同格式
             if (isGeneData) {
@@ -1163,19 +1162,17 @@
             document.body.classList.add('pdf-exporting');
             
             const opt = {
-                margin: [8, 8, 8, 8], // 适中的页边距
+                margin: [10, 10, 10, 10],
                 filename: '慧眼识癌_预测报告_' + reportId + '.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
+                image: { type: 'jpeg', quality: 0.95 },
                 html2canvas: { 
-                    scale: 2, 
+                    scale: 1.5,
                     useCORS: true, 
                     logging: false,
                     scrollX: 0,
-                    scrollY: 0,
+                    scrollY: -window.scrollY,
                     windowWidth: 1050,
-                    windowHeight: element.scrollHeight,
-                    backgroundColor: '#ffffff',
-                    removeContainer: true
+                    backgroundColor: '#ffffff'
                 },
                 jsPDF: { 
                     unit: 'mm', 
@@ -1184,9 +1181,7 @@
                     compress: true
                 },
                 pagebreak: { 
-                    mode: ['css', 'avoid-all'],
-                    avoid: ['.report-section', '.factor-item', '.recommendation-item', '.reference-item'],
-                    before: '.report-section'
+                    mode: ['legacy']
                 }
             };
             
@@ -1223,7 +1218,36 @@
             });
         }
     </script>
-    <script src="js/auth.js"></script>
+    
+<!-- 登录模态框 -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">账号登录</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 注册模态框 -->
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">创建账号</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+<script src="js/auth.js"></script>
     <script>
         // 检测登录状态，切换导航栏按钮
         (function() {

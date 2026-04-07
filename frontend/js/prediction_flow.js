@@ -338,11 +338,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Map AI result to LocalStorage for report.html rendering
             // predict_form 返回字段: riskLevel(中文), confidence, probabilities(中文key), factors, tumorMarkers, recommendations
             const reportData = {
-                patientName: resultData.patientName || '测试用户',
-                patientGender: patientData.gender === 'male' ? '男' : '女',
-                patientAge: patientData.age,
-                patientBmi: patientData.bmi,
-                patientSmoke: patientData.smoke === 'never' ? '从不吸烟' : '有吸烟史',
+                patientName: resultData.patientName || localStorage.getItem('username') || '匿名患者',
+                patientGender: patientData.gender === 'male' ? '男' : (patientData.gender === 'female' ? '女' : '未知'),
+                patientAge: patientData.age || '-',
+                patientHeight: patientData.height || '-',
+                patientWeight: patientData.weight || '-',
+                patientBmi: patientData.bmi || '-',
+                patientSmoke: patientData.smoke === 'never' ? '从不' : (patientData.smoke === 'former' ? '曾经吸烟' : '有吸烟史'),
+                patientDrink: patientData.drink === 'never' ? '从不' : (patientData.drink === 'occasionally' ? '偶尔' : (patientData.drink ? '有' : 'N/A')),
+                patientFamilyHistory: patientData.familyHistory === 'yes' ? '有' : (patientData.familyHistory === 'no' ? '无' : 'N/A'),
+                patientPastHistory: patientData.pastHistory || patientData.past_history || 'N/A',
                 algorithm: displayModelName,
                 riskLevel: resultData.riskLevel || '未知',
                 confidence: resultData.confidence || 90.0,

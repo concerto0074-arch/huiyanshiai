@@ -35,6 +35,7 @@ from r_integration_service import process_gene_file
 logger = setup_logging()
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 CORS(app, origins=[
     "http://127.0.0.1:5000",
     "http://localhost:5000",
@@ -60,9 +61,15 @@ def add_cache_headers(resp):
             resp.headers['Cache-Control'] = 'no-cache'
             return resp
 
-        # Cache static assets
+        # JS/CSS: no cache (dev mode)
+        if any(path.endswith(ext) for ext in ('.js', '.css')):
+            resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            resp.headers['Pragma'] = 'no-cache'
+            return resp
+
+        # Cache other static assets (images/fonts)
         if any(path.endswith(ext) for ext in (
-            '.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico',
+            '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico',
             '.woff', '.woff2', '.ttf', '.eot'
         )):
             resp.headers['Cache-Control'] = 'public, max-age=2592000, immutable'

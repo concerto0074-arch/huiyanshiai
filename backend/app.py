@@ -36,12 +36,7 @@ logger = setup_logging()
 
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-CORS(app, origins=[
-    "http://127.0.0.1:5000",
-    "http://localhost:5000",
-    "https://huiyanshiai.zsypioneer.cn",
-    "*"
-])  # 允许跨域：本地5000端口 + 生产域名
+CORS(app, origins="*", supports_credentials=False)  # 允许所有来源跨域
 
 
 @app.after_request

@@ -262,8 +262,7 @@ window.__authUnifiedShowRegisterModal = function() {
 };
 
 function injectSharedAuthStyles() {
-    const existing = document.getElementById('sharedAuthStyle');
-    if (existing) existing.remove();
+    if (document.getElementById('sharedAuthStyle')) return;
     const style = document.createElement('style');
     style.id = 'sharedAuthStyle';
     style.textContent = `
@@ -984,6 +983,8 @@ function normalizeRegisterModalStructure() {
 
 function cleanupStuckBackdrop() {
     try {
+        // 有 modal 仍在显示时不清理
+        if (document.querySelector('.modal.show')) return;
         const backdrops = document.querySelectorAll('.modal-backdrop');
         backdrops.forEach(function(bd) { bd.remove(); });
         document.body.classList.remove('modal-open');

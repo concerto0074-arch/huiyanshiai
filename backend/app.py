@@ -9,7 +9,6 @@ import logging
 import datetime
 import urllib.parse
 from functools import wraps
-import hashlib
 import requests
 import bcrypt
 import jwt
@@ -38,10 +37,6 @@ logger = setup_logging()
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 CORS(app, origins="*", supports_credentials=False)  # 允许所有来源跨域
-
-_ai_report_cache = {}
-_ai_report_cache_ttl_seconds = 60 * 60 * 24
-_ai_report_cache_max_items = 200
 
 
 @app.after_request
@@ -420,19 +415,6 @@ def generate_ai_report():
         data = request.json
         patient_data = data.get('patient_data', {})
         prediction_results = data.get('prediction_results', {})
-
-        try:
-            cache_payload = {
-                'patient_data': patient_data,
-                'prediction_results': prediction_results
-            }
-            cache_raw = json.dumps(cache_payload, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
-            cache_key = hashlib.sha256(cache_raw.encode('utf-8')).hexdigest()
-            cached = _ai_report_cache.get(cache_key)
-            if cached and (datetime.datetime.utcnow().timestamp() - float(cached.get('ts', 0))) < _ai_report_cache_ttl_seconds:
-                return jsonify({"success": True, "report": cached.get('report', '')})
-        except Exception:
-            cache_key = None
         
         api_key = os.getenv("DEEPSEEK_API_KEY")
         base_url = os.getenv("API_BASE_URL", "https://api.deepseek.com/v1").rstrip('/')
@@ -473,26 +455,6 @@ AI模型算法评估系统（{prediction_results.get('algorithm')}）输出结�
         )
         response.raise_for_status()
         report_markdown = response.json().get("choices", [{}])[0].get("message", {}).get("content", "生成失败")
-
-        try:
-            if cache_key and report_markdown:
-                _ai_report_cache[cache_key] = {
-                    'ts': datetime.datetime.utcnow().timestamp(),
-                    'report': report_markdown
-                }
-                if len(_ai_report_cache) > _ai_report_cache_max_items:
-                    now_ts = datetime.datetime.utcnow().timestamp()
-                    expired_keys = [
-                        k for k, v in _ai_report_cache.items()
-                        if (now_ts - float(v.get('ts', 0))) >= _ai_report_cache_ttl_seconds
-                    ]
-                    for k in expired_keys:
-                        _ai_report_cache.pop(k, None)
-                    if len(_ai_report_cache) > _ai_report_cache_max_items:
-                        for k in list(_ai_report_cache.keys())[: max(0, len(_ai_report_cache) - _ai_report_cache_max_items)]:
-                            _ai_report_cache.pop(k, None)
-        except Exception:
-            pass
         
         return jsonify({"success": True, "report": report_markdown})
         

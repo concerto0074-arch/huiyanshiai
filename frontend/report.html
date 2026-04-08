@@ -1076,67 +1076,25 @@
             const aiSection = document.getElementById('ai-analysis-content');
             
             try {
-                try {
-                    if (aiSection && aiSection.innerHTML) {
-                        const html = (aiSection.innerHTML || '').trim();
-                        const looksLikeError = html.includes('alert alert-warning') || html.includes('大模型服务暂不可用');
-                        const hasRealContent = html.replace(/<[^>]*>/g, '').trim().length > 40;
-                        if (!looksLikeError && hasRealContent) {
-                            aiSection.setAttribute('data-ai-ready', '1');
-                        }
-                    }
-                } catch (e) {
-                    // ignore
-                }
-
-                if (aiSection && (aiSection.getAttribute('data-ai-ready') === '1')) {
-                    return;
-                }
-
-                const payload = {
-                    patient_data: {
-                        patientAge: data.patientAge,
-                        patientGender: data.patientGender,
-                        patientBmi: data.patientBmi,
-                        patientSmoke: data.patientSmoke
-                    },
-                    prediction_results: {
-                        algorithm: data.algorithm,
-                        riskLevel: data.riskLevel,
-                        confidence: data.confidence,
-                        probabilities: JSON.stringify(data.probabilities)
-                    }
-                };
-
-                const cacheKey = 'ai_report_cache_' + encodeURIComponent(JSON.stringify(payload));
-                try {
-                    const cachedRaw = localStorage.getItem(cacheKey);
-                    if (cachedRaw) {
-                        const cached = JSON.parse(cachedRaw);
-                        if (cached && cached.report && cached.ts && (Date.now() - cached.ts) < 1000 * 60 * 60 * 24) {
-                            aiSection.innerHTML = marked.parse(cached.report);
-                            aiSection.setAttribute('data-ai-ready', '1');
-                            return;
-                        }
-                    }
-                } catch (e) {
-                    // ignore
-                }
-
-                const baseUrl = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL)
-                    ? window.APP_CONFIG.API_BASE_URL
-                    : ((window.location.protocol === 'http:' || window.location.protocol === 'https:') ? window.location.origin : '');
-
-                if (!baseUrl) {
-                    throw new Error('无法确定后端地址（请通过后端服务打开本页面）');
-                }
-
-                const API_URL = baseUrl + '/api/generate_ai_report';
+                const API_URL = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL ? window.APP_CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/generate_ai_report';
                 
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        patient_data: {
+                            patientAge: data.patientAge,
+                            patientGender: data.patientGender,
+                            patientBmi: data.patientBmi,
+                            patientSmoke: data.patientSmoke
+                        },
+                        prediction_results: {
+                            algorithm: data.algorithm,
+                            riskLevel: data.riskLevel,
+                            confidence: data.confidence,
+                            probabilities: JSON.stringify(data.probabilities)
+                        }
+                    })
                 });
                 
                 if (!response.ok) {
@@ -1146,12 +1104,6 @@
                 const result = await response.json();
                 if (result.success && result.report) {
                     aiSection.innerHTML = marked.parse(result.report);
-                    aiSection.setAttribute('data-ai-ready', '1');
-                    try {
-                        localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), report: result.report }));
-                    } catch (e) {
-                        // ignore
-                    }
                 } else {
                     throw new Error(result.error || '生成分析失败');
                 }
@@ -1162,7 +1114,7 @@
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle mr-2"></i> <strong>大模型服务暂不可用</strong>
                         <p class="mt-2 mb-0">无法连接到 DeepSeek 分析引擎。错误详情：${error.message}</p>
-                        <p class="mb-0">解决方案：确保后端的 Flask 服务已启动，并在\`.env\` 根目录文件中配置了有效的 \`DEEPSEEK_API_KEY\`。</p>
+                        <p class="mb-0">解决方案：确保后端的 Flask 服务已启动 (5000端口)，并在\`.env\` 根目录文件中配置了有效的 \`DEEPSEEK_API_KEY\`。</p>
                     </div>
                     <ul>
                         <li>建议一：保持良好的生活习惯，并定期体验。</li>

@@ -23,7 +23,7 @@ Write-Host "Backend Dir: $BackendDir"
 Write-Host "Python: $PythonCmd"
 
 $envLines = Get-Content $EnvFile
-$env:PORT = '5001'
+$env:PORT = '5000'
 
 $supabaseUrlLine = $envLines | Where-Object { $_ -match '^SUPABASE_URL=' } | Select-Object -First 1
 $supabaseKeyLine = $envLines | Where-Object { $_ -match '^SUPABASE_ANON_KEY=' } | Select-Object -First 1

@@ -1119,6 +1119,14 @@ function updateGlobalNavbar() {
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
         const username = localStorage.getItem('username') || '用户中心';
 
+        const userDropdowns = document.querySelectorAll('#navbarUserDropdown');
+        userDropdowns.forEach(drop => {
+            const nameEl = drop.querySelector('#navUsername') || drop.querySelector('[data-nav-username]');
+            if (nameEl) nameEl.textContent = username;
+            const avatarEl = drop.querySelector('#navAvatarCircle') || drop.querySelector('[data-nav-avatar]');
+            if (avatarEl) avatarEl.textContent = (username || 'U').charAt(0).toUpperCase();
+        });
+
         // 找所有"登录/注册"按钮（通过 id 或 onclick 特征）
         const loginBtns = document.querySelectorAll(
             '#navbarLoginBtn, [onclick*="showLoginModal"], [data-target="#loginModal"], [href*="auth=login"]'
@@ -1137,6 +1145,12 @@ function updateGlobalNavbar() {
             userBtns.forEach(btn => {
                 if (btn.closest('nav, .navbar, header, .navbar-right')) {
                     btn.style.display = 'inline-block';
+                }
+            });
+
+            userDropdowns.forEach(drop => {
+                if (drop.closest('nav, .navbar, header, .navbar-right')) {
+                    drop.style.display = 'inline-block';
                 }
             });
 
@@ -1171,6 +1185,12 @@ function updateGlobalNavbar() {
             userBtns.forEach(btn => {
                 if (btn.closest('nav, .navbar, header, .navbar-right')) {
                     btn.style.display = 'none';
+                }
+            });
+
+            userDropdowns.forEach(drop => {
+                if (drop.closest('nav, .navbar, header, .navbar-right')) {
+                    drop.style.display = 'none';
                 }
             });
         }

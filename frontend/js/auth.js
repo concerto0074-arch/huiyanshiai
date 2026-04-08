@@ -267,6 +267,24 @@ function injectSharedAuthStyles() {
     style.id = 'sharedAuthStyle';
     style.textContent = `
         /* 增强型毛玻璃认证弹窗样式 */
+        #navbarUserDropdown .dropdown-toggle::after,
+        #__authNavUserDropdown .dropdown-toggle::after {
+            display: none !important;
+            content: none !important;
+        }
+        #navbarUserDropdown .hysai-nav-caret,
+        #__authNavUserDropdown .hysai-nav-caret {
+            display: inline-block !important;
+            width: 0 !important;
+            height: 0 !important;
+            margin-left: 10px !important;
+            vertical-align: middle !important;
+            border-top: 6px solid #111827 !important;
+            border-right: 5px solid transparent !important;
+            border-left: 5px solid transparent !important;
+            border-bottom: 0 !important;
+            flex: 0 0 auto !important;
+        }
         #loginModal .modal-dialog, #registerModal .modal-dialog {
             max-width: 560px !important;
             margin: 1.5rem auto !important;
@@ -1121,6 +1139,15 @@ function updateGlobalNavbar() {
 
         const userDropdowns = document.querySelectorAll('#navbarUserDropdown');
         userDropdowns.forEach(drop => {
+            try {
+                const toggleBtn = drop.querySelector('.dropdown-toggle');
+                if (toggleBtn && !toggleBtn.querySelector('.hysai-nav-caret')) {
+                    const caret = document.createElement('span');
+                    caret.className = 'hysai-nav-caret';
+                    caret.setAttribute('aria-hidden', 'true');
+                    toggleBtn.appendChild(caret);
+                }
+            } catch (_) {}
             const nameEl = drop.querySelector('#navUsername') || drop.querySelector('[data-nav-username]');
             if (nameEl) nameEl.textContent = username;
             const avatarEl = drop.querySelector('#navAvatarCircle') || drop.querySelector('[data-nav-avatar]');
@@ -1166,7 +1193,7 @@ function updateGlobalNavbar() {
                     <button class="btn dropdown-toggle d-flex align-items-center" style="background:none;border:1.5px solid #e2e8f0;border-radius:24px;padding:5px 14px 5px 6px;gap:8px;" data-toggle="dropdown">
                         <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;font-weight:700;font-size:1rem;display:flex;align-items:center;justify-content:center;">${initial}</div>
                         <span style="font-weight:600;font-size:0.9rem;color:#1a1a2e;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${username}</span>
-                        <i class="fas fa-chevron-down" style="font-size:0.7rem;color:#94a3b8;"></i>
+                        <span class="hysai-nav-caret" aria-hidden="true"></span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" style="border-radius:14px;border:1px solid #e2e8f0;box-shadow:0 8px 30px rgba(0,0,0,0.1);padding:8px;min-width:180px;">
                         <a class="dropdown-item" href="user_center.html" style="border-radius:8px;padding:10px 14px;font-weight:500;"><i class="fas fa-user-circle mr-2 text-primary"></i>个人中心</a>
@@ -1208,6 +1235,7 @@ window.onLoginSuccess = function(userData) {
 };
 
 function __runAuthBootstrap() {
+    try { injectSharedAuthStyles(); } catch (_) {}
     installUnifiedAuthOpeners();
     startAuthOpenersTakeoverLoop();
     normalizeAuthUI();
@@ -1237,6 +1265,9 @@ function __runAuthBootstrap() {
         // ignore
     }
 }
+
+// 尽早注入共享样式，避免某些页面初始化流程被中断时样式未生效
+try { injectSharedAuthStyles(); } catch (_) {}
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', __runAuthBootstrap);

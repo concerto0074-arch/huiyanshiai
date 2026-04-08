@@ -1185,6 +1185,20 @@
             border-color: #007BFF;
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
         }
+        /* 修复下拉框长文本显示 */
+        .contact-form-card select.form-control {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 2rem;
+            appearance: auto;
+        }
+        .contact-form-card select.form-control option {
+            white-space: normal;
+            line-height: 1.4;
+            padding: 8px 12px;
+            font-size: 0.95rem;
+        }
         .contact-form-card .btn-primary {
             background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
             border: none;
